@@ -1,0 +1,33 @@
+# Python / FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+
+# Database files
+# =========================
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL local data
+postgres-data/
+pgdata/
+data/postgres/
+
+# Database backups
+*.sql
+*.dump
+*.backup

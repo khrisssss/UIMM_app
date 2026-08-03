@@ -1,0 +1,8 @@
+
+fastapi==0.140.13
+psycopg2-binary==2.9.12 #PostgreSQL driver
+pydantic==2.13.4
+pydantic_core==2.46.4
+python-dotenv==1.2.2 #lets us use .env file for database password
+SQLAlchemy==2.0.51   # Python ORM, helps us talk to database
+uvicorn==0.52.0
