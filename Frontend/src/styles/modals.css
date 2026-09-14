@@ -1,0 +1,61 @@
+/*modals styles (need to search what is a modals )*/ 
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 2000;
+}
+
+.company-modal {
+  width: min(760px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.3);
+  border: 1px solid #d9e2e8;
+}
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.modal-header p {
+  margin: 6px 0 0 0;
+  color: #64748b;
+}
+
+.modal-close-button {
+  border: none;
+  background: #f1f5f9;
+  color: #0f172a;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

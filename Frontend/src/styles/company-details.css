@@ -1,0 +1,214 @@
+.company-details-page-content {
+  padding: 28px 48px 48px 48px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.company-details-top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.company-details-action-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.company-details-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.company-info-card {
+  background: #c5898921;
+  border: 1px solid #d9e2e8;
+  border-radius: 5px;
+  padding: 24px;
+  box-shadow: 0 10px 26px rgba(27, 77, 195, 0.06);
+  width: 100%;
+}
+
+
+
+.company-info-section-header {
+  margin-bottom: 24px;
+}
+
+.company-info-section-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 26px;
+}
+
+.company-info-section-header p {
+  margin: 8px 0 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.company-form-section {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.company-form-section h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+}
+
+.company-rse-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ff0000;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.company-rse-checkbox input {
+  width: 16px;
+  height: 20px;
+}
+
+.company-details-save-actions {
+  margin-top: 22px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.company-delete-button {
+  border: 1px solid #7f1d1d;
+  border-radius: 10px;
+  background: #7f1d1d;
+  color: #ffffff;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.company-delete-button:hover {
+  background: #991b1b;
+}
+
+.company-profile-card {
+  border: 1px solid #1409e14e;
+  border-radius: 5px;
+  padding: 24px;
+  box-shadow: 0 10px 26px rgba(27, 77, 195, 0.06);
+  width: 100%;
+}
+.profile-question-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.profile-question-section {   /* space between each section of questions */
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
+}
+
+.profile-question-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.profile-question-section h3 {
+  margin: 0 0 14px 0;
+  color: #1074d8e8;
+  font-size: 18px;
+}
+
+.profile-question-card {      /*box around each question and answer / answer field*/
+  background: #759ad11e;
+  border: 1px solid #d9e2e8;
+  border-radius: 2px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+.profile-question-card:last-child {
+  margin-bottom: 0;
+}
+
+.profile-question-card label {   /*font style ex: hostorique, parcours*/
+  display: block;
+  margin-bottom: 10px;
+  color: #0f172ad7;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.profile-question-card textarea,
+.company-form-section textarea {
+  width: 100%;
+  min-height: 80px;
+  height: auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  resize: none;
+  overflow: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.profile-question-card textarea,
+.company-form-section textarea {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.profile-question-card textarea:focus,
+.company-form-section textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+@media (max-width: 1100px) {
+  .company-details-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .company-details-page-content {
+    padding: 22px;
+  }
+
+  .company-details-top-actions,
+  .company-details-action-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .company-details-save-actions {
+    justify-content: stretch;
+  }
+
+  .company-details-save-actions button {
+    width: 100%;
+  }
+}

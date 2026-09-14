@@ -1,8 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from app.database import Base
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, DateTime
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
-
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from app.database import Base
 
 
@@ -13,18 +12,25 @@ class Question(Base):
 
     axis_id = Column(Integer, ForeignKey("axes.id"), nullable=False)
 
-    question_text = Column(String, nullable=False)
-    question_type = Column(String, nullable=False, default="score")
-    max_score = Column(Integer, nullable=True)
-    order_index = Column(Integer, nullable=False)
+    question_text = Column(Text, nullable=False)
+    theme = Column(String, nullable=True)
 
+    order_index = Column(Integer, nullable=False, default=1)
+    max_score = Column(Integer, nullable=True, default=5)
     is_active = Column(Boolean, nullable=False, default=True)
 
-    theme = Column(String, nullable=True)
-    low_score_meaning = Column(String, nullable=True)
-    high_score_meaning = Column(String, nullable=True)
-    opportunity_hint = Column(String, nullable=True)
-    threat_hint = Column(String, nullable=True)
+    target_less_than_10 = Column(Boolean, nullable=False, default=True)
+    target_11_to_50 = Column(Boolean, nullable=False, default=True)
+    target_more_than_50 = Column(Boolean, nullable=False, default=True)
 
-    class Config:
-        from_attributes = True  # This allows Pydantic to read data from SQLAlchemy models #Because now FastAPI will receive SQLAlchemy objects from PostgreSQL, not normal dictionaries.
+    category_id = Column(Integer, ForeignKey("axis_question_categories.id"), nullable=True,)
+    category = relationship("AxisQuestionCategory")
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    axis = relationship("Axis")

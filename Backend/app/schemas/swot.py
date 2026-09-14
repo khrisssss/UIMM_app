@@ -81,3 +81,10 @@ class SWOTRead(BaseModel):
         from_attributes = True
 
 
+class SWOTUpdate(BaseModel):
+    strengths: Optional[str] = None
+    weaknesses: Optional[str] = None
+    opportunities: Optional[str] = None
+    threats: Optional[str] = None
+
+    status: Optional[str] = None

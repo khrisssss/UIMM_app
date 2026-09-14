@@ -5,16 +5,14 @@ __pycache__/
 
 # Virtual environments
 .venv/
-
+venv/
+env/
 # Environment variables
 .env
 .env.*
-!.env.example
-
-backend/.env
-backend/.env.*
-!backend/.env.example
-
+.env.example
+generated_reports/
+ml_artifacts/
 
 # Database files
 # =========================
@@ -31,3 +29,25 @@ data/postgres/
 *.sql
 *.dump
 *.backup
+
+.gitignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated app files
+generated_reports/
+ml_artifacts/
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log

@@ -2,12 +2,22 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class AxisRead(BaseModel):
-    id:int #axis ID
-    name: str #Stratégie, Performance, etc.
-    description: Optional[str] = None  #optional explanation
-    order_index: int #display order
-    is_active: bool = True  # Default value for is_active #active or hidden
+class AxisBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+    order_index: int
+    is_active: bool = True
+
+
+class AxisUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    order_index: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
+class AxisRead(AxisBase):
+    id: int
 
     class Config:
-        from_attributes = True  # This allows Pydantic to read data from SQLAlchemy models #Because now FastAPI will receive SQLAlchemy objects from PostgreSQL, not normal dictionaries.
+        from_attributes = True

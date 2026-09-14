@@ -1,0 +1,46 @@
+# Root credentials
+.env
+.env.*
+!.env.example
+
+# Backend credentials and local files
+Backend/.env
+Backend/.env.*
+!Backend/.env.example
+Backend/.venv/
+Backend/venv/
+Backend/env/
+Backend/generated_reports/
+Backend/ml_artifacts/
+
+# Frontend local files
+Frontend/.env
+Frontend/.env.*
+!Frontend/.env.example
+Frontend/node_modules/
+Frontend/dist/
+Frontend/build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Logs
+*.log
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.idea/
+
+Backend/app/seed_admin.py
+Backend/app/seed_docker.py
+docker-compose.yml

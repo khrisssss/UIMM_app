@@ -1,0 +1,253 @@
+.diagnostic-page-content {
+  padding: 28px 48px 48px 48px;
+}
+
+.diagnostic-top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.diagnostic-action-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.diagnostic-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+
+
+.axis-selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/*
+.axis-selection-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #39628c44;
+  border: 1px solid #85888a2c;
+  border-radius: 5px;
+  padding: 12px;
+  color: #161414;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.axis-selection-item:hover {
+  border-color: #c425a2;
+  background: #916d82;
+}
+
+.axis-selection-item input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.selected-axis-main h3 {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #cbd5e1;
+}*/
+
+/*.selected-axes-panel {
+  min-width: 0;
+}*/
+
+
+
+.selected-axis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.selected-axis-card {
+  background: #ffffff00;
+  border: 1px solid #b2b5b5;
+  border-radius: 10px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 24px;
+  align-items: center;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.selected-axis-main h3 {
+  margin: 0 0 12px 0;
+  color: #eb0e0e;
+  font-size: 17px;
+}
+
+.axis-question-count {
+  margin: 0 0 6px 0;
+  color: #334155;
+  font-size: 15px;
+}
+
+.axis-completion-text {
+  margin: 0 0 12px 0;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.progress-bar-background {
+  width: 100%;
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.progress-green {
+  background: #10b981;
+}
+
+.progress-orange {
+  background: #f97316;
+}
+
+.progress-red {
+  background: #ef4444;
+}
+
+.selected-axis-action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.questionnaire-button {
+  width: 100%;
+  min-width: 180px;
+}
+
+@media (max-width: 980px) {
+  .diagnostic-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-axis-card {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-axis-action {
+    justify-content: flex-start;
+  }
+
+  .questionnaire-button {
+    width: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .diagnostic-page-content {
+    padding: 22px;
+  }
+
+  .diagnostic-top-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .diagnostic-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.axis-selection-panel {
+  background: #f8fafc;
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.axis-selection-panel h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.axis-selection-separator {
+  height: 1px;
+  background: #d9e2e8;
+  margin: 14px 0 8px 0;
+}
+
+.axis-selection-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.axis-selection-row {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.axis-selection-row:hover {
+  background: #e2e8f0;
+}
+
+.axis-row-light {
+  background: #ffffff;
+}
+
+.axis-row-muted {
+  background: #f1f5f9;
+}
+
+.axis-selection-row input {
+  display: none;
+}
+
+.axis-radio-circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  border: 1.8px solid #94a3b8;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.axis-selection-row input:checked + .axis-radio-circle {
+  border-color: #1e3a8a;
+  background: #1e3a8a;
+  box-shadow: inset 0 0 0 4px #ffffff;
+}
+
+.axis-selection-name {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+}

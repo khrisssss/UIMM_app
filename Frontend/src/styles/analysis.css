@@ -1,0 +1,686 @@
+.analysis-page-content {
+  padding: 28px 48px 48px 48px;
+}
+
+.analysis-top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.analysis-top-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
+
+
+.analysis-card {
+  background: #CBD5E1;
+  border: 1px solid #b9bcbeb8;
+  border-radius: 5px;
+  padding: 24px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.analysis-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.analysis-card-header h2 {
+  margin: 0;
+  color: #0445df;
+  font-size: 20px;
+}
+
+.radar-chart-box {
+  width: 100%;
+  min-height: 360px;
+  background: #ffffff;
+  border: 1px solid #7595c042;
+  border-radius: 5px;
+  padding: 10px;
+}
+/*
+.compact-score-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}*/
+/*
+.compact-score-card {
+  border: 1px solid #25252530;
+  border-radius: 3px;
+  background: #13bf6913;
+  padding: 1px;
+}
+
+.compact-score-card h3 {
+  margin: 0 0 8px 0;
+  color: #282829;
+  font-size: 15px;
+  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 540;
+}
+
+.compact-score-card p {
+  margin: 4px 0;
+  color: #484b4a;
+  font-size: 12px;
+}*/
+
+
+
+.swot-section {
+  margin-top: 0;
+  background: #ffffff;
+}
+
+.swot-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.swot-grid label {
+  color: #000000;
+}
+
+.swot-card {
+  min-width: 0;
+  min-height: 250px;
+  padding: 28px;
+  border-radius: 8px;
+  background: var(--swot-color);
+}
+
+.swot-card-strengths { --swot-color: #6393ca; }
+.swot-card-weaknesses { --swot-color: #d58a4b; }
+.swot-card-opportunities { --swot-color: #68a582; }
+.swot-card-threats { --swot-color: #d77379; }
+
+.swot-card-strengths,
+.swot-card-opportunities {
+  padding-right: 88px;
+}
+
+.swot-card-weaknesses,
+.swot-card-threats {
+  padding-left: 88px;
+}
+
+.swot-grid .swot-card label {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.swot-grid .swot-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  color: #000000;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+}
+
+.swot-grid .swot-card textarea::placeholder {
+  color: #000000;
+  opacity: 0.85;
+}
+
+.swot-grid .swot-card textarea:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.swot-center {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 136px;
+  height: 136px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+  background: #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.swot-center span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.swot-center span:nth-child(1) { background: #245b9e; padding-left: 12px; }
+.swot-center span:nth-child(2) { background: #a94e0b; padding-right: 12px; }
+.swot-center span:nth-child(3) { background: #28734a; padding-left: 12px; }
+.swot-center span:nth-child(4) { background: #b32f36; padding-right: 12px; }
+
+@media (max-width: 1000px) {
+  .swot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .swot-card {
+    padding: 24px;
+    min-height: 210px;
+  }
+
+  .swot-center {
+    position: static;
+    transform: none;
+    justify-self: center;
+  }
+}
+
+.swot-actions {
+  margin-top: 50px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+@media (max-width: 1100px) {
+  .analysis-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-score-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .analysis-page-content {
+    padding: 22px;
+  }
+
+  .analysis-top-actions,
+  .analysis-card-header,
+  .swot-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .swot-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/*changing the color of the title inside the box ex. Radar , swot (comes from the top header// its all the same bcos the color depends from the topheader*/ 
+.analysis-page-content .eyebrow {
+  color: #fffafa;
+}
+
+
+/* This removes the ugly internal scrollbar and lets the textarea expand*/ 
+.swot-grid textarea {
+  min-height: 110px;
+  height: auto;
+  overflow: hidden;
+  resize: none;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+
+
+
+.radar-chart-box {
+  width: 100%;
+  min-height: 430px;
+}
+
+.compact-score-card p {
+  margin: 6px 0;
+}
+/*
+.radar-summary-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.radar-summary-card {
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 16px;
+}*/
+
+.radar-summary-card span {
+  display: block;
+  color: #dadde2;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.radar-summary-card strong {
+  display: block;
+  color: #0f172a;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.radar-summary-card p {
+  margin: 0;
+  color: #3772c4;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .radar-summary-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* survey score pop up */ 
+/*
+.score-details-summary-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.score-details-summary-card h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.score-details-summary-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}*/
+
+.score-details-modal {
+  width: min(760px, 94vw);
+  max-height: 86vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid #d9e2e8;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.score-details-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.score-details-modal-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 24px;
+}
+
+.score-details-modal-header p {
+  margin: 8px 0 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.calculation-info-icon {
+  margin-right: 6px;
+}
+
+.calculation-help-box {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.calculation-help-box strong {
+  display: block;
+  color: #1e3a8a;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.calculation-help-box p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.score-details-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.score-details-modal-card {
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 16px;
+}
+
+.score-details-modal-card h3 {
+  margin: 0 0 12px 0;
+  color: #0f172a;
+  font-size: 18px;
+}
+
+.score-detail-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.score-detail-line span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.score-detail-line strong {
+  color: #0f172a;
+  font-size: 14px;
+  text-align: right;
+}
+
+.radar-detail-button-row {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-average-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.modal-average-card {
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 16px;
+}
+
+.modal-average-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.modal-average-card strong {
+  display: block;
+  color: #0f172a;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.modal-average-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .modal-average-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* for the ml */ 
+.ml-prediction-card {
+  margin-top: 24px;
+  background: #ffffff;
+  border: 1px solid #d9e2e8;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.ml-prediction-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid #d9e2e8;
+  padding-bottom: 18px;
+}
+
+.ml-prediction-header h2 {
+  margin: 4px 0 6px;
+  color: #0f172a;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.ml-prediction-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ml-prediction-result {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ml-prediction-main-result {
+  background: #f8fafc;
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.ml-prediction-label {
+  margin: 0 0 6px;
+  color: #eaebed;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ml-prediction-main-result h3 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.prediction-green {
+  color: #166534;
+}
+
+.prediction-orange {
+  color: #9a3412;
+}
+
+.prediction-red {
+  color: #991b1b;
+}
+
+.ml-confidence {
+  margin: 8px 0 0;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ml-probability-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.ml-probability-row {
+  background: #f8fafc;
+  border: 1px solid #d9e2e8;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.ml-warning-text {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 820px) {
+  .ml-prediction-header {
+    flex-direction: column;
+  }
+
+  .ml-probability-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.radar-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ml-prediction-modal {
+  width: min(620px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.3);
+  border: 1px solid #d9e2e8;
+}
+
+.ml-prediction-main-result {
+  margin-top: 18px;
+  background: #f8fafc;
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.ml-prediction-label {
+  margin: 0 0 6px;
+  color: #fafafa;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ml-prediction-main-result h3 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.prediction-green {
+  color: #166534;
+}
+
+.prediction-orange {
+  color: #9a3412;
+}
+
+.prediction-red {
+  color: #991b1b;
+}
+
+.ml-confidence {
+  margin: 8px 0 0;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.ml-probability-list {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.ml-probability-row {
+  background: #f8fafc;
+  border: 1px solid #d9e2e8;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.ml-warning-text {
+  margin: 16px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 820px) {
+  .radar-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ml-probability-list {
+    grid-template-columns: 1fr;
+  }
+}

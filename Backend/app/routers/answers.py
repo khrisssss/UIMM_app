@@ -9,6 +9,9 @@ from app.models.scoring_level import ScoringLevel
 from app.models.answer import Answer
 from app.schemas.answer import AnswerCreate, AnswerRead
 
+from app.models.user import User
+from app.dependencies.auth import require_consultant_or_admin
+
 
 router = APIRouter(
     prefix="/companies",
@@ -20,8 +23,9 @@ router = APIRouter(
 def create_or_update_answer(
     company_id: int,
     answer_data: AnswerCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
 ):
+    """Save a company response to a diagnostic question, creating or updating its answer and scoring information."""
     company = db.query(Company).filter(Company.id == company_id).first()
 
     if company is None:
@@ -104,7 +108,8 @@ def create_or_update_answer(
     return existing_answer
 
 @router.get("/{company_id}/answers", response_model=list[AnswerRead])
-def get_answers_by_company(company_id: int, db: Session = Depends(get_db)):
+def get_answers_by_company(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
+    """List the diagnostic answers saved for a company."""
     company = db.query(Company).filter(Company.id == company_id).first()
 
     if company is None:

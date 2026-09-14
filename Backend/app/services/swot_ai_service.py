@@ -1,23 +1,37 @@
-from app.services.swot_generator import generate_fake_swot_from_context
+from app.services.azure_openai_service import generate_json_response
+#from app.services.ollama_service import generate_ollama_json
 
 
-def generate_swot_draft(swot_context: dict) -> dict:
-    """
-    This function is the central place for SWOT generation.
+def generate_swot_with_ai(swot_context: dict) -> dict:
+    system_prompt = """
+You are a professional business diagnostic consultant.
 
-    For now, it uses the fake generator.
-    Later, we will replace this with Azure OpenAI / Azure AI Foundry.
-    """
+You generate a SWOT analysis from structured diagnostic data.
 
-    generated_swot = generate_fake_swot_from_context(swot_context)
+Rules:
+- Use only the provided data.
+- Do not invent facts.
+- Use the questionnaire scores, comments, axis scores, and company profile.
+- High scores and positive comments can become strengths.
+- Low scores and negative comments can become weaknesses.
+- Medium scores or improvement comments can become opportunities.
+- Risks, blocking points, very low scores, or risk comments can become threats.
+- Write in professional French.
+- Keep each item clear and concise.
+- Return only valid JSON.
+- Do not use markdown.
 
-    return {
-        "strengths": generated_swot["strengths"],
-        "weaknesses": generated_swot["weaknesses"],
-        "opportunities": generated_swot["opportunities"],
-        "threats": generated_swot["threats"],
-        "generation_source": "fake_ai",
-        "generated_by_ai": True,
-        "ai_model": "fake-generator-v1",
-        "status": "draft"
-    }
+Expected JSON format:
+{
+  "strengths": ["..."],
+  "weaknesses": ["..."],
+  "opportunities": ["..."],
+  "threats": ["..."]
+}
+"""
+
+
+    return generate_json_response(
+        system_prompt=system_prompt,
+        user_payload=swot_context,
+    )

@@ -2,16 +2,20 @@ from fastapi import APIRouter, HTTPException, Depends #api router grouping route
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.company import Company #database table model
-from app.models.company import Company
-from app.models.axis import Axis
-from app.models.question import Question
-from app.models.answer import Answer
-from app.models.score import Score
-from app.models.scoring_scale import ScoringScale
-from app.models.scoring_level import ScoringLevel
-from app.schemas.company import CompanyCreate, CompanyRead
+
+from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
 from app.schemas.swot import SWOTContextRead
 from app.services.swot_context import build_swot_context
+
+from app.models.user import User
+from app.dependencies.auth import require_consultant_or_admin
+
+from app.models.answer import Answer
+from app.models.score import Score
+from app.models.swot import SWOT
+from app.models.reports import Report
+from app.models.company_axis import CompanyAxis
+from app.models.company_profile_answer import CompanyProfileAnswer
 
 
 router = APIRouter(
@@ -33,39 +37,6 @@ router = APIRouter(
 #    }
 #]
 
-fake_answers = [
-    {
-        "company_id": 1,
-        "question_id": 1,
-        "score": 4,
-        "comment": "La direction a défini des priorités claires pour l'année."
-    },
-    {
-        "company_id": 1,
-        "question_id": 2,
-        "score": 2,
-        "comment": "Les objectifs ne sont pas encore bien partagés avec toutes les équipes."
-    },
-    {
-        "company_id": 1,
-        "question_id": 3,
-        "score": 1,
-        "comment": "L'entreprise utilise encore beaucoup de fichiers Excel."
-    },
-    {
-        "company_id": 1,
-        "question_id": 4,
-        "score": 1,
-        "comment": "Les données sont dispersées entre plusieurs outils."
-    },
-    {
-        "company_id": 1,
-        "question_id": 5,
-        "score": 2,
-        "comment": "Des actions RSE existent mais elles ne sont pas encore structurées."
-    }
-]
-
 
 #@router.get("/", response_model=list[CompanyRead])
 #def get_companies():
@@ -74,7 +45,7 @@ fake_answers = [
 #        "name": "Company Test",
 #        "address": "123 Main St",
 #        "contact_name": "John Doe",
-#        "email": "test@gmail.com",
+#        "email": "test@gmail.com", 
 #        "phone": "123456789",
 #        "size": "<10",
 #        "status": "prospect"
@@ -93,16 +64,27 @@ fake_answers = [
 #        "status": "prospect"
 #    }
 @router.post("/", response_model=CompanyRead)
-def create_company(company: CompanyCreate, db: Session = Depends(get_db)):
+def create_company(company: CompanyCreate, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
+    """Create a company record from the supplied company information."""
     new_company = Company(
         name=company.name,
-        address=company.address,
+        status=company.status,
+
         contact_name=company.contact_name,
-        email=company.email,
-        phone=company.phone,
-        size=company.size,
-        status=company.status
-    )
+        contact_email=company.contact_email,
+        contact_phone=company.contact_phone,
+
+        address=company.address,
+        company_size=company.company_size,
+
+        prediag_origin=company.prediag_origin,
+        prediag_origin_other=company.prediag_origin_other,
+
+        has_rse=company.has_rse,
+        specific_regulatory_constraints=company.specific_regulatory_constraints,
+
+        general_comment=company.general_comment,
+        )
 
     db.add(new_company)
     db.commit()
@@ -110,14 +92,49 @@ def create_company(company: CompanyCreate, db: Session = Depends(get_db)):
 
     return new_company
 
+@router.patch("/{company_id}", response_model=CompanyRead)
+def update_company(
+    company_id: int,
+    company_data: CompanyUpdate,
+    db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
+):
+    """Edit a company record, including its archive status and general state when supplied."""
+    db_company = db.query(Company).filter(Company.id == company_id).first()
+
+    if not db_company:
+        raise HTTPException(status_code=404, detail="Company not found")
+
+    update_data = company_data.model_dump(exclude_unset=True)
+
+    print("COMPANY UPDATE DATA:", update_data)
+
+    for key, value in update_data.items():
+        setattr(db_company, key, value)
+
+    db.commit()
+    db.refresh(db_company)
+
+    return db_company
+
 @router.get("/", response_model=list[CompanyRead])
-def get_companies(db: Session = Depends(get_db)):
-    companies = db.query(Company).all()
+def get_companies(
+    include_archived: bool = False,
+    db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
+):
+    """List company records accessible through this endpoint."""
+    query = db.query(Company)
+
+    if include_archived :
+        query = query.filter(Company.is_archived == False)
+
+    companies = query.order_by(Company.created_at.desc()).all()
+
     return companies
   
 
 @router.get("/{company_id}", response_model=CompanyRead)
-def get_company(company_id: int, db: Session = Depends(get_db)):
+def get_company(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
+    """Read one company by its ID. Returns 404 if it does not exist."""
     company = db.query(Company).filter(Company.id == company_id).first()
     if company is None: 
         raise HTTPException(
@@ -128,6 +145,69 @@ def get_company(company_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{company_id}/swot-context", response_model=SWOTContextRead)
-def get_swot_context(company_id: int, db: Session = Depends(get_db)):
+def get_swot_context(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
+    """Preview the diagnostic context assembled for SWOT generation."""
     return build_swot_context(company_id, db)
 
+
+@router.delete("/{company_id}/hard-delete")  #@router.delete("/companies/{company_id}/hard-delete") this is an error because i put prefix on the top 
+def hard_delete_company(
+    company_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_consultant_or_admin),
+):
+    """Permanently delete the company and its associated answers, scores, SWOT records, reports, profile answers, and axis selections."""
+    db_company = db.query(Company).filter(Company.id == company_id).first()
+
+    if not db_company:
+        raise HTTPException(status_code=404, detail="Company not found")
+
+    deleted_profile_answers = (
+        db.query(CompanyProfileAnswer)
+        .filter(CompanyProfileAnswer.company_id == company_id)
+        .delete(synchronize_session=False)
+    )
+
+    deleted_answers = (
+        db.query(Answer)
+        .filter(Answer.company_id == company_id)
+        .delete(synchronize_session=False)
+    )
+
+    deleted_scores = (
+        db.query(Score)
+        .filter(Score.company_id == company_id)
+        .delete(synchronize_session=False)
+    )
+
+    deleted_swots = (
+        db.query(SWOT)
+        .filter(SWOT.company_id == company_id)
+        .delete(synchronize_session=False)
+    )
+
+    deleted_reports = (
+        db.query(Report)
+        .filter(Report.company_id == company_id)
+        .delete(synchronize_session=False)
+    )
+
+    deleted_company_axes = (
+        db.query(CompanyAxis)
+        .filter(CompanyAxis.company_id == company_id)
+        .delete(synchronize_session=False)
+    )
+
+    db.delete(db_company)
+    db.commit()
+
+    return {
+        "message": "Company and all related data permanently deleted",
+        "company_id": company_id,
+        "deleted_profile_answers": deleted_profile_answers,
+        "deleted_diagnostic_answers": deleted_answers,
+        "deleted_scores": deleted_scores,
+        "deleted_swots": deleted_swots,
+        "deleted_reports": deleted_reports,
+        "deleted_company_axes": deleted_company_axes,
+    }

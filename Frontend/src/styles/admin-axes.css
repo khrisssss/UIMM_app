@@ -1,0 +1,204 @@
+.admin-axes-page-content {
+  padding: 28px 48px 48px 48px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.admin-axes-toolbar {
+  margin-bottom: 22px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-axes-toolbar h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+}
+
+.admin-axes-toolbar p {
+  margin: 8px 0 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.admin-axes-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-axes-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.admin-axis-summary-card {
+  background: #4a717730;
+  border: 1px solid #d9e2e8;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.admin-axis-summary-card p {
+  margin: 0 0 8px 0;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.admin-axis-summary-card h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 30px;
+}
+
+.admin-axes-list-section {
+  background: #cd778117;
+  border: 1px solid #d9e2e8;
+  border-radius: 5px;
+  padding: 24px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.admin-axes-list-header {
+  margin-bottom: 18px;
+}
+
+.admin-axes-list-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 24px;
+}
+
+.admin-axes-list-header p {
+  margin: 6px 0 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.admin-axes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-axis-card {
+  border: 1px solid #d9e2e8;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 52px 1fr 230px;
+  gap: 18px;
+  align-items: center;
+}
+
+.admin-axis-order {
+  width: 42px;
+  height: 42px;
+  border-radius: 5px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.admin-axis-main {
+  min-width: 0;
+}
+
+.admin-axis-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-axis-title-row h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 16px;
+  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+
+}
+
+.admin-axis-main p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.axis-status-badge {
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.axis-status-badge.active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.axis-status-badge.inactive {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.admin-axis-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.admin-axis-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.admin-axis-checkbox input {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 980px) {
+  .admin-axes-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-axes-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-axes-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-axis-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-axis-buttons {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-axes-page-content {
+    padding: 22px;
+  }
+}

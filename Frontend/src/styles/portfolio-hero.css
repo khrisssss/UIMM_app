@@ -1,0 +1,133 @@
+.portfolio-hero {
+  width: 100%;
+  background: #0f172a;
+  margin-bottom: 28px;
+}
+
+.portfolio-navbar {
+  height: 68px;
+  background: #ab072d;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 34px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.portfolio-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.portfolio-brand img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+.portfolio-brand span {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.portfolio-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.portfolio-nav-links button {
+  border: none;
+  background: transparent;
+  color: #e5e7eb;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 9px 12px;
+  border-radius: 8px;
+}
+
+.portfolio-nav-links button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.portfolio-nav-links .logout-link {
+  background: #1e3a8a;
+  color: #ffffff;
+}
+
+.portfolio-nav-links .logout-link:hover {
+  background: #1d4ed8;
+}
+
+.portfolio-banner {
+  min-height: 260px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.portfolio-banner-overlay {
+  min-height: 260px;
+  padding: 56px 42px;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.9) 0%,
+    rgba(15, 23, 42, 0.65) 45%,
+    rgba(15, 23, 42, 0.2) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.portfolio-banner-overlay p {
+  margin: 0 0 10px 0;
+  color: #93c5fd;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.portfolio-banner-overlay h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.portfolio-banner-overlay span {
+  margin-top: 14px;
+  color: #dbeafe;
+  font-size: 17px;
+  max-width: 620px;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .portfolio-navbar {
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .portfolio-nav-links {
+    flex-wrap: wrap;
+  }
+
+  .portfolio-banner-overlay {
+    padding: 42px 24px;
+  }
+
+  .portfolio-banner-overlay h1 {
+    font-size: 32px;
+  }
+}
