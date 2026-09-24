@@ -85,6 +85,7 @@ function AxisQuestionnairePage() {
 
       const answersResponse = await api.get(`/companies/${companyId}/answers`);
 
+      // Keep answers keyed by question ID so each input finds its saved value.
       const answersMap = {};
       answersResponse.data.forEach((answer) => {
         answersMap[answer.question_id] = {
@@ -126,6 +127,7 @@ function AxisQuestionnairePage() {
 
   
 
+  // Update one field without discarding the other fields for that question.
   function updateAnswer(questionId, field, value) {
     setAnswersByQuestionId((previousAnswers) => ({
       ...previousAnswers,
@@ -220,6 +222,7 @@ function AxisQuestionnairePage() {
     try {
       setIsSaving(true);
 
+      // Save answered questions first; the server then recalculates axis scores.
       for (const question of questions) {
         const answer = getAnswerForQuestion(question.id);
 
@@ -248,6 +251,7 @@ function AxisQuestionnairePage() {
       });
     }
 
+      // The frontend does not calculate radar percentages; the backend does.
       await api.post(`/companies/${companyId}/calculate-scores`);
 
       setMessage("Answers saved and scores updated.");
