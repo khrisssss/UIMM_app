@@ -42,6 +42,7 @@ def create_or_update_answer(
             detail="Question not found"
         )
 
+    # The question's axis determines which scoring scale accepts its code.
     scoring_scale = (
         db.query(ScoringScale)
         .filter(
@@ -72,6 +73,7 @@ def create_or_update_answer(
             detail="Invalid score code for this question"
         )
 
+    # One company has one saved answer per question; update it on later saves.
     existing_answer = (
         db.query(Answer)
         .filter(
@@ -86,6 +88,7 @@ def create_or_update_answer(
             company_id=company_id,
             question_id=answer_data.question_id,
             score_code=answer_data.score_code,
+            # Store the numeric value now so score calculations can sum answers.
             score_value=scoring_level.score_value,
             answer_text=answer_data.answer_text,
             comment=answer_data.comment
