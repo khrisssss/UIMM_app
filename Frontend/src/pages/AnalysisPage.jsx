@@ -119,6 +119,8 @@ function AnalysisPage() {
     return Number(foundAverage.archive_average_percentage ?? 0);
   }
 
+  // Each radar point joins this company's axis percentage to its archive average.
+  // null means there is no archived comparison for that axis yet.
   function getRadarData() {
     return scores.map((score) => ({
       axis: getAxisName(score),
@@ -138,6 +140,8 @@ function AnalysisPage() {
     return Math.round(total / scores.length);
   }
 
+  // This is the mean of the available per-axis archive averages, not a
+  // percentage pooled over every archived answer.
   function getArchiveGlobalAverage() {
     if (archiveAverageScores.length === 0) return null;
 
@@ -167,6 +171,7 @@ function AnalysisPage() {
       const axesResponse = await api.get("/axes/");
       setAxes(axesResponse.data);
 
+      // Refresh the saved scores before loading the radar and archive comparison.
       await api.post(`/companies/${companyId}/calculate-scores`);
 
       const scoresResponse = await api.get(`/companies/${companyId}/scores`);

@@ -71,6 +71,7 @@ def calculate_company_scores(
     db.query(Score).filter(Score.company_id == company_id).delete()
     db.commit()
 
+    # Only axes selected for this company will become radar points.
     selected_company_axes = (
         db.query(CompanyAxis)
         .join(Axis, CompanyAxis.axis_id == Axis.id)
@@ -97,6 +98,7 @@ def calculate_company_scores(
             .all()
         )
 
+        # Company size decides which questions count in this axis's denominator.
         visible_questions = [
             question
             for question in all_questions
@@ -139,6 +141,8 @@ def calculate_company_scores(
             if question.max_score is not None:
                 score_max += question.max_score
 
+        # Example: 12 earned points out of 20 possible points = 60%.
+        # Unanswered visible questions still contribute to score_max.
         score_percentage = (
             0
             if score_max == 0
@@ -166,8 +170,7 @@ def calculate_company_scores(
     return calculated_scores
 
 
-#add archive average scores endpoint
-# For the current company, look at its axes, then calculate the average score for those same axesfrom archived companies only.
+# Compare the current company's scored axes with archived companies on those axes.
 @router.get("/companies/{company_id}/scores/archive-average")
 def get_archive_average_scores(
     company_id: int,
@@ -191,6 +194,7 @@ def get_archive_average_scores(
     if not current_axis_ids:
         return []
 
+    # Average the saved percentages per axis across archived companies only.
     archive_average_rows = (
         db.query(
             Score.axis_id,
