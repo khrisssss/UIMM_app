@@ -1,4 +1,5 @@
 from app.services.azure_openai_service import generate_json_response
+from app.services.report_ai_payload import make_report_ai_payload
 
 
 def convert_ai_value_to_text(value):
@@ -40,7 +41,7 @@ def convert_ai_value_to_text(value):
     return str(value).strip()
 
 
-def generate_report_draft(report_context: dict) -> dict:
+def generate_report_draft(report_context: dict, financial_years=()) -> dict:
     system_prompt = """
 You are a professional business diagnostic consultant.
 
@@ -66,7 +67,7 @@ Use line breaks and bullet points inside the string when needed.
 
 Expected JSON format:
 {
-  "title": "Rapport de diagnostic — Nom de l'entreprise",
+  "title": "Rapport de diagnostic — Entreprise anonymisée",
   "executive_summary": "Plain text only",
   "diagnostic_summary": "Plain text only",
   "swot_summary": "Plain text only",
@@ -77,9 +78,9 @@ Expected JSON format:
 CONTENT RULES:
 
 1. title
-Write a short title with the company name.
+Write a generic title without identifying details.
 Example:
-"Rapport de diagnostic — Nom de l'entreprise"
+"Rapport de diagnostic — Entreprise anonymisée"
 
 2. executive_summary
 Write a short executive summary.
@@ -149,7 +150,7 @@ Write one short professional closing paragraph.
 
     ai_result = generate_json_response(
         system_prompt=system_prompt,
-        user_payload=report_context,
+        user_payload=make_report_ai_payload(report_context, financial_years),
     )
 
     return {
