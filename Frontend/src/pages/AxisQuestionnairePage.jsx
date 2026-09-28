@@ -291,6 +291,11 @@ function AxisQuestionnairePage() {
             Back to diagnostic overview
           </button>
 
+          {axis?.name?.trim().toLowerCase() === "finance" && (
+            <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/finance`}>
+              Financial figures and projections
+            </button>
+          )}
           <button className="primary-button" onClick={openAnalysis}>
             View Radar / SWOT
           </button>
