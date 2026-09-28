@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends #api router grouping route
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.company import Company #database table model
+from app.models.financial_year import FinancialYear
 
 from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
 from app.schemas.swot import SWOTContextRead
@@ -198,6 +199,7 @@ def hard_delete_company(
         .delete(synchronize_session=False)
     )
 
+    db.query(FinancialYear).filter(FinancialYear.company_id == company_id).delete(synchronize_session=False)
     db.delete(db_company)
     db.commit()
 
