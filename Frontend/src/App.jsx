@@ -10,6 +10,7 @@ import ScoresPage from "./pages/ScoresPage";
 import AnalysisPage from "./pages/AnalysisPage";
 import ReportsPage from "./pages/ReportsPage";
 import AxisQuestionnairePage from "./pages/AxisQuestionnairePage";
+import FinancePage from "./pages/FinancePage";
 import AdminProfileQuestionsPage from "./pages/AdminProfileQuestionsPage";
 import AdminAxisQuestionsPage from "./pages/AdminAxisQuestionsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
@@ -76,6 +77,11 @@ function App() {
         <Route
           path="/companies/:companyId/diagnostic/:axisId"
           element={token ? <AxisQuestionnairePage /> : <Navigate to="/login" />}
+        />
+
+        <Route
+          path="/companies/:companyId/finance"
+          element={token ? <FinancePage /> : <Navigate to="/login" />}
         />
 
         <Route
