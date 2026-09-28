@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends #main router
 from app.routers import companies,axes,answers, scores, swots, reports, scoring, auth, users, company_profile, company_axes, admin_axis_questions
+from app.routers import financial_years
 from app.routers import axis_question_categories, ml #analysis , company_profile
 
 from app.database import Base, engine, get_db
@@ -9,6 +10,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.models.company import Company
+from app.models.financial_year import FinancialYear
 from app.models.axis import Axis
 from app.models.question import Question
 from app.models.scoring_scale import ScoringScale
@@ -76,3 +78,4 @@ app.include_router(company_axes.router)
 app.include_router(admin_axis_questions.router)
 app.include_router(axis_question_categories.router)
 app.include_router(ml.router)
+app.include_router(financial_years.router)
