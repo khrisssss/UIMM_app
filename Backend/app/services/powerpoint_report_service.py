@@ -660,43 +660,6 @@ def add_radar_slide(prs, content, page_number):
     add_footer(slide, page_number)
 
 
-def add_finance_slides(prs, content, page_number):
-    years = content.get("financial_years", [])
-    if not years:
-        return 0
-
-    labels = (
-        ("revenue", "Chiffre d'affaires"), ("ebitda", "EBE"),
-        ("operating_result", "Résultat d'exploitation"),
-        ("net_result", "Résultat net"), ("depreciation", "Amortissements"),
-        ("cash_flow", "CAF"), ("equity", "Capitaux propres"),
-        ("gross_debt", "Dette brute"), ("gross_cash", "Trésorerie brute"),
-        ("factoring", "Affacturage"), ("total_assets", "Total actif"),
-        ("capex", "Investissements"), ("debt_repayments", "Remboursements de dette"),
-    )
-    for offset, item in enumerate(years):
-        slide = prs.slides.add_slide(prs.slide_layouts[6])
-        kind = "Prévision" if item["kind"] == "forecast" else "Réalisé"
-        add_title(slide, "FINANCE — " + str(item["year"]) + " (" + kind + ")", content["company_name"])
-        add_logo_block(slide)
-        table = slide.shapes.add_table(len(labels) + 1, 2, Inches(0.9), Inches(1.4), Inches(8.2), Inches(5.25)).table
-        table.columns[0].width = Inches(5.3)
-        table.columns[1].width = Inches(2.9)
-        table.cell(0, 0).text = "Indicateur"
-        table.cell(0, 1).text = "Valeur"
-        for index, (field, label) in enumerate(labels, 1):
-            table.cell(index, 0).text = label
-            value = item.get(field)
-            table.cell(index, 1).text = "—" if value is None else str(value)
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.text_frame.paragraphs:
-                    for run in paragraph.runs:
-                        run.font.size = Pt(10)
-        add_footer(slide, page_number + offset)
-    return len(years)
-
-
 def add_report_text_slides(prs, title, text, page_number):
     lines = [line.strip() for line in str(text or "").splitlines() if line.strip()]
     if not lines:
