@@ -11,7 +11,7 @@ You generate a SWOT analysis from structured diagnostic data.
 Rules:
 - Use only the provided data.
 - Do not invent facts.
-- Use the selected axes, answer scores, axis scores, and financial years.
+- Use all provided anonymized profile, answers, comments, selected axes, scores, and financial years.
 - Treat actual and forecast financial years separately; forecasts are not established results.
 - Do not infer a Finance questionnaire score from financial figures.
 - High scores or supported financial trends can become strengths.
@@ -38,3 +38,16 @@ Expected JSON format:
         system_prompt=system_prompt,
         user_payload=swot_context,
     )
+
+def normalize_swot_section(value):
+    """Store one finding per line, including axis labels when AI groups findings."""
+    if isinstance(value, dict):
+        return "\n".join(
+            f"{axis} : {item}"
+            for axis, entries in value.items()
+            for item in (entries if isinstance(entries, list) else [entries])
+            if isinstance(item, str) and item.strip()
+        )
+    if isinstance(value, list):
+        return "\n".join(item.strip() for item in value if isinstance(item, str) and item.strip())
+    return value.strip() if isinstance(value, str) else ""
