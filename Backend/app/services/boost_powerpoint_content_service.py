@@ -307,6 +307,13 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         axis_analysis=axis_analysis,
     )
 
+    try:
+        presentation = json.loads(report.presentation_content or "{}")
+    except (ValueError, TypeError):
+        presentation = {}
+    if not isinstance(presentation, dict):
+        presentation = {}
+
     content = {
         "company_name": clean_text(company.name),
         "company_size": clean_text(company.company_size),
@@ -319,15 +326,15 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
             "Actionner la mission complémentaire si nécessaire",
         ],
         "company_presentation": {
-            "history": company_history or "Information à compléter.",
-            "activity": company_activity or "Information à compléter.",
-            "managers": company_managers or "Information à compléter.",
+            "history": clean_text(presentation.get("history")) or company_history or "Information à compléter.",
+            "activity": clean_text(presentation.get("activity")) or company_activity or "Information à compléter.",
+            "managers": clean_text(presentation.get("managers")) or company_managers or "Information à compléter.",
         },
         "company_issues": {
-            "initial_expectation": initial_expectation or "Information à compléter.",
-            "situation": company_situation or clean_text(report.executive_summary),
-            "governance": governance or "Information à compléter.",
-            "future": future_outlook or "Information à compléter.",
+            "initial_expectation": clean_text(presentation.get("initial_expectation")) or initial_expectation or "Information à compléter.",
+            "situation": clean_text(presentation.get("situation")) or company_situation or clean_text(report.executive_summary),
+            "governance": clean_text(presentation.get("governance")) or governance or "Information à compléter.",
+            "future": clean_text(presentation.get("future")) or future_outlook or "Information à compléter.",
         },
         "interviews": {
             "external": split_lines(external_interviews),
