@@ -609,10 +609,6 @@ def make_radar_image(scores, archive_averages):
     for index, score in enumerate(scores):
         endpoint = point(index, 100)
         draw.line(((center_x, center_y), endpoint), fill=(203, 213, 225, 255), width=2)
-        x, y = point(index, 116, distance=radius * 1.18)
-        label = str(score["axis_name"])
-        box = draw.textbbox((0, 0), label, font=font)
-        draw.text((x - (box[2] - box[0]) / 2, y - 8), label, font=font, fill=(15, 23, 42, 255))
 
     current = [point(index, score["score_percentage"]) for index, score in enumerate(scores)]
     archived = [
@@ -622,20 +618,21 @@ def make_radar_image(scores, archive_averages):
     # Missing archive values are excluded rather than drawn as zero.
     if all(score["axis_id"] in archive_averages for score in scores):
         if count >= 3:
-            draw.polygon(archived, fill=(37, 99, 235, 16))
+            overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+            ImageDraw.Draw(overlay).polygon(archived, fill=(37, 99, 235, 14))
+            chart = Image.alpha_composite(chart, overlay)
+            draw = ImageDraw.Draw(chart, "RGBA")
         draw.line(archived + [archived[0]] if count >= 3 else archived, fill=(37, 99, 235, 255), width=4, joint="curve")
         for x, y in archived:
             draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill=(29, 78, 216, 255))
     if count >= 3:
-        draw.polygon(current, fill=(34, 197, 94, 64))
+        overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+        ImageDraw.Draw(overlay).polygon(current, fill=(34, 197, 94, 64))
+        chart = Image.alpha_composite(chart, overlay)
+        draw = ImageDraw.Draw(chart, "RGBA")
     draw.line(current + [current[0]] if count >= 3 else current, fill=(22, 163, 74, 255), width=5, joint="curve")
     for x, y in current:
         draw.ellipse((x - 6, y - 6, x + 6, y + 6), fill=(22, 101, 52, 255))
-    draw.line(((340, 733), (380, 733)), fill=(22, 163, 74, 255), width=5)
-    draw.text((390, 726), "Entreprise actuelle", font=font, fill=(15, 23, 42, 255))
-    if all(score["axis_id"] in archive_averages for score in scores):
-        draw.line(((640, 733), (680, 733)), fill=(37, 99, 235, 255), width=5)
-        draw.text((690, 726), "Moyenne archive", font=font, fill=(15, 23, 42, 255))
     output = BytesIO()
     chart.convert("RGB").save(output, format="PNG")
     output.seek(0)
@@ -650,6 +647,14 @@ def add_radar_slide(prs, content, page_number):
     if scores:
         chart = make_radar_image(scores, content.get("archive_average_scores", {}))
         slide.shapes.add_picture(chart, Inches(0.7), Inches(1.3), width=Inches(8.6), height=Inches(5.55))
+        for index, score in enumerate(scores):
+            angle = -math.pi / 2 + 2 * math.pi * index / len(scores)
+            x = 0.7 + (600 + 340 * math.cos(angle)) / 1200 * 8.6
+            y = 1.3 + (365 + 340 * math.sin(angle)) / 790 * 5.55
+            add_textbox(slide, score["axis_name"], Inches(x - 0.85), Inches(y - 0.13), Inches(1.7), Inches(0.3), 11, True, DARK_TEXT, PP_ALIGN.CENTER)
+        add_textbox(slide, "● Entreprise actuelle", Inches(2.1), Inches(6.65), Inches(2.4), Inches(0.3), 11, False, RGBColor(22, 163, 74))
+        if content.get("archive_average_scores"):
+            add_textbox(slide, "● Moyenne archive", Inches(5.2), Inches(6.65), Inches(2.4), Inches(0.3), 11, False, RGBColor(37, 99, 235))
     else:
         add_textbox(slide, "Aucun score disponible.", Inches(1), Inches(2), Inches(8), Inches(0.5), 14)
     add_footer(slide, page_number)
