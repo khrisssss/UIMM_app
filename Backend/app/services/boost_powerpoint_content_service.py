@@ -1,5 +1,6 @@
 import ast
 import json
+from sqlalchemy import func
 
 from app.models.answer import Answer
 from app.models.question import Question
@@ -85,6 +86,20 @@ def get_axis_scores(db, company_id):
         )
 
     return scores
+
+
+def get_archive_averages(db, scores):
+    axis_ids = [item["axis_id"] for item in scores]
+    if not axis_ids:
+        return {}
+    rows = (
+        db.query(Score.axis_id, func.avg(Score.score_percentage))
+        .join(Company, Score.company_id == Company.id)
+        .filter(Company.is_archived == True, Score.axis_id.in_(axis_ids))
+        .group_by(Score.axis_id)
+        .all()
+    )
+    return {axis_id: round(float(average), 1) for axis_id, average in rows if average is not None}
 
 
 def get_axis_comments(db, company_id):
@@ -352,6 +367,7 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         "swot_by_axis": swot_by_axis,
         "global_swot": global_swot,
         "radar_scores": scores,
+        "archive_average_scores": get_archive_averages(db, scores),
         "financial_years": [
             {
                 "year": row.year, "kind": row.kind,
