@@ -1,4 +1,8 @@
+import ast
+
 from app.models.answer import Answer
+from app.models.question import Question
+from app.models.financial_year import FinancialYear
 from app.models.axis import Axis
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
@@ -17,7 +21,17 @@ def clean_text(value):
 
 
 def split_lines(value):
+    if isinstance(value, (list, tuple)):
+        return [clean_text(item) for item in value if clean_text(item)]
+
     text = clean_text(value)
+    if text.startswith('[') and text.endswith(']'):
+        try:
+            parsed = ast.literal_eval(text)
+            if isinstance(parsed, list):
+                return [clean_text(item) for item in parsed if clean_text(item)]
+        except (ValueError, SyntaxError):
+            pass
 
     if not text:
         return []
@@ -127,7 +141,7 @@ def find_profile_answer(profile_answers, keywords):
 def get_latest_swot(db, company_id):
     return (
         db.query(SWOT)
-        .filter(SWOT.company_id == company_id)
+        .filter(SWOT.company_id == company_id, SWOT.axis_id.is_(None))
         .order_by(SWOT.created_at.desc())
         .first()
     )
@@ -135,15 +149,16 @@ def get_latest_swot(db, company_id):
 
 def get_axis_answers_summary(db, company_id):
     rows = (
-        db.query(Answer, Axis)
-        .join(Axis, Answer.axis_id == Axis.id)
+        db.query(Answer, Question, Axis)
+        .join(Question, Answer.question_id == Question.id)
+        .join(Axis, Question.axis_id == Axis.id)
         .filter(Answer.company_id == company_id)
         .all()
     )
 
     answers_by_axis = {}
 
-    for answer, axis in rows:
+    for answer, question, axis in rows:
         axis_name = axis.name
 
         if axis_name not in answers_by_axis:
@@ -152,10 +167,8 @@ def get_axis_answers_summary(db, company_id):
         answer_text = clean_text(answer.answer_text)
         comment = clean_text(answer.comment)
 
-        if comment:
-            answers_by_axis[axis_name].append(comment)
-        elif answer_text:
-            answers_by_axis[axis_name].append(answer_text)
+        if comment or answer_text:
+            answers_by_axis[axis_name].append(question.question_text + ' : ' + (answer_text or comment))
 
     return answers_by_axis
 
@@ -221,6 +234,13 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
     scores = get_axis_scores(db, company.id)
     axis_comments = get_axis_comments(db, company.id)
     swot = get_latest_swot(db, company.id)
+    answers_by_axis = get_axis_answers_summary(db, company.id)
+    financial_years = (
+        db.query(FinancialYear)
+        .filter(FinancialYear.company_id == company.id)
+        .order_by(FinancialYear.year, FinancialYear.kind)
+        .all()
+    )
 
     company_history = find_profile_answer(
         profile_answers,
@@ -277,6 +297,22 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         ["signaux", "signals", "observations", "captured"],
     )
 
+    all_answers = [item for items in answers_by_axis.values() for item in items]
+    if not external_interviews:
+        external_interviews = "\n".join(
+            item for item in all_answers if any(word in item.lower() for word in ("client", "fournisseur", "marché", "concurren"))
+        )
+    if not internal_interviews:
+        internal_interviews = "\n".join(
+            item for item in all_answers if any(word in item.lower() for word in ("salarié", "équipe", "manager", "collaborateur"))
+        )
+    if not magic_wand:
+        magic_wand = "\n".join(item for item in all_answers if "baguette magique" in item.lower())
+    if not captured_signals:
+        captured_signals = "\n".join(
+            item for item in all_answers if any(word in item.lower() for word in ("difficulté", "risque", "problème"))
+        )
+
     global_swot = {
         "strengths": limit_items(split_lines(swot.strengths if swot else ""), 12),
         "weaknesses": limit_items(split_lines(swot.weaknesses if swot else ""), 12),
@@ -321,6 +357,17 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         "swot_by_axis": swot_by_axis,
         "global_swot": global_swot,
         "radar_scores": scores,
+        "financial_years": [
+            {
+                "year": row.year, "kind": row.kind,
+                "revenue": row.revenue, "ebitda": row.ebitda,
+                "operating_result": row.operating_result,
+                "net_result": row.net_result, "cash_flow": row.cash_flow,
+                "gross_debt": row.gross_debt, "gross_cash": row.gross_cash,
+                "capex": row.capex,
+            }
+            for row in financial_years
+        ],
         "synthesis": {
             "diagnostic_summary": clean_text(report.diagnostic_summary),
             "recommendations": split_lines(report.recommendations),
