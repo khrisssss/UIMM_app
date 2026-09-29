@@ -34,7 +34,7 @@ DEMOS = [
     ("Industrie Élan", "11-50", "orange", "17 avenue du Parc, 31170 Tournefeuille", "Maya Dubois", True, "Autre", 13, 2700000),
 ]
 
-SWOT = {
+SWOT_EXAMPLES = {
     "green": (
         ["Processus de production suivis", "Objectifs partagés avec les équipes"],
         ["Certaines données restent dispersées"],
@@ -134,7 +134,7 @@ def seed():
                     "answer_text": None,
                     "comment": f"Exemple fictif : {level.label.lower()}. Point vérifié pendant le diagnostic.",
                 })
-            strengths, weaknesses, opportunities, threats = SWOT[state]
+            strengths, weaknesses, opportunities, threats = SWOT_EXAMPLES[state]
             upsert(db, SWOT, {"company_id": company.id, "axis_id": None}, {
                 "strengths": "\n".join(f"- {item}" for item in strengths),
                 "weaknesses": "\n".join(f"- {item}" for item in weaknesses),
