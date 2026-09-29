@@ -134,7 +134,6 @@ function CompaniesPage() {
 
   return () => clearTimeout(timer);
 }, [archiveSuccessMessage]);
-   <strong>Attention</strong>
   function getErrorMessage(error, fallbackMessage) {
     return error?.response?.data?.detail || fallbackMessage;
   }
