@@ -157,8 +157,8 @@ Write one short professional closing paragraph.
         ("Forces", "strengths"), ("Faiblesses", "weaknesses"),
         ("Opportunités", "opportunities"), ("Menaces", "threats"),
     )
-    local_swot_summary = "\\n\\n".join(
-        heading + "\\n" + "\\n".join("- " + str(item) for item in saved_swot.get(key, []) if str(item).strip())
+    local_swot_summary = "\n\n".join(
+        heading + "\n" + "\n".join("- " + str(item) for item in saved_swot.get(key, []) if str(item).strip())
         for heading, key in swot_sections
     ) if saved_swot else ""
 
