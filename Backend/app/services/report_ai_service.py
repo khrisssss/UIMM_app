@@ -62,8 +62,9 @@ Do not use markdown code fences.
 Do not add text outside the JSON.
 
 IMPORTANT:
-All fields except axis_analysis must be plain text strings.
+All fields except axis_analysis and presentation_content must be plain text strings.
 axis_analysis is an object keyed by each supplied axis name; each axis has arrays of concise French findings.
+presentation_content is an object of short narrative paragraphs for the presentation and enjeux slides.
 Use line breaks and bullet points inside the string when needed.
 
 Expected JSON format:
@@ -72,6 +73,7 @@ Expected JSON format:
   "executive_summary": "Plain text only",
   "diagnostic_summary": "Plain text only",
   "axis_analysis": {"Stratégie": {"strengths": ["Statement"], "weaknesses": [], "opportunities": [], "threats": []}},
+  "presentation_content": {"history": "", "activity": "", "managers": "", "initial_expectation": "", "situation": "", "governance": "", "future": ""},
   "swot_summary": "Plain text only",
   "recommendations": "Plain text only",
   "conclusion": "Plain text only"
@@ -129,6 +131,11 @@ Menaces
 
 The saved SWOT is provided for context and added locally after your response. Do not invent SWOT elements.
 
+For presentation_content, synthesize the profile and diagnostic evidence into natural French prose.
+Use history, activity, managers, initial_expectation, situation, governance, and future only when the supplied evidence supports them.
+Do not copy question wording, fabricate names, or infer historical facts from scores. Use an empty string if absent.
+Keep each paragraph short enough for a presentation slide.
+
 For axis_analysis, write professional conclusions in French, as in a consultant's restitution.
 Never repeat the question wording, show a score in a finding, or format as a question and answer.
 Ground each finding in the supplied answers, comments, scores, profile, SWOT, or financial figures. Explain the business implication rather than merely restating a score.
@@ -176,6 +183,13 @@ Write one short professional closing paragraph.
                     for key in ("strengths", "weaknesses", "opportunities", "threats")
                 }
 
+    raw_presentation = ai_result.get("presentation_content")
+    raw_presentation = raw_presentation if isinstance(raw_presentation, dict) else {}
+    presentation_content = {
+        key: convert_ai_value_to_text(raw_presentation.get(key, ""))[:1000]
+        for key in ("history", "activity", "managers", "initial_expectation", "situation", "governance", "future")
+    }
+
     saved_swot = report_context.get("swot") or {}
     swot_sections = (
         ("Forces", "strengths"), ("Faiblesses", "weaknesses"),
@@ -194,6 +208,7 @@ Write one short professional closing paragraph.
             ai_result.get("executive_summary", "")
         ),
         "axis_analysis": json.dumps(axis_analysis, ensure_ascii=False),
+        "presentation_content": json.dumps(presentation_content, ensure_ascii=False),
         "diagnostic_summary": convert_ai_value_to_text(
             ai_result.get("diagnostic_summary", "")
         ),
