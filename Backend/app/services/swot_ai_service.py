@@ -11,11 +11,14 @@ You generate a SWOT analysis from structured diagnostic data.
 Rules:
 - Use only the provided data.
 - Do not invent facts.
-- Use the questionnaire scores, comments, axis scores, and company profile.
-- High scores and positive comments can become strengths.
-- Low scores and negative comments can become weaknesses.
-- Medium scores or improvement comments can become opportunities.
-- Risks, blocking points, very low scores, or risk comments can become threats.
+- Use the selected axes, answer scores, axis scores, and financial years.
+- Treat actual and forecast financial years separately; forecasts are not established results.
+- Do not infer a Finance questionnaire score from financial figures.
+- High scores or supported financial trends can become strengths.
+- Low scores or supported financial trends can become weaknesses.
+- Medium scores or supported improvement potential can become opportunities.
+- Only supported risks or adverse trends can become threats.
+- Leave a category empty if the available evidence does not support it.
 - Write in professional French.
 - Keep each item clear and concise.
 - Return only valid JSON.
