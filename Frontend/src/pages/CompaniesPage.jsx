@@ -100,7 +100,7 @@ function CompaniesPage() {
             );
 
             const selectedAxes = axesResponse.data.filter(
-              (axis) => axis.is_selected
+              (axis) => axis.show_in_portfolio
             );
 
             return [company.id, selectedAxes];
@@ -302,11 +302,11 @@ function CompaniesPage() {
   }
 
   function getSelectedDiagnosticAxes() {
-    return editingDiagnosticAxes.filter((axis) => axis.is_selected);
+    return editingDiagnosticAxes.filter((axis) => axis.show_in_portfolio);
   }
 
   function getUnselectedDiagnosticAxes() {
-    return editingDiagnosticAxes.filter((axis) => !axis.is_selected);
+    return editingDiagnosticAxes.filter((axis) => !axis.show_in_portfolio);
   }
 
   function addDiagnosticAxis(axisId) {
@@ -319,7 +319,7 @@ function CompaniesPage() {
         Number(axis.axis_id) === Number(axisId)
           ? {
               ...axis,
-              is_selected: true,
+              show_in_portfolio: true,
             }
           : axis
       )
@@ -332,8 +332,7 @@ function CompaniesPage() {
         Number(axis.axis_id) === Number(axisId)
           ? {
               ...axis,
-              is_selected: false,
-              diagnostic_comment: "",
+              show_in_portfolio: false,
             }
           : axis
       )
@@ -372,7 +371,7 @@ function CompaniesPage() {
         await api.patch(
           `/companies/${editingDiagnosticCompany.id}/axes-selection/${axis.axis_id}`,
           {
-            is_selected: axis.is_selected,
+            show_in_portfolio: axis.show_in_portfolio,
             diagnostic_comment: axis.diagnostic_comment || null,
           }
         );
@@ -383,7 +382,7 @@ function CompaniesPage() {
       );
 
       const refreshedSelectedAxes = refreshedAxesResponse.data.filter(
-        (axis) => axis.is_selected
+        (axis) => axis.show_in_portfolio
       );
 
       setDiagnosticAxesByCompanyId((previousData) => ({
@@ -664,7 +663,7 @@ function CompaniesPage() {
                         <div className="portfolio-diagnostic-axes">
                           {companyDiagnosticAxes.length === 0 ? (
                             <p className="portfolio-panel-value">
-                              Aucun axe sélectionné
+                              Aucun axe à afficher
                             </p>
                           ) : (
                             companyDiagnosticAxes.map((axis) => (
@@ -993,14 +992,14 @@ function CompaniesPage() {
               </div>
 
               <div className="axis-comments-section">
-                <h3>Axes du diagnostic</h3>
+                <h3>Axes à afficher avec commentaire</h3>
                 <p className="section-help">
-                  Choisissez un axe dans la liste. Un champ commentaire apparaît
-                  seulement pour les axes sélectionnés.
+                  Choisissez les axes à afficher sur cette fiche et ajoutez leurs commentaires.
+                  Ce choix ne modifie pas les axes du questionnaire diagnostic.
                 </p>
 
                 <div className="form-group">
-                  <label>Ajouter un axe au diagnostic</label>
+                  <label>Ajouter un axe à cette fiche</label>
                   <select
                     value=""
                     onChange={(event) => addDiagnosticAxis(event.target.value)}
@@ -1017,7 +1016,7 @@ function CompaniesPage() {
 
                 {getSelectedDiagnosticAxes().length === 0 ? (
                   <p className="section-help">
-                    Aucun axe sélectionné pour le diagnostic.
+                    Aucun axe à afficher sur cette fiche.
                   </p>
                 ) : (
                   getSelectedDiagnosticAxes().map((axis) => (
