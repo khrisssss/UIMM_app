@@ -4,8 +4,6 @@ from sqlalchemy import func
 
 from app.models.answer import Answer
 from app.models.question import Question
-from app.models.financial_year import FinancialYear
-from app.services.report_ai_payload import FINANCIAL_FIELDS
 from app.models.axis import Axis
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
@@ -253,12 +251,6 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
     scores = get_axis_scores(db, company.id)
     axis_comments = get_axis_comments(db, company.id)
     swot = get_latest_swot(db, company.id)
-    financial_years = (
-        db.query(FinancialYear)
-        .filter(FinancialYear.company_id == company.id)
-        .order_by(FinancialYear.year, FinancialYear.kind)
-        .all()
-    )
 
     company_history = find_profile_answer(
         profile_answers,
@@ -368,13 +360,6 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         "global_swot": global_swot,
         "radar_scores": scores,
         "archive_average_scores": get_archive_averages(db, scores),
-        "financial_years": [
-            {
-                "year": row.year, "kind": row.kind,
-                **{field: getattr(row, field) for field in FINANCIAL_FIELDS},
-            }
-            for row in financial_years
-        ],
         "synthesis": {
             "diagnostic_summary": clean_text(report.diagnostic_summary),
             "recommendations_text": clean_text(report.recommendations),
