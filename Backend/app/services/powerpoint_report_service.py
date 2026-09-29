@@ -721,6 +721,21 @@ def add_finance_slides(prs, content, page_number):
     return len(years)
 
 
+def add_report_text_slides(prs, title, text, page_number):
+    lines = [line.strip() for line in str(text or "").splitlines() if line.strip()]
+    if not lines:
+        return 0
+    # Keep each slide legible while retaining the saved report text.
+    chunks = [lines[index:index + 10] for index in range(0, len(lines), 10)]
+    for offset, chunk in enumerate(chunks):
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        add_title(slide, title + (" (suite)" if offset else ""))
+        add_logo_block(slide)
+        add_bullet_list(slide, chunk, Inches(0.9), Inches(1.55), Inches(8.1), Inches(5.25), font_size=12, maximum=10)
+        add_footer(slide, page_number + offset)
+    return len(chunks)
+
+
 def add_synthesis_slide(prs, content, page_number):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_title(slide, "SYNTHESE & PRECONISATIONS", "Leviers d’action potentiels")
@@ -999,6 +1014,9 @@ def generate_report_powerpoint(company, report, db):
 
     add_section_slide(prs, "Synthèse & préconisations", page_number)
     page_number += 1
+
+    page_number += add_report_text_slides(prs, "SYNTHÈSE DU DIAGNOSTIC", content["synthesis"]["diagnostic_summary"], page_number)
+    page_number += add_report_text_slides(prs, "PRÉCONISATIONS DÉTAILLÉES", content["synthesis"]["recommendations_text"], page_number)
 
     add_synthesis_slide(prs, content, page_number)
     page_number += 1
