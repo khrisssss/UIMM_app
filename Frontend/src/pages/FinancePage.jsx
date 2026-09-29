@@ -21,7 +21,7 @@ function normalizeAmount(raw, label) {
   const value = String(raw ?? "").trim();
   if (!value) return null;
   // Accept French spacing and decimal commas, including pasted euro values.
-  const compact = value.replace(/[\\s\\u00a0\\u202f€]/g, "");
+  const compact = value.replace(/[\s\u00a0\u202f€]/g, "");
   let normalized = compact;
   if (compact.includes(",") && compact.includes(".")) {
     const decimalSeparator = compact.lastIndexOf(",") > compact.lastIndexOf(".") ? "," : ".";
@@ -36,7 +36,7 @@ function normalizeAmount(raw, label) {
   } else {
     normalized = compact.replace(",", ".");
   }
-  if (!/^[+-]?(?:\\d+)(?:\\.\\d+)?$/.test(normalized)) {
+  if (!/^[+-]?(?:\d+)(?:\.\d+)?$/.test(normalized)) {
     throw new Error(`Enter a valid amount for ${label} (for example 2400000 or 2 400 000,50).`);
   }
   return normalized;
