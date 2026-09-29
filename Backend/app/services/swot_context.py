@@ -204,6 +204,10 @@ def build_swot_context(db, company_id: int):
         "company": {
             "id": company.id,
             "name": company.name,
+            "contact_name": company.contact_name,
+            "contact_email": company.contact_email,
+            "contact_phone": company.contact_phone,
+            "address": company.address,
             "company_size": company.company_size,
             "status": company.status,
             "has_rse": company.has_rse,
