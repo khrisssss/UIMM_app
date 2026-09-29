@@ -15,6 +15,46 @@ const fields = [
 ];
 const empty = () => ({ year: new Date().getFullYear(), kind: "actual", notes: "", ...Object.fromEntries(fields.map(([key]) => [key, ""])) });
 const euro = (number) => number == null ? "—" : new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(number);
+const fieldLabel = Object.fromEntries(fields);
+
+function normalizeAmount(raw, label) {
+  const value = String(raw ?? "").trim();
+  if (!value) return null;
+  // Accept French spacing and decimal commas, including pasted euro values.
+  const compact = value.replace(/[\\s\\u00a0\\u202f€]/g, "");
+  let normalized = compact;
+  if (compact.includes(",") && compact.includes(".")) {
+    const decimalSeparator = compact.lastIndexOf(",") > compact.lastIndexOf(".") ? "," : ".";
+    const thousandsSeparator = decimalSeparator === "," ? "." : ",";
+    normalized = compact.replaceAll(thousandsSeparator, "").replace(decimalSeparator, ".");
+  } else if ((compact.match(/[.,]/g) || []).length > 1) {
+    const separator = compact.includes(",") ? "," : ".";
+    const parts = compact.split(separator);
+    normalized = parts.at(-1).length <= 2
+      ? parts.slice(0, -1).join("") + "." + parts.at(-1)
+      : parts.join("");
+  } else {
+    normalized = compact.replace(",", ".");
+  }
+  if (!/^[+-]?(?:\\d+)(?:\\.\\d+)?$/.test(normalized)) {
+    throw new Error(`Enter a valid amount for ${label} (for example 2400000 or 2 400 000,50).`);
+  }
+  return normalized;
+}
+
+function financeError(error) {
+  if (error?.response?.status === 422) {
+    const detail = error.response.data?.detail;
+    if (Array.isArray(detail)) {
+      return detail.map(item => {
+        const field = item.loc?.at(-1);
+        return `${fieldLabel[field] || field || "Field"}: ${item.msg}`;
+      }).join(" · ");
+    }
+    if (typeof detail === "string") return detail;
+  }
+  return error?.message || error?.response?.data?.detail || "Unable to save.";
+}
 
 export default function FinancePage() {
   const companyId = window.location.pathname.split("/")[2];
@@ -34,10 +74,10 @@ export default function FinancePage() {
     event.preventDefault(); setSaving(true); setMessage("");
     try {
       const payload = { ...form, year: Number(form.year) };
-      for (const [key] of fields) payload[key] = form[key] === "" ? null : form[key];
+      for (const [key, label] of fields) payload[key] = normalizeAmount(form[key], label);
       await api.put(`/companies/${companyId}/financial-years/${payload.year}/${payload.kind}`, payload);
       setMessage("Financial year saved."); setForm(empty()); await refresh();
-    } catch (error) { setMessage(error?.response?.data?.detail || "Unable to save."); }
+    } catch (error) { setMessage(financeError(error)); }
     finally { setSaving(false); }
   }
   async function remove(row) {
