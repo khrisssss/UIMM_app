@@ -148,7 +148,7 @@ def get_company(company_id: int, db: Session = Depends(get_db), current_user: Us
 @router.get("/{company_id}/swot-context", response_model=SWOTContextRead)
 def get_swot_context(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
     """Preview the diagnostic context assembled for SWOT generation."""
-    return build_swot_context(company_id, db)
+    return build_swot_context(db, company_id)
 
 
 @router.delete("/{company_id}/hard-delete")  #@router.delete("/companies/{company_id}/hard-delete") this is an error because i put prefix on the top 
