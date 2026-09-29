@@ -29,6 +29,12 @@ function AxisQuestionnairePage() {
   }, []);
 
   useEffect(() => {
+    if (!isLoading && axis?.name?.trim().toLowerCase() === "finance" && questions.length === 0) {
+      window.location.replace(`/companies/${companyId}/finance`);
+    }
+  }, [isLoading, axis, questions.length, companyId]);
+
+  useEffect(() => {
     if (!message) return;
 
     const timer = setTimeout(() => {
@@ -266,6 +272,10 @@ function AxisQuestionnairePage() {
 
   function openAnalysis() {
     window.location.href = `/companies/${companyId}/analysis`;
+  }
+
+  if (!isLoading && axis?.name?.trim().toLowerCase() === "finance" && questions.length === 0) {
+    return null;
   }
 
   if (isLoading) {
