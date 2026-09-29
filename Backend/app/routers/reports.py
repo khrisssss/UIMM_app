@@ -75,6 +75,7 @@ def create_report_draft(
             executive_summary=generated_report["executive_summary"],
             diagnostic_summary=generated_report["diagnostic_summary"],
             axis_analysis=generated_report["axis_analysis"],
+            presentation_content=generated_report["presentation_content"],
             swot_summary=generated_report["swot_summary"],
             recommendations=generated_report["recommendations"],
             conclusion=generated_report["conclusion"],
@@ -95,6 +96,7 @@ def create_report_draft(
     existing_report.executive_summary = generated_report["executive_summary"]
     existing_report.diagnostic_summary = generated_report["diagnostic_summary"]
     existing_report.axis_analysis = generated_report["axis_analysis"]
+    existing_report.presentation_content = generated_report["presentation_content"]
     existing_report.swot_summary = generated_report["swot_summary"]
     existing_report.recommendations = generated_report["recommendations"]
     existing_report.conclusion = generated_report["conclusion"]
