@@ -173,7 +173,25 @@ def get_axis_answers_summary(db, company_id):
     return answers_by_axis
 
 
-def build_swot_by_axis_from_global_swot(swot, scores, axis_comments):
+def get_axis_score_evidence(db, company_id):
+    rows = (
+        db.query(Answer, Question, Axis)
+        .join(Question, Answer.question_id == Question.id)
+        .join(Axis, Question.axis_id == Axis.id)
+        .filter(Answer.company_id == company_id, Answer.score_value.isnot(None))
+        .order_by(Axis.order_index, Question.order_index)
+        .all()
+    )
+    evidence = {}
+    for answer, question, axis in rows:
+        score = answer.score_value
+        category = "strengths" if score >= 4 else "weaknesses" if score <= 2 else "opportunities"
+        evidence.setdefault(axis.name, {"strengths": [], "weaknesses": [], "opportunities": []})
+        evidence[axis.name][category].append(clean_text(question.question_text) + " (score " + str(score) + ")")
+    return evidence
+
+
+def build_swot_by_axis_from_global_swot(swot, scores, axis_comments, axis_evidence):
     swot_by_axis = []
 
     global_strengths = split_lines(swot.strengths if swot else "")
@@ -184,6 +202,7 @@ def build_swot_by_axis_from_global_swot(swot, scores, axis_comments):
     for score in scores:
         axis_name = score["axis_name"]
         axis_comment = axis_comments.get(axis_name, "")
+        evidence = axis_evidence.get(axis_name, {})
 
         swot_by_axis.append(
             {
@@ -198,7 +217,7 @@ def build_swot_by_axis_from_global_swot(swot, scores, axis_comments):
                     ],
                     5,
                 )
-                or limit_items([axis_comment], 3),
+                or limit_items(evidence.get("strengths", []), 5),
                 "weaknesses": limit_items(
                     [
                         item
@@ -206,7 +225,7 @@ def build_swot_by_axis_from_global_swot(swot, scores, axis_comments):
                         if axis_name.lower() in item.lower()
                     ],
                     5,
-                ),
+                ) or limit_items(evidence.get("weaknesses", []), 5),
                 "opportunities": limit_items(
                     [
                         item
@@ -214,7 +233,7 @@ def build_swot_by_axis_from_global_swot(swot, scores, axis_comments):
                         if axis_name.lower() in item.lower()
                     ],
                     5,
-                ),
+                ) or limit_items(evidence.get("opportunities", []), 5),
                 "threats": limit_items(
                     [
                         item
@@ -324,6 +343,7 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         swot=swot,
         scores=scores,
         axis_comments=axis_comments,
+        axis_evidence=get_axis_score_evidence(db, company.id),
     )
 
     content = {
