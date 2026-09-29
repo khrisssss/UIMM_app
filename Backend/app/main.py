@@ -53,6 +53,7 @@ Base.metadata.create_all(bind=engine)
 # Add the independent portfolio selection to databases created before this field existed.
 with engine.begin() as connection:
     connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))
+    connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS axis_analysis TEXT"))
 
 @app.get("/")
 def read_root():
