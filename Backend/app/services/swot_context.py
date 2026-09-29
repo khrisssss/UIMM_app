@@ -172,6 +172,7 @@ def build_swot_context(db, company_id: int):
             "score_value": answer.score_value,
             "max_score": question.max_score,
             "comment": answer.comment,
+            "answer_text": answer.answer_text,
             "suggested_swot_type": swot_type,
         }
 
