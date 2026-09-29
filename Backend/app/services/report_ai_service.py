@@ -107,7 +107,7 @@ Axes à renforcer
 - bullet point
 - bullet point
 
-Commentaires importants
+Constats étayés par les données
 - bullet point
 - bullet point
 
