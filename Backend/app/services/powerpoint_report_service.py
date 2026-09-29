@@ -387,7 +387,7 @@ def add_summary_slide(prs, page_number):
 
     items = [
         ("01", "Présentation & enjeux"),
-        ("02", "Interviews internes & externes"),
+        ("02", "Éléments internes & externes"),
         ("03", "Matrice SWOT"),
         ("04", "Vision Radar"),
         ("05", "Synthèse & préconisations"),
@@ -926,12 +926,12 @@ def generate_report_powerpoint(company, report, db):
 
     page_number += add_company_issues_slide(prs, content, page_number)
 
-    add_section_slide(prs, "Interviews internes & externes", page_number)
+    add_section_slide(prs, "Éléments internes & externes", page_number)
     page_number += 1
 
     add_interview_slide(
         prs,
-        "INTERVIEWS EXTERNES",
+        "ÉLÉMENTS EXTERNES DU DIAGNOSTIC",
         content["interviews"]["external"],
         page_number,
     )
@@ -939,7 +939,7 @@ def generate_report_powerpoint(company, report, db):
 
     add_interview_slide(
         prs,
-        "INTERVIEWS INTERNES",
+        "ÉLÉMENTS INTERNES DU DIAGNOSTIC",
         content["interviews"]["internal_words"],
         page_number,
     )
@@ -947,7 +947,7 @@ def generate_report_powerpoint(company, report, db):
 
     add_interview_slide(
         prs,
-        'INTERVIEWS INTERNES : "Si j’avais une baguette magique..."',
+        'RÉPONSES : "Si j’avais une baguette magique..."',
         content["interviews"]["magic_wand"],
         page_number,
     )
@@ -955,7 +955,7 @@ def generate_report_powerpoint(company, report, db):
 
     add_interview_slide(
         prs,
-        "INTERVIEWS INTERNES : signaux captés",
+        "SIGNAUX CAPTÉS DANS LE DIAGNOSTIC",
         content["interviews"]["captured_signals"],
         page_number,
     )
