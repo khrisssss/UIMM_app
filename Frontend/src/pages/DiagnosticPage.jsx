@@ -89,8 +89,12 @@ function DiagnosticPage() {
     }
   }
 
-  function openQuestionnaire(axisId) {
-    window.location.href = `/companies/${companyId}/diagnostic/${axisId}`;
+  function openQuestionnaire(axis) {
+    const isFinanceWithoutQuestions =
+      axis.axis_name?.trim().toLowerCase() === "finance" && Number(axis.total_questions) === 0;
+    window.location.href = isFinanceWithoutQuestions
+      ? `/companies/${companyId}/finance`
+      : `/companies/${companyId}/diagnostic/${axis.axis_id}`;
   }
 
   function openAnalysis() {
@@ -254,9 +258,11 @@ function DiagnosticPage() {
                       <div className="selected-axis-action">
                         <button
                           className="primary-button questionnaire-button"
-                          onClick={() => openQuestionnaire(axis.axis_id)}
+                          onClick={() => openQuestionnaire(axis)}
                         >
-                          Go to questionnaire
+                          {axis.axis_name?.trim().toLowerCase() === "finance" && Number(axis.total_questions) === 0
+                            ? "Financial figures and projections"
+                            : "Go to questionnaire"}
                         </button>
                       </div>
                     </article>
