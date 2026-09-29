@@ -5,6 +5,7 @@ from app.database import get_db
 from app.models.company import Company
 from app.models.axis import Axis
 from app.models.swot import SWOT
+from app.models.financial_year import FinancialYear
 from app.schemas.swot import SWOTCreate, SWOTRead, SWOTUpdate 
 
 #from app.services.swot_ai_service import generate_swot_draft
@@ -15,6 +16,7 @@ from app.dependencies.auth import require_consultant_or_admin
 
 from app.services.azure_openai_service import generate_json_response
 from app.services.swot_ai_service import generate_swot_with_ai
+from app.services.swot_ai_payload import make_swot_ai_payload
 router = APIRouter(
     prefix="/companies",
     tags=["SWOT"]
@@ -137,7 +139,14 @@ def generate_swot(
     if not swot_context:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    ai_result = generate_swot_with_ai(swot_context)
+    financial_years = (
+        db.query(FinancialYear)
+        .filter(FinancialYear.company_id == company_id)
+        .order_by(FinancialYear.year, FinancialYear.kind)
+        .all()
+    )
+    ai_payload = make_swot_ai_payload(swot_context, financial_years)
+    ai_result = generate_swot_with_ai(ai_payload)
 
     strengths = ai_result.get("strengths", [])
     weaknesses = ai_result.get("weaknesses", [])
