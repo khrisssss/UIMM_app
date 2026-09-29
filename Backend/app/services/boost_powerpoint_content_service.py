@@ -387,6 +387,7 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         ],
         "synthesis": {
             "diagnostic_summary": clean_text(report.diagnostic_summary),
+            "recommendations_text": clean_text(report.recommendations),
             "recommendations": split_lines(report.recommendations),
             "conclusion": clean_text(report.conclusion),
             "priority_action_levers": limit_items(
