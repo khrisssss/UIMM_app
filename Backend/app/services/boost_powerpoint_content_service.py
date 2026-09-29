@@ -3,6 +3,7 @@ import ast
 from app.models.answer import Answer
 from app.models.question import Question
 from app.models.financial_year import FinancialYear
+from app.services.report_ai_payload import FINANCIAL_FIELDS
 from app.models.axis import Axis
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
@@ -380,11 +381,7 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         "financial_years": [
             {
                 "year": row.year, "kind": row.kind,
-                "revenue": row.revenue, "ebitda": row.ebitda,
-                "operating_result": row.operating_result,
-                "net_result": row.net_result, "cash_flow": row.cash_flow,
-                "gross_debt": row.gross_debt, "gross_cash": row.gross_cash,
-                "capex": row.capex,
+                **{field: getattr(row, field) for field in FINANCIAL_FIELDS},
             }
             for row in financial_years
         ],
