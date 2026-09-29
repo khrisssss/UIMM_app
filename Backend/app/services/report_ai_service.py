@@ -47,7 +47,7 @@ You are a professional business diagnostic consultant.
 
 You write a clear, structured, and actionable company diagnostic report in French.
 
-Use only the data provided in the report context.
+Use only the anonymized scores, question labels, and financial years provided.
 Do not invent facts.
 If information is missing, do not pretend it exists.
 Do not mention that data is missing unless it is important for the recommendation.
@@ -125,8 +125,7 @@ Opportunités
 Menaces
 - bullet point
 
-Use the existing SWOT data if provided.
-Do not invent SWOT elements.
+The saved SWOT is added locally after your response. Do not invent SWOT elements.
 
 5. recommendations
 Write concrete and actionable recommendations as plain text.
@@ -153,6 +152,16 @@ Write one short professional closing paragraph.
         user_payload=make_report_ai_payload(report_context, financial_years),
     )
 
+    saved_swot = report_context.get("swot") or {}
+    swot_sections = (
+        ("Forces", "strengths"), ("Faiblesses", "weaknesses"),
+        ("Opportunités", "opportunities"), ("Menaces", "threats"),
+    )
+    local_swot_summary = "\\n\\n".join(
+        heading + "\\n" + "\\n".join("- " + str(item) for item in saved_swot.get(key, []) if str(item).strip())
+        for heading, key in swot_sections
+    ) if saved_swot else ""
+
     return {
         "title": convert_ai_value_to_text(
             ai_result.get("title", "Rapport de diagnostic")
@@ -163,7 +172,7 @@ Write one short professional closing paragraph.
         "diagnostic_summary": convert_ai_value_to_text(
             ai_result.get("diagnostic_summary", "")
         ),
-        "swot_summary": convert_ai_value_to_text(
+        "swot_summary": local_swot_summary or convert_ai_value_to_text(
             ai_result.get("swot_summary", "")
         ),
         "recommendations": convert_ai_value_to_text(
