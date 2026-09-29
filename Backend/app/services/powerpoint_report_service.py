@@ -544,35 +544,26 @@ def add_axis_swot_slide(prs, axis_swot, page_number):
 
 
 def add_global_swot_slide(prs, title, letter, items, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    add_title(slide, "Analyse S.W.O.T", title)
-    add_logo_block(slide)
+    # Split longer SWOT findings across slides instead of shrinking or clipping them.
+    chunks, current, used_lines = [], [], 0
+    for item in items:
+        lines = max(1, sum(max(1, math.ceil(len(line) / 88)) for line in str(item).splitlines()))
+        if current and used_lines + lines > 18:
+            chunks.append(current)
+            current, used_lines = [], 0
+        current.append(item)
+        used_lines += lines
+    if current or not chunks:
+        chunks.append(current)
 
-    add_textbox(
-        slide,
-        letter,
-        Inches(0.8),
-        Inches(1.55),
-        Inches(0.8),
-        Inches(0.8),
-        font_size=42,
-        bold=True,
-        color=UIMM_RED,
-        align=PP_ALIGN.CENTER,
-    )
-
-    add_bullet_list(
-        slide,
-        items,
-        Inches(1.7),
-        Inches(1.45),
-        Inches(7.2),
-        Inches(5.2),
-        font_size=11,
-        maximum=12,
-    )
-
-    add_footer(slide, page_number)
+    for offset, chunk in enumerate(chunks):
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        add_title(slide, "Analyse S.W.O.T", title + (" (suite)" if offset else ""))
+        add_logo_block(slide)
+        add_textbox(slide, letter, Inches(0.8), Inches(1.55), Inches(0.8), Inches(0.8), 42, True, UIMM_RED, PP_ALIGN.CENTER)
+        add_bullet_list(slide, chunk, Inches(1.7), Inches(1.45), Inches(7.2), Inches(5.2), font_size=11, maximum=len(chunk))
+        add_footer(slide, page_number + offset)
+    return len(chunks)
 
 
 def make_radar_image(scores, archive_averages):
@@ -881,41 +872,37 @@ def generate_report_powerpoint(company, report, db):
         add_axis_swot_slide(prs, axis_swot, page_number)
         page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Forces",
         "S",
         content["global_swot"]["strengths"],
         page_number,
     )
-    page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Faiblesses",
         "W",
         content["global_swot"]["weaknesses"],
         page_number,
     )
-    page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Opportunités",
         "O",
         content["global_swot"]["opportunities"],
         page_number,
     )
-    page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Menaces",
         "T",
         content["global_swot"]["threats"],
         page_number,
     )
-    page_number += 1
 
     add_section_slide(prs, "Vision Radar", page_number)
     page_number += 1
