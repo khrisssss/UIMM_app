@@ -237,7 +237,6 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
     scores = get_axis_scores(db, company.id)
     axis_comments = get_axis_comments(db, company.id)
     swot = get_latest_swot(db, company.id)
-    answers_by_axis = get_axis_answers_summary(db, company.id)
     financial_years = (
         db.query(FinancialYear)
         .filter(FinancialYear.company_id == company.id)
@@ -299,22 +298,6 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         profile_answers,
         ["signaux", "signals", "observations", "captured"],
     )
-
-    all_answers = [item for items in answers_by_axis.values() for item in items]
-    if not external_interviews:
-        external_interviews = "\n".join(
-            item for item in all_answers if any(word in item.lower() for word in ("client", "fournisseur", "marché", "concurren"))
-        )
-    if not internal_interviews:
-        internal_interviews = "\n".join(
-            item for item in all_answers if any(word in item.lower() for word in ("salarié", "équipe", "manager", "collaborateur"))
-        )
-    if not magic_wand:
-        magic_wand = "\n".join(item for item in all_answers if "baguette magique" in item.lower())
-    if not captured_signals:
-        captured_signals = "\n".join(
-            item for item in all_answers if any(word in item.lower() for word in ("difficulté", "risque", "problème"))
-        )
 
     global_swot = {
         "strengths": limit_items(split_lines(swot.strengths if swot else ""), 12),
