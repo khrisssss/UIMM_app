@@ -14,6 +14,7 @@ class CompanyAxis(Base):
     axis_id = Column(Integer, ForeignKey("axes.id"), nullable=False)
 
     is_selected = Column(Boolean, nullable=False, default=True)
+    show_in_portfolio = Column(Boolean, nullable=False, default=False)
     for_mission_complementaire = Column(Boolean, nullable=False, default=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
