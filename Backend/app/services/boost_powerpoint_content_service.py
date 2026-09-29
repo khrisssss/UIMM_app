@@ -65,7 +65,8 @@ def get_axis_scores(db, company_id):
     rows = (
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
-        .filter(Score.company_id == company_id)
+        .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
+        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True)
         .order_by(Axis.order_index)
         .all()
     )
