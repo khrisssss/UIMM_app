@@ -75,7 +75,8 @@ def company_axis_to_read(company_axis: CompanyAxis) -> CompanyAxisRead:
       #  for_mission_complementaire=company_axis.for_mission_complementaire,
         created_at=company_axis.created_at,
         updated_at=company_axis.updated_at,
-        diagnostic_comment=company_axis.diagnostic_comment
+        diagnostic_comment=company_axis.diagnostic_comment,
+        show_in_portfolio=company_axis.show_in_portfolio
     )
 
 
