@@ -1,9 +1,11 @@
 import os
+import math
+from io import BytesIO
 import re
 import textwrap
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 
 from pptx import Presentation
@@ -585,102 +587,71 @@ def add_global_swot_slide(prs, title, letter, items, page_number):
     add_footer(slide, page_number)
 
 
+def make_radar_image(scores, archive_averages):
+    """Draw the same 0–100 comparison as the application's radar."""
+    size = (1200, 790)
+    chart = Image.new("RGBA", size, "white")
+    draw = ImageDraw.Draw(chart, "RGBA")
+    font = ImageFont.load_default()
+    center_x, center_y, radius = 600, 365, 265
+    count = len(scores)
+
+    def point(index, percentage, distance=None):
+        angle = -math.pi / 2 + 2 * math.pi * index / count
+        extent = radius * max(0, min(float(percentage), 100)) / 100 if distance is None else distance
+        return (center_x + extent * math.cos(angle), center_y + extent * math.sin(angle))
+
+    for level in (25, 50, 75, 100):
+        corners = [point(index, level) for index in range(count)]
+        if count >= 3:
+            draw.line(corners + [corners[0]], fill=(203, 213, 225, 255), width=2)
+        draw.text((center_x + 7, center_y - radius * level / 100 - 10), str(level), font=font, fill=(100, 116, 139, 255))
+    for index, score in enumerate(scores):
+        endpoint = point(index, 100)
+        draw.line(((center_x, center_y), endpoint), fill=(203, 213, 225, 255), width=2)
+        x, y = point(index, 116, distance=radius * 1.18)
+        label = str(score["axis_name"])
+        box = draw.textbbox((0, 0), label, font=font)
+        draw.text((x - (box[2] - box[0]) / 2, y - 8), label, font=font, fill=(15, 23, 42, 255))
+
+    current = [point(index, score["score_percentage"]) for index, score in enumerate(scores)]
+    archived = [
+        point(index, archive_averages.get(score["axis_id"], 0))
+        for index, score in enumerate(scores)
+    ]
+    # Missing archive values are excluded rather than drawn as zero.
+    if all(score["axis_id"] in archive_averages for score in scores):
+        if count >= 3:
+            draw.polygon(archived, fill=(37, 99, 235, 16))
+        draw.line(archived + [archived[0]] if count >= 3 else archived, fill=(37, 99, 235, 255), width=4, joint="curve")
+        for x, y in archived:
+            draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill=(29, 78, 216, 255))
+    if count >= 3:
+        draw.polygon(current, fill=(34, 197, 94, 64))
+    draw.line(current + [current[0]] if count >= 3 else current, fill=(22, 163, 74, 255), width=5, joint="curve")
+    for x, y in current:
+        draw.ellipse((x - 6, y - 6, x + 6, y + 6), fill=(22, 101, 52, 255))
+    draw.line(((340, 733), (380, 733)), fill=(22, 163, 74, 255), width=5)
+    draw.text((390, 726), "Entreprise actuelle", font=font, fill=(15, 23, 42, 255))
+    if all(score["axis_id"] in archive_averages for score in scores):
+        draw.line(((640, 733), (680, 733)), fill=(37, 99, 235, 255), width=5)
+        draw.text((690, 726), "Moyenne archive", font=font, fill=(15, 23, 42, 255))
+    output = BytesIO()
+    chart.convert("RGB").save(output, format="PNG")
+    output.seek(0)
+    return output
+
+
 def add_radar_slide(prs, content, page_number):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_title(slide, "VISION RADAR", content["company_name"])
     add_logo_block(slide)
-
-    add_textbox(
-        slide,
-        "Scores par axe",
-        Inches(0.9),
-        Inches(1.45),
-        Inches(3.0),
-        Inches(0.3),
-        font_size=16,
-        bold=True,
-        color=UIMM_BLUE,
-    )
-
     scores = content["radar_scores"]
-
-    if not scores:
-        add_textbox(
-            slide,
-            "Aucun score disponible.",
-            Inches(1.0),
-            Inches(2.2),
-            Inches(7.0),
-            Inches(0.4),
-            font_size=14,
-            color=GREY_TEXT,
-        )
+    if scores:
+        chart = make_radar_image(scores, content.get("archive_average_scores", {}))
+        slide.shapes.add_picture(chart, Inches(0.7), Inches(1.3), width=Inches(8.6), height=Inches(5.55))
     else:
-        top = 2.0
-        for score in scores[:7]:
-            axis_name = score["axis_name"]
-            percentage = float(score["score_percentage"])
-
-            add_textbox(
-                slide,
-                axis_name,
-                Inches(1.0),
-                Inches(top),
-                Inches(2.2),
-                Inches(0.25),
-                font_size=10,
-                bold=True,
-            )
-
-            bg = slide.shapes.add_shape(
-                1,
-                Inches(3.2),
-                Inches(top + 0.03),
-                Inches(4.5),
-                Inches(0.15),
-            )
-            bg.fill.solid()
-            bg.fill.fore_color.rgb = LIGHT_GREY
-            bg.line.color.rgb = LIGHT_GREY
-
-            width = 4.5 * max(0, min(percentage, 100)) / 100
-            fg = slide.shapes.add_shape(
-                1,
-                Inches(3.2),
-                Inches(top + 0.03),
-                Inches(width),
-                Inches(0.15),
-            )
-            fg.fill.solid()
-            fg.fill.fore_color.rgb = UIMM_RED
-            fg.line.color.rgb = UIMM_RED
-
-            add_textbox(
-                slide,
-                f"{percentage:.1f}%",
-                Inches(7.9),
-                Inches(top - 0.04),
-                Inches(0.8),
-                Inches(0.22),
-                font_size=10,
-                bold=True,
-                color=DARK_TEXT,
-                align=PP_ALIGN.RIGHT,
-            )
-
-            top += 0.52
-
-    add_textbox(
-        slide,
-        "Note : cette slide présente les scores calculés automatiquement dans l’application. Le radar visuel détaillé reste disponible dans l’écran d’analyse.",
-        Inches(1.0),
-        Inches(6.35),
-        Inches(7.7),
-        Inches(0.45),
-        font_size=10,
-        color=GREY_TEXT,
-    )
-
+        add_textbox(slide, "Aucun score disponible.", Inches(1), Inches(2), Inches(8), Inches(0.5), 14)
     add_footer(slide, page_number)
 
 
@@ -989,7 +960,6 @@ def generate_report_powerpoint(company, report, db):
     add_radar_slide(prs, content, page_number)
     page_number += 1
 
-    page_number += add_finance_slides(prs, content, page_number)
 
     add_section_slide(prs, "Synthèse & préconisations", page_number)
     page_number += 1
