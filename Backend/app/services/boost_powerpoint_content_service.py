@@ -21,31 +21,49 @@ def clean_text(value):
     return str(value).strip()
 
 
+def parse_swot_value(value):
+    if isinstance(value, str):
+        text = value.strip()
+        if text.startswith(("{", "[")):
+            for loader in (json.loads, ast.literal_eval):
+                try:
+                    return loader(text)
+                except (ValueError, SyntaxError, TypeError):
+                    pass
+    return value
+
+
 def split_lines(value):
+    value = parse_swot_value(value)
+    if isinstance(value, dict):
+        return [
+            axis + " : " + item
+            for axis, values in value.items()
+            for item in split_lines(values)
+        ]
     if isinstance(value, (list, tuple)):
-        return [clean_text(item) for item in value if clean_text(item)]
-
+        return [item for value_item in value for item in split_lines(value_item)]
     text = clean_text(value)
-    if text.startswith('[') and text.endswith(']'):
-        try:
-            parsed = ast.literal_eval(text)
-            if isinstance(parsed, list):
-                return [clean_text(item) for item in parsed if clean_text(item)]
-        except (ValueError, SyntaxError):
-            pass
-
     if not text:
         return []
+    return [
+        line.strip(" -•\\t")
+        for line in text.replace("•", "\\n").splitlines()
+        if line.strip(" -•\\t")
+    ]
 
-    lines = []
 
-    for line in text.replace("•", "\n").split("\n"):
-        cleaned_line = line.strip(" -•\t")
-
-        if cleaned_line:
-            lines.append(cleaned_line)
-
-    return lines
+def axis_swot_items(value, axis_name):
+    parsed = parse_swot_value(value)
+    if isinstance(parsed, dict):
+        return split_lines(next(
+            (items for name, items in parsed.items() if name.casefold() == axis_name.casefold()),
+            [],
+        ))
+    return [
+        item for item in split_lines(parsed)
+        if item.casefold().startswith(axis_name.casefold() + " :")
+    ]
 
 
 def limit_items(items, maximum=6):
@@ -191,58 +209,19 @@ def get_axis_answers_summary(db, company_id):
 
 def build_swot_by_axis_from_global_swot(swot, scores, axis_comments, axis_analysis):
     swot_by_axis = []
-
-    global_strengths = split_lines(swot.strengths if swot else "")
-    global_weaknesses = split_lines(swot.weaknesses if swot else "")
-    global_opportunities = split_lines(swot.opportunities if swot else "")
-    global_threats = split_lines(swot.threats if swot else "")
-
     for score in scores:
         axis_name = score["axis_name"]
-        axis_comment = axis_comments.get(axis_name, "")
         findings = axis_analysis.get(axis_name, {})
-
-        swot_by_axis.append(
-            {
-                "axis_name": axis_name,
-                "score_percentage": score["score_percentage"],
-                "comment": axis_comment,
-                "strengths": limit_items(
-                    [
-                        item
-                        for item in global_strengths
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                )
-                or limit_items(findings.get("strengths", []), 5),
-                "weaknesses": limit_items(
-                    [
-                        item
-                        for item in global_weaknesses
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                ) or limit_items(findings.get("weaknesses", []), 5),
-                "opportunities": limit_items(
-                    [
-                        item
-                        for item in global_opportunities
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                ) or limit_items(findings.get("opportunities", []), 5),
-                "threats": limit_items(
-                    [
-                        item
-                        for item in global_threats
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                ) or limit_items(findings.get("threats", []), 5),
-            }
-        )
-
+        swot_by_axis.append({
+            "axis_name": axis_name,
+            "score_percentage": score["score_percentage"],
+            "comment": axis_comments.get(axis_name, ""),
+            **{
+                category: limit_items(findings.get(category, []), 5)
+                or limit_items(axis_swot_items(getattr(swot, category, None), axis_name), 5)
+                for category in ("strengths", "weaknesses", "opportunities", "threats")
+            },
+        })
     return swot_by_axis
 
 
