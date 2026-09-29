@@ -47,9 +47,9 @@ def split_lines(value):
     if not text:
         return []
     return [
-        line.strip(" -•\\t")
-        for line in text.replace("•", "\\n").splitlines()
-        if line.strip(" -•\\t")
+        line.strip().lstrip("-•").strip()
+        for line in text.replace("•", "\n").splitlines()
+        if line.strip().lstrip("-•").strip()
     ]
 
 
