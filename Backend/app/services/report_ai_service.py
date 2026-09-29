@@ -1,3 +1,5 @@
+import json
+
 from app.services.azure_openai_service import generate_json_response
 from app.services.report_ai_payload import make_report_ai_payload
 
@@ -60,9 +62,8 @@ Do not use markdown code fences.
 Do not add text outside the JSON.
 
 IMPORTANT:
-Every value in the JSON must be a plain text string.
-Do not return nested objects.
-Do not return arrays/lists.
+All fields except axis_analysis must be plain text strings.
+axis_analysis is an object keyed by each supplied axis name; each axis has arrays of concise French findings.
 Use line breaks and bullet points inside the string when needed.
 
 Expected JSON format:
@@ -70,6 +71,7 @@ Expected JSON format:
   "title": "Rapport de diagnostic — Entreprise anonymisée",
   "executive_summary": "Plain text only",
   "diagnostic_summary": "Plain text only",
+  "axis_analysis": {"Stratégie": {"strengths": ["Statement"], "weaknesses": [], "opportunities": [], "threats": []}},
   "swot_summary": "Plain text only",
   "recommendations": "Plain text only",
   "conclusion": "Plain text only"
@@ -127,6 +129,13 @@ Menaces
 
 The saved SWOT is added locally after your response. Do not invent SWOT elements.
 
+For axis_analysis, write professional conclusions in French, as in a consultant's restitution.
+Never repeat the question wording, show a score in a finding, or format as a question and answer.
+Infer a finding only where the supplied score or financial figure supports it.
+Do not turn a question into a factual claim solely because it was asked.
+Finance has financial figures, not a questionnaire score. Distinguish actuals from forecasts.
+If an axis has no usable evidence, use empty arrays. Do not invent interviews.
+
 5. recommendations
 Write concrete and actionable recommendations as plain text.
 Use this style:
@@ -152,6 +161,21 @@ Write one short professional closing paragraph.
         user_payload=make_report_ai_payload(report_context, financial_years),
     )
 
+    raw_axes = ai_result.get("axis_analysis")
+    axis_names = {
+        item["axis_name"] for item in report_context.get("selected_axes", [])
+    }
+    axis_analysis = {}
+    if isinstance(raw_axes, dict):
+        for axis_name in axis_names:
+            findings = raw_axes.get(axis_name)
+            if isinstance(findings, dict):
+                axis_analysis[axis_name] = {
+                    key: [str(value).strip() for value in findings.get(key, []) if isinstance(value, str) and value.strip()][:5]
+                    if isinstance(findings.get(key), list) else []
+                    for key in ("strengths", "weaknesses", "opportunities", "threats")
+                }
+
     saved_swot = report_context.get("swot") or {}
     swot_sections = (
         ("Forces", "strengths"), ("Faiblesses", "weaknesses"),
@@ -169,6 +193,7 @@ Write one short professional closing paragraph.
         "executive_summary": convert_ai_value_to_text(
             ai_result.get("executive_summary", "")
         ),
+        "axis_analysis": json.dumps(axis_analysis, ensure_ascii=False),
         "diagnostic_summary": convert_ai_value_to_text(
             ai_result.get("diagnostic_summary", "")
         ),
