@@ -1,3 +1,5 @@
+import ast
+
 from sqlalchemy.orm import Session
 
 from app.models.company import Company
@@ -23,6 +25,13 @@ def normalize_list_value(value):
         if value.strip() == "":
             return []
 
+        if value.strip().startswith("[") and value.strip().endswith("]"):
+            try:
+                parsed = ast.literal_eval(value)
+                if isinstance(parsed, list):
+                    return [str(item) for item in parsed]
+            except (ValueError, SyntaxError):
+                pass
         return [value]
 
     return [str(value)]
@@ -90,7 +99,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
 
     latest_swot = (
         db.query(SWOT)
-        .filter(SWOT.company_id == company_id)
+        .filter(SWOT.company_id == company_id, SWOT.axis_id.is_(None))
         .order_by(SWOT.created_at.desc())
         .first()
     )
