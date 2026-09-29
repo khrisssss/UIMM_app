@@ -926,40 +926,19 @@ def generate_report_powerpoint(company, report, db):
 
     page_number += add_company_issues_slide(prs, content, page_number)
 
-    add_section_slide(prs, "Éléments internes & externes", page_number)
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        "ÉLÉMENTS EXTERNES DU DIAGNOSTIC",
-        content["interviews"]["external"],
-        page_number,
-    )
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        "ÉLÉMENTS INTERNES DU DIAGNOSTIC",
-        content["interviews"]["internal_words"],
-        page_number,
-    )
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        'RÉPONSES : "Si j’avais une baguette magique..."',
-        content["interviews"]["magic_wand"],
-        page_number,
-    )
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        "SIGNAUX CAPTÉS DANS LE DIAGNOSTIC",
-        content["interviews"]["captured_signals"],
-        page_number,
-    )
-    page_number += 1
+    interview_sections = [
+        ("ÉLÉMENTS EXTERNES DU DIAGNOSTIC", content["interviews"]["external"]),
+        ("ÉLÉMENTS INTERNES DU DIAGNOSTIC", content["interviews"]["internal_words"]),
+        ('RÉPONSES : "Si j’avais une baguette magique..."', content["interviews"]["magic_wand"]),
+        ("SIGNAUX CAPTÉS DANS LE DIAGNOSTIC", content["interviews"]["captured_signals"]),
+    ]
+    if any(items for _, items in interview_sections):
+        add_section_slide(prs, "Éléments internes & externes", page_number)
+        page_number += 1
+        for title, items in interview_sections:
+            if items:
+                add_interview_slide(prs, title, items, page_number)
+                page_number += 1
 
     add_section_slide(prs, "Restitution", page_number)
     page_number += 1
