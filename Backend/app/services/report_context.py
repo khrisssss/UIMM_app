@@ -1,4 +1,5 @@
 import ast
+import json
 
 from sqlalchemy.orm import Session
 
@@ -17,24 +18,23 @@ from app.models.company_profile_answer import CompanyProfileAnswer
 def normalize_list_value(value):
     if value is None:
         return []
-
-    if isinstance(value, list):
-        return value
-
-    if isinstance(value, str):
-        if value.strip() == "":
-            return []
-
-        if value.strip().startswith("[") and value.strip().endswith("]"):
+    if isinstance(value, str) and value.strip().startswith(("{", "[")):
+        for loader in (json.loads, ast.literal_eval):
             try:
-                parsed = ast.literal_eval(value)
-                if isinstance(parsed, list):
-                    return [str(item) for item in parsed]
-            except (ValueError, SyntaxError):
+                value = loader(value)
+                break
+            except (ValueError, SyntaxError, TypeError):
                 pass
-        return [value]
-
-    return [str(value)]
+    if isinstance(value, dict):
+        return [
+            str(axis) + " : " + str(item)
+            for axis, entries in value.items()
+            for item in (entries if isinstance(entries, list) else [entries])
+            if str(item).strip()
+        ]
+    if isinstance(value, list):
+        return [str(item) for item in value if str(item).strip()]
+    return [str(value)] if str(value).strip() else []
 
 
 def build_report_context(company_id: int, db: Session) -> dict | None:
