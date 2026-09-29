@@ -540,18 +540,6 @@ def add_axis_swot_slide(prs, axis_swot, page_number):
         Inches(4.15),
     )
 
-    if axis_swot.get("comment"):
-        add_textbox(
-            slide,
-            f"Commentaire : {axis_swot['comment']}",
-            Inches(0.75),
-            Inches(6.55),
-            Inches(8.3),
-            Inches(0.35),
-            font_size=9,
-            color=GREY_TEXT,
-        )
-
     add_footer(slide, page_number)
 
 
