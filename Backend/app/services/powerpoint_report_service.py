@@ -684,6 +684,40 @@ def add_radar_slide(prs, content, page_number):
     add_footer(slide, page_number)
 
 
+def add_finance_slide(prs, content, page_number):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    add_title(slide, "FINANCE — Historique et projections", content["company_name"])
+    add_logo_block(slide)
+
+    years = content.get("financial_years", [])
+    if not years:
+        add_textbox(slide, "Aucune donnée financière enregistrée.", Inches(0.8), Inches(2.0), Inches(8.3), Inches(0.5), 14)
+    else:
+        headers = ("Année / type", "CA", "EBE", "Résultat net", "Trésorerie", "Dette", "CAPEX")
+        table = slide.shapes.add_table(min(len(years), 8) + 1, len(headers), Inches(0.55), Inches(1.6), Inches(8.9), Inches(4.8)).table
+        widths = (1.35, 1.25, 1.1, 1.35, 1.35, 1.25, 1.25)
+        for col, width in zip(table.columns, widths):
+            col.width = Inches(width)
+        for index, label in enumerate(headers):
+            table.cell(0, index).text = label
+        for row_index, item in enumerate(years[:8], 1):
+            values = (
+                str(item["year"]) + (" prévu" if item["kind"] == "forecast" else " réel"),
+                item["revenue"], item["ebitda"], item["net_result"],
+                item["gross_cash"], item["gross_debt"], item["capex"],
+            )
+            for column_index, value in enumerate(values):
+                table.cell(row_index, column_index).text = (
+                    "—" if value is None else str(value)
+                )
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.text_frame.paragraphs:
+                    for run in paragraph.runs:
+                        run.font.size = Pt(10)
+    add_footer(slide, page_number)
+
+
 def add_synthesis_slide(prs, content, page_number):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_title(slide, "SYNTHESE & PRECONISATIONS", "Leviers d’action potentiels")
@@ -956,6 +990,9 @@ def generate_report_powerpoint(company, report, db):
     page_number += 1
 
     add_radar_slide(prs, content, page_number)
+    page_number += 1
+
+    add_finance_slide(prs, content, page_number)
     page_number += 1
 
     add_section_slide(prs, "Synthèse & préconisations", page_number)
