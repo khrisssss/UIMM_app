@@ -612,18 +612,25 @@ def make_radar_image(scores, archive_averages):
 
     current = [point(index, score["score_percentage"]) for index, score in enumerate(scores)]
     archived = [
-        point(index, archive_averages.get(score["axis_id"], 0))
+        point(index, archive_averages[score["axis_id"]])
+        if score["axis_id"] in archive_averages else None
         for index, score in enumerate(scores)
     ]
-    # Missing archive values are excluded rather than drawn as zero.
-    if all(score["axis_id"] in archive_averages for score in scores):
-        if count >= 3:
-            overlay = Image.new("RGBA", size, (0, 0, 0, 0))
-            ImageDraw.Draw(overlay).polygon(archived, fill=(37, 99, 235, 14))
-            chart = Image.alpha_composite(chart, overlay)
-            draw = ImageDraw.Draw(chart, "RGBA")
-        draw.line(archived + [archived[0]] if count >= 3 else archived, fill=(37, 99, 235, 255), width=4, joint="curve")
-        for x, y in archived:
+    if all(value is not None for value in archived) and count >= 3:
+        overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+        ImageDraw.Draw(overlay).polygon(archived, fill=(37, 99, 235, 14))
+        chart = Image.alpha_composite(chart, overlay)
+        draw = ImageDraw.Draw(chart, "RGBA")
+    if count >= 3:
+        pairs = [(index, (index + 1) % count) for index in range(count)]
+    else:
+        pairs = [(index, index + 1) for index in range(count - 1)]
+    for first, second in pairs:
+        if archived[first] is not None and archived[second] is not None:
+            draw.line((archived[first], archived[second]), fill=(37, 99, 235, 255), width=4)
+    for position in archived:
+        if position is not None:
+            x, y = position
             draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill=(29, 78, 216, 255))
     if count >= 3:
         overlay = Image.new("RGBA", size, (0, 0, 0, 0))
