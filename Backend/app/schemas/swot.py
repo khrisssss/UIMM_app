@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from typing import Any
 
 
 class SWOTAxisScoreContext(BaseModel):
@@ -8,9 +9,9 @@ class SWOTAxisScoreContext(BaseModel):
     axis_name: str
     score_total: int
     score_max: int
-    score_percentage: float
+    percentage: float
     answered_questions: int
-    total_questions: int
+   
 
 
 class SWOTQuestionContext(BaseModel):
@@ -36,11 +37,13 @@ class SWOTQuestionContext(BaseModel):
 
 
 class SWOTContextRead(BaseModel):
-    company_id: int
-    company_name: str
-    status: str
+    company: dict[str, Any]
+    selected_axes: list[dict[str, Any]]
     axis_scores: list[SWOTAxisScoreContext]
-    questions: list[SWOTQuestionContext]
+    company_profile: list[dict[str, Any]]
+    diagnostic_answers: list[dict[str, Any]]
+    swot_evidence: dict[str, list[dict[str, Any]]]
+       
 
 class SWOTCreate(BaseModel):
     axis_id: Optional[int] = None
@@ -54,7 +57,6 @@ class SWOTCreate(BaseModel):
     generated_by_ai: bool = False
     ai_model: Optional[str] = None
     status: str = "draft"
-
 
 class SWOTRead(BaseModel):
     id: int
