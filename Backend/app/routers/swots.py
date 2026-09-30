@@ -128,6 +128,25 @@ def get_swots_by_company(
     return swots
 
 
+@router.get("/{company_id}/swot-ai-payload")
+def preview_swot_ai_payload(
+    company_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_consultant_or_admin),
+):
+    """Preview the exact filtered user payload used for SWOT generation, without calling AI."""
+    context = build_swot_context(db, company_id)
+    if context is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    financial_years = (
+        db.query(FinancialYear)
+        .filter(FinancialYear.company_id == company_id)
+        .order_by(FinancialYear.year, FinancialYear.kind)
+        .all()
+    )
+    return make_swot_ai_payload(context, financial_years)
+
+
 @router.post("/{company_id}/generate-swot", response_model=SWOTRead)
 def generate_swot(
     company_id: int,

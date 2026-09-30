@@ -5,7 +5,6 @@ from app.models.company import Company #database table model
 from app.models.financial_year import FinancialYear
 
 from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
-from app.schemas.swot import SWOTContextRead
 from app.services.swot_context import build_swot_context
 
 from app.models.user import User
@@ -145,10 +144,13 @@ def get_company(company_id: int, db: Session = Depends(get_db), current_user: Us
     return company
 
 
-@router.get("/{company_id}/swot-context", response_model=SWOTContextRead)
+@router.get("/{company_id}/swot-context")
 def get_swot_context(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
-    """Preview the diagnostic context assembled for SWOT generation."""
-    return build_swot_context(db, company_id)
+    """Preview the full local SWOT context. This is not the filtered AI payload."""
+    context = build_swot_context(db, company_id)
+    if context is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return context
 
 
 @router.delete("/{company_id}/hard-delete")  #@router.delete("/companies/{company_id}/hard-delete") this is an error because i put prefix on the top 
