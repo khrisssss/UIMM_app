@@ -104,6 +104,42 @@ def get_axis_scores(db, company_id):
     return scores
 
 
+def get_selected_report_axes(db, company_id, scores):
+    """SWOT coverage follows selected axes, independently of score availability."""
+    rows = (
+        db.query(Axis)
+        .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
+        .filter(CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True)
+        .order_by(Axis.order_index)
+        .all()
+    )
+    scores_by_id = {item["axis_id"]: item for item in scores}
+    return [
+        {
+            "axis_id": axis.id,
+            "axis_name": axis.name,
+            "score_percentage": scores_by_id.get(axis.id, {}).get("score_percentage"),
+        }
+        for axis in rows
+    ]
+
+
+def regroup_axis_swot(swot_by_axis):
+    """The letter pages are another view of the same axis findings."""
+    grouped = {key: [] for key in ("strengths", "weaknesses", "opportunities", "threats")}
+    for axis in swot_by_axis:
+        name = axis["axis_name"]
+        for category in grouped:
+            for item in axis.get(category, []):
+                text = clean_text(item)
+                if text:
+                    # Older saved findings may already carry their axis prefix.
+                    if text.casefold().startswith(name.casefold() + " :"):
+                        text = text.split(":", 1)[1].strip()
+                    grouped[category].append(name + " : " + text)
+    return grouped
+
+
 def get_archive_averages(db, scores):
     axis_ids = [item["axis_id"] for item in scores]
     if not axis_ids:
@@ -211,7 +247,10 @@ def build_swot_by_axis_from_global_swot(swot, scores, axis_comments, axis_analys
     swot_by_axis = []
     for score in scores:
         axis_name = score["axis_name"]
-        findings = axis_analysis.get(axis_name, {})
+        findings = next((value for name, value in axis_analysis.items()
+                         if name.casefold() == axis_name.casefold()), {})
+        if not isinstance(findings, dict):
+            findings = {}
         swot_by_axis.append({
             "axis_name": axis_name,
             "score_percentage": score["score_percentage"],
@@ -286,12 +325,6 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         ["signaux", "signals", "observations", "captured"],
     )
 
-    global_swot = {
-        "strengths": limit_items(split_lines(swot.strengths if swot else ""), 12),
-        "weaknesses": limit_items(split_lines(swot.weaknesses if swot else ""), 12),
-        "opportunities": limit_items(split_lines(swot.opportunities if swot else ""), 12),
-        "threats": limit_items(split_lines(swot.threats if swot else ""), 12),
-    }
 
     try:
         axis_analysis = json.loads(report.axis_analysis or '{}')
@@ -302,10 +335,12 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
 
     swot_by_axis = build_swot_by_axis_from_global_swot(
         swot=swot,
-        scores=scores,
+        scores=get_selected_report_axes(db, company.id, scores),
         axis_comments=axis_comments,
         axis_analysis=axis_analysis,
     )
+
+    global_swot = regroup_axis_swot(swot_by_axis)
 
     try:
         presentation = json.loads(report.presentation_content or "{}")
