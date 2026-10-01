@@ -1,8 +1,8 @@
 from openai import OpenAI
 
-endpoint = ""
-deployment_name = ""
-api_key = ""
+endpoint = "paste_here"
+deployment_name = "paste_here"
+api_key = "paste_here"
 
 client = OpenAI(
     base_url=endpoint,
@@ -16,4 +16,4 @@ response = client.responses.create(
 
 print(f"answer: {response.output[0]}")
 
-# this is just a text to see if i can connect to azure 
+# this is just a TEST to see if i can connect to azure 
