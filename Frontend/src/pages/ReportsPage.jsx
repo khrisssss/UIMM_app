@@ -11,7 +11,6 @@ function ReportsPage() {
   const { companyId } = useParams();
 
   const [company, setCompany] = useState(null);
-  const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
 
   const [message, setMessage] = useState("");
@@ -28,7 +27,6 @@ function ReportsPage() {
       setCompany(companyResponse.data);
 
       const reportsResponse = await api.get(`/companies/${companyId}/reports`);
-      setReports(reportsResponse.data);
 
       if (reportsResponse.data.length > 0) {
         setSelectedReport(reportsResponse.data[0]);
@@ -191,10 +189,6 @@ function ReportsPage() {
     }
   }
 
-  function selectReport(report) {
-    setSelectedReport(report);
-  }
-
   function goBack() {
     window.location.href = `/companies/${companyId}`;
   }
@@ -239,39 +233,7 @@ function ReportsPage() {
           </section>
         )}
 
-        <section className="reports-layout">
-          <aside className="reports-list-card">
-            <div className="section-title-row">
-              <div>
-                <p className="eyebrow">Reports</p>
-                <h2>History</h2>
-              </div>
-            </div>
-
-            {reports.length === 0 ? (
-              <div className="empty-card compact">
-                <p>No report generated yet.</p>
-              </div>
-            ) : (
-              <div className="reports-list">
-                {reports.map((report) => (
-                  <button
-                    key={report.id}
-                    type="button"
-                    className={
-                      selectedReport?.id === report.id
-                        ? "report-list-item active"
-                        : "report-list-item"
-                    }
-                    onClick={() => selectReport(report)}
-                  >
-                    <strong>{report.title}</strong>
-                    <span>{report.status}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </aside>
+        <section className="report-editor-layout">
 
           <section className="report-editor-card">
             {selectedReport === null ? (
