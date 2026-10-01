@@ -6,6 +6,7 @@ from app.models.financial_year import FinancialYear
 
 from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
 from app.services.swot_context import build_swot_context
+from app.services.company_details_service import build_company_details
 
 from app.models.user import User
 from app.dependencies.auth import require_consultant_or_admin
@@ -215,3 +216,20 @@ def hard_delete_company(
         "deleted_reports": deleted_reports,
         "deleted_company_axes": deleted_company_axes,
     }
+
+
+@router.get("/{company_id}/all-details")
+def get_all_details_of_a_company(
+    company_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_consultant_or_admin),
+):
+    """Read all company details, including unanswered/inactive questions and all axes.
+    
+    Includes personal information for internal viewing; never sends data to AI.
+    Financial amounts are decimal strings. Selection flags identify diagnostic axes.
+    """
+    details = build_company_details(db, company_id)
+    if details is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return details
