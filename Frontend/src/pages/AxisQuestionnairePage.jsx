@@ -266,10 +266,6 @@ function AxisQuestionnairePage() {
     }
   }
 
-  function goBackToDiagnostic() {
-    window.location.href = `/companies/${companyId}/diagnostic`;
-  }
-
   function openAnalysis() {
     window.location.href = `/companies/${companyId}/analysis`;
   }
@@ -297,8 +293,6 @@ function AxisQuestionnairePage() {
 
       <main className="questionnaire-page-content">
         <div className="questionnaire-top-actions">
-          <button className="secondary-button" onClick={goBackToDiagnostic}>Retour à la vue d’ensemble du diagnostic</button>
-
           {axis?.name?.trim().toLowerCase() === "finance" && (
             <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/finance`}>Données financières et prévisions</button>
           )}
