@@ -4,42 +4,43 @@ from datetime import datetime
 from typing import Any
 
 
-class SWOTAxisScoreContext(BaseModel):
-    axis_id: int
-    axis_name: str
-    score_total: int
-    score_max: int
-    percentage: float
-    answered_questions: int
-   
+# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# class SWOTAxisScoreContext(BaseModel):
+#     axis_id: int
+#     axis_name: str
+#     score_total: int
+#     score_max: int
+#     percentage: float
+#     answered_questions: int
 
 
-class SWOTQuestionContext(BaseModel):
-    axis_id: int
-    axis_name: str
-    question_id: int
-    question_text: str
-
-    score_code: Optional[str] = None
-    score_value: Optional[int] = None
-    score_label: Optional[str] = None
-    score_description: Optional[str] = None
-
-    max_score: Optional[int] = None
-    answer_text: Optional[str] = None
-    comment: Optional[str] = None
-
-    theme: Optional[str] = None
-    low_score_meaning: Optional[str] = None
-    high_score_meaning: Optional[str] = None
-    opportunity_hint: Optional[str] = None
-    threat_hint: Optional[str] = None
+# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# class SWOTQuestionContext(BaseModel):
+#     axis_id: int
+#     axis_name: str
+#     question_id: int
+#     question_text: str
+#
+#     score_code: Optional[str] = None
+#     score_value: Optional[int] = None
+#     score_label: Optional[str] = None
+#     score_description: Optional[str] = None
+#
+#     max_score: Optional[int] = None
+#     answer_text: Optional[str] = None
+#     comment: Optional[str] = None
+#
+#     theme: Optional[str] = None
+#     low_score_meaning: Optional[str] = None
+#     high_score_meaning: Optional[str] = None
+#     opportunity_hint: Optional[str] = None
+#     threat_hint: Optional[str] = None
 
 
 class SWOTContextRead(BaseModel):
     company: dict[str, Any]
     selected_axes: list[dict[str, Any]]
-    axis_scores: list[SWOTAxisScoreContext]
+    axis_scores: list[dict[str, Any]]  # Ancien schéma SWOTAxisScoreContext désactivé.
     company_profile: list[dict[str, Any]]
     diagnostic_answers: list[dict[str, Any]]
     swot_evidence: dict[str, list[dict[str, Any]]]
