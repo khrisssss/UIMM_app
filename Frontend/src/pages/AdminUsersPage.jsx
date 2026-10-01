@@ -173,13 +173,13 @@ function AdminUsersPage() {
                 <label htmlFor="new-user-name">Nom complet</label>
                 <input id="new-user-name" value={newUser.full_name}
                   onChange={(event) => updateNewUser("full_name", event.target.value)}
-                  placeholder="Exemple : Jema Sucgang" />
+                  placeholder="Exemple : Bob Dupont" />
               </div>
               <div className="form-group">
                 <label htmlFor="new-user-username">Identifiant</label>
                 <input id="new-user-username" value={newUser.username}
                   onChange={(event) => updateNewUser("username", event.target.value)}
-                  placeholder="Exemple : jema.sucgang" />
+                  placeholder="Exemple : bob.dupont" />
               </div>
               <div className="form-group">
                 <label htmlFor="new-user-password">Mot de passe</label>
