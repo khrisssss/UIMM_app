@@ -1,3 +1,4 @@
+import PageBackButton from "./PageBackButton";
 import "../styles/portfolio-hero.css";
 import logo from "../assets/uimm-logo.jpg";
 import bannerImage from "../assets/industry-banner.png";
@@ -22,6 +23,7 @@ function PortfolioHero() {
   }
 
   return (
+    <>
     <section className="portfolio-hero">
       <nav className="portfolio-navbar">
         <div className="portfolio-brand" onClick={goHome}>
@@ -48,6 +50,8 @@ function PortfolioHero() {
         </div>
       </div>
     </section>
+    <PageBackButton />
+    </>
   );
 }
 
