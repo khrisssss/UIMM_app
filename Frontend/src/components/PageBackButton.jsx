@@ -7,9 +7,14 @@ function PageBackButton() {
   const user = JSON.parse(localStorage.getItem("user"));
   const home = user?.role === "admin" ? "/dashboard" : "/companies";
 
-  if (!token || location.pathname === "/login" || location.pathname === "/dashboard") return null;
+  if (!token || location.pathname === "/login" || location.pathname === "/dashboard" || /\/analysis\/?$/.test(location.pathname)) return null;
 
   function goBack() {
+    const report = location.pathname.match(/^\/companies\/([^/]+)\/reports\/?$/);
+    if (report) {
+      navigate(`/companies/${report[1]}/analysis`);
+      return;
+    }
     if (window.history.state?.idx > 0) {
       navigate(-1);
       return;
