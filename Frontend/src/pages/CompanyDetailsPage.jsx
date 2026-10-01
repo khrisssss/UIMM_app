@@ -78,7 +78,7 @@ function CompanyDetailsPage() {
 
       setProfileAnswersByQuestionId(answersMap);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load company details."));
+      setMessage(getErrorMessage(error, "Impossible de charger la fiche de l’entreprise."));
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -142,7 +142,7 @@ function CompanyDetailsPage() {
     const groups = {};
 
     profileQuestions.forEach((question) => {
-      const sectionName = question.section_name || "Company profile";
+      const sectionName = question.section_name || "Profil de l’entreprise";
 
       if (!groups[sectionName]) {
         groups[sectionName] = [];
@@ -158,7 +158,7 @@ function CompanyDetailsPage() {
     event.preventDefault();
 
     if (!companyForm.name.trim()) {
-      setMessage("Company name is required.");
+      setMessage("Le nom de l’entreprise est obligatoire.");
       return;
     }
 
@@ -184,9 +184,9 @@ function CompanyDetailsPage() {
       const response = await api.patch(`/companies/${companyId}`, payload);
 
       setCompany(response.data);
-      setMessage("Company information saved.");
+      setMessage("Informations de l’entreprise enregistrées.");
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to save company information."));
+      setMessage(getErrorMessage(error, "Impossible de enregistrer les informations de l’entreprise."));
       console.error(error);
     } finally {
       setIsSavingCompany(false);
@@ -195,7 +195,7 @@ function CompanyDetailsPage() {
 
   async function hardDeleteCompany() {
     const confirmed = window.confirm(
-      "Are you sure you want to permanently delete this company? This will delete the company information, profile answers, diagnostic answers, scores, SWOT, reports, and selected axes. This action cannot be undone."
+      "Voulez-vous supprimer définitivement cette entreprise ? Ses informations, réponses de profil et de diagnostic, scores, analyses SWOT, rapports et axes sélectionnés seront également supprimés. Cette action est irréversible."
     );
 
     if (!confirmed) return false;
@@ -203,7 +203,7 @@ function CompanyDetailsPage() {
     try {
       await api.delete(`/companies/${companyId}/hard-delete`);
 
-      setMessage("Company permanently deleted.");
+      setMessage("Entreprise supprimée définitivement.");
 
       setTimeout(() => {
         window.location.href = "/companies";
@@ -212,7 +212,7 @@ function CompanyDetailsPage() {
       return true;
     } catch (error) {
       setMessage(
-        error?.response?.data?.detail || "Failed to permanently delete company."
+        error?.response?.data?.detail || "Impossible de supprimer définitivement l’entreprise."
       );
       console.error(error);
 
@@ -233,10 +233,10 @@ function CompanyDetailsPage() {
         });
       }
 
-      setMessage("Company profile answers saved.");
+      setMessage("Réponses du profil de l’entreprise enregistrées.");
       await loadCompanyDetails();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to save profile answers."));
+      setMessage(getErrorMessage(error, "Impossible de enregistrer les réponses du profil."));
       console.error(error);
     } finally {
       setIsSavingProfile(false);
@@ -263,7 +263,7 @@ function CompanyDetailsPage() {
     return (
       <div className="app-page">
         <main className="company-details-page-content">
-          <p>Loading company details...</p>
+          <p>Chargement de la fiche de l’entreprise…</p>
         </main>
       </div>
     );
@@ -274,30 +274,24 @@ function CompanyDetailsPage() {
   return (
     <div className="app-page">
       <AppHeader
-        title={company?.name || "Company details"}
-        subtitle="Company identity, diagnostic context, and profile questionnaire."
+        title={company?.name || "Fiche de l’entreprise"}
+        subtitle="Identité de l’entreprise, contexte du diagnostic et questionnaire de profil."
       />
 
       <main className="company-details-page-content">
         {message && <div className="toast-message">{message}</div>}
 
         <div className="company-details-top-actions">
-          <button className="secondary-button" onClick={goBackToCompanies}>
-            Back to companies
-          </button>
+          <button className="secondary-button" onClick={goBackToCompanies}>Retour aux entreprises</button>
 
           <div className="company-details-action-group">
-            <button className="primary-button" onClick={openDiagnostic}>
-              Start diagnostic
-            </button>
+            <button className="primary-button" onClick={openDiagnostic}>Commencer le diagnostic</button>
 
             <button className="secondary-button" onClick={openAnalysis}>
               Radar / SWOT
             </button>
 
-            <button className="secondary-button" onClick={openReport}>
-              Report
-            </button>
+            <button className="secondary-button" onClick={openReport}>Rapport</button>
           </div>
         </div>
 
@@ -307,12 +301,12 @@ function CompanyDetailsPage() {
             onSubmit={saveCompanyInfo}
           >
             <div className="company-info-section-header">
-              <p className="eyebrow">Company information</p>
+              <p className="eyebrow">Informations sur l’entreprise</p>
             </div>
 
             <div className="company-form-section">
               <div className="form-group">
-                <label>Company name</label>
+                <label>Nom de l’entreprise</label>
                 <input
                   type="text"
                   value={companyForm.name}
@@ -324,22 +318,22 @@ function CompanyDetailsPage() {
 
               <div className="form-grid-two">
                 <div className="form-group">
-                  <label>Company size</label>
+                  <label>Taille de l’entreprise</label>
                   <select
                     value={companyForm.company_size}
                     onChange={(event) =>
                       updateCompanyForm("company_size", event.target.value)
                     }
                   >
-                    <option value="">Choose size</option>
-                    <option value="<10">Less than 10</option>
-                    <option value="11-50">11 to 50</option>
-                    <option value=">50">More than 50</option>
+                    <option value="">Choisir une taille</option>
+                    <option value="<10">Moins de 10 salariés</option>
+                    <option value="11-50">De 11 à 50 salariés</option>
+                    <option value=">50">Plus de 50 salariés</option>
                   </select>
                 </div>
 
                 <div className="form-group">
-                  <label>Status</label>
+                  <label>Statut</label>
                   <select
                     value={companyForm.status}
                     onChange={(event) =>
@@ -360,7 +354,7 @@ function CompanyDetailsPage() {
               </div>
 
               <div className="form-group">
-                <label>Address</label>
+                <label>Adresse</label>
                 <input
                   type="text"
                   value={companyForm.address}
@@ -375,7 +369,7 @@ function CompanyDetailsPage() {
               <h3>Contact</h3>
 
               <div className="form-group">
-                <label>Contact name</label>
+                <label>Nom du contact</label>
                 <input
                   type="text"
                   value={companyForm.contact_name}
@@ -387,7 +381,7 @@ function CompanyDetailsPage() {
 
               <div className="form-grid-two">
                 <div className="form-group">
-                  <label>Contact email</label>
+                  <label>E-mail du contact</label>
                   <input
                     type="email"
                     value={companyForm.contact_email}
@@ -398,7 +392,7 @@ function CompanyDetailsPage() {
                 </div>
 
                 <div className="form-group">
-                  <label>Contact phone</label>
+                  <label>Téléphone du contact</label>
                   <input
                     type="text"
                     value={companyForm.contact_phone}
@@ -411,23 +405,23 @@ function CompanyDetailsPage() {
             </div>
 
             <div className="company-form-section">
-              <h3>Diagnostic context</h3>
+              <h3>Contexte du diagnostic</h3>
 
               <div className="form-grid-two">
                 <div className="form-group">
-                  <label>Prediagnostic origin</label>
+                  <label>Origine du prédiagnostic</label>
                   <input
                     type="text"
                     value={companyForm.prediag_origin}
                     onChange={(event) =>
                       updateCompanyForm("prediag_origin", event.target.value)
                     }
-                    placeholder="Example: contact UIMM, event, referral..."
+                    placeholder="Exemple : contact UIMM, événement, recommandation…"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Other origin</label>
+                  <label>Autre origine</label>
                   <input
                     type="text"
                     value={companyForm.prediag_origin_other}
@@ -449,11 +443,11 @@ function CompanyDetailsPage() {
                     updateCompanyForm("has_rse", event.target.checked)
                   }
                 />
-                <span>Company has RSE approach</span>
+                <span>L’entreprise a une démarche RSE</span>
               </label>
 
               <div className="form-group">
-                <label>Specific regulatory constraints</label>
+                <label>Contraintes réglementaires spécifiques</label>
                 <textarea
                   rows="2"
                   value={companyForm.specific_regulatory_constraints}
@@ -464,12 +458,12 @@ function CompanyDetailsPage() {
                       event.target.value
                     )
                   }
-                  placeholder="Add regulatory, certification, quality or safety constraints..."
+                  placeholder="Précisez les contraintes réglementaires, de certification, de qualité ou de sécurité…"
                 />
               </div>
 
               <div className="form-group">
-                <label>General comment</label>
+                <label>Commentaire général</label>
                 <textarea
                   rows="2"
                   value={companyForm.general_comment}
@@ -477,7 +471,7 @@ function CompanyDetailsPage() {
                   onChange={(event) =>
                     updateCompanyForm("general_comment", event.target.value)
                   }
-                  placeholder="General context for the diagnostic..."
+                  placeholder="Contexte général du diagnostic…"
                 />
               </div>
             </div>
@@ -487,25 +481,21 @@ function CompanyDetailsPage() {
                   type="button"
                   className="company-delete-button"
                   onClick={hardDeleteCompany}
-                >
-                  Delete company
-                </button>
+                >Supprimer l’entreprise</button>
 
-                <button className="primary-button" onClick={saveCompanyInfo}>
-                  Save company information
-                </button>
+                <button className="primary-button" onClick={saveCompanyInfo}>Enregistrer les informations de l’entreprise</button>
               </div>
           </form>
 
           <section className="company-profile-card">
             <div className="company-info-section-header">
-              <p className="eyebrow">Company profile</p>
+              <p className="eyebrow">Profil de l’entreprise</p>
             </div>
 
             {profileQuestions.length === 0 ? (
               <div className="empty-card">
-                <h3>No profile questions</h3>
-                <p>Add profile questions from the admin area.</p>
+                <h3>Aucune question de profil</h3>
+                <p>Ajoutez des questions de profil depuis l’espace d’administration.</p>
               </div>
             ) : (
               <div className="profile-question-groups">
@@ -531,7 +521,7 @@ function CompanyDetailsPage() {
                             onChange={(event) =>
                               updateProfileAnswer(question.id,event.target.value)
                             }
-                            placeholder="Write the company answer..."
+                            placeholder="Saisissez la réponse de l’entreprise…"
                           />
                         </div>
                       ))}
@@ -547,7 +537,7 @@ function CompanyDetailsPage() {
                 onClick={saveProfileAnswers}
                 disabled={isSavingProfile}
               >
-                {isSavingProfile ? "Saving..." : "Save profile answers"}
+                {isSavingProfile ? "Enregistrement en cours…" : "Enregistrer les réponses du profil"}
               </button>
             </div>
           </section>

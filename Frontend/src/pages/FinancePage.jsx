@@ -37,7 +37,7 @@ function normalizeAmount(raw, label) {
     normalized = compact.replace(",", ".");
   }
   if (!/^[+-]?(?:\d+)(?:\.\d+)?$/.test(normalized)) {
-    throw new Error(`Enter a valid amount for ${label} (for example 2400000 or 2 400 000,50).`);
+    throw new Error(`Saisissez un montant valide pour ${label} (par exemple 2400000 ou 2 400 000,50).`);
   }
   return normalized;
 }
@@ -48,12 +48,12 @@ function financeError(error) {
     if (Array.isArray(detail)) {
       return detail.map(item => {
         const field = item.loc?.at(-1);
-        return `${fieldLabel[field] || field || "Field"}: ${item.msg}`;
+        return `${fieldLabel[field] || field || "Champ"}: ${item.msg}`;
       }).join(" · ");
     }
     if (typeof detail === "string") return detail;
   }
-  return error?.message || error?.response?.data?.detail || "Unable to save.";
+  return error?.message || error?.response?.data?.detail || "Impossible d’enregistrer les données.";
 }
 
 export default function FinancePage() {
@@ -67,7 +67,7 @@ export default function FinancePage() {
     try {
       const [c, r] = await Promise.all([api.get(`/companies/${companyId}`), api.get(`/companies/${companyId}/financial-years`)]);
       setCompany(c.data); setRows(r.data);
-    } catch (error) { setMessage(error?.response?.data?.detail || "Unable to load financial data."); }
+    } catch (error) { setMessage(error?.response?.data?.detail || "Impossible de charger les données financières."); }
   }
   useEffect(() => { refresh(); }, [companyId]);
   async function save(event) {
@@ -76,34 +76,34 @@ export default function FinancePage() {
       const payload = { ...form, year: Number(form.year) };
       for (const [key, label] of fields) payload[key] = normalizeAmount(form[key], label);
       await api.put(`/companies/${companyId}/financial-years/${payload.year}/${payload.kind}`, payload);
-      setMessage("Financial year saved."); setForm(empty()); await refresh();
+      setMessage("Données de l’année financière enregistrées."); setForm(empty()); await refresh();
     } catch (error) { setMessage(financeError(error)); }
     finally { setSaving(false); }
   }
   async function remove(row) {
-    if (!window.confirm(`Delete ${row.kind} ${row.year}?`)) return;
+    if (!window.confirm(`Supprimer les données ${row.kind === "actual" ? "réalisées" : "prévisionnelles"} de ${row.year} ?`)) return;
     try { await api.delete(`/companies/${companyId}/financial-years/${row.year}/${row.kind}`); await refresh(); }
-    catch (error) { setMessage(error?.response?.data?.detail || "Unable to delete."); }
+    catch (error) { setMessage(error?.response?.data?.detail || "Impossible de supprimer les données."); }
   }
   return <div className="app-page">
     <AppHeader title={company?.name || "Finance"} />
     <div style={{ padding: "20px 24px 0", textAlign: "left" }}>
-      <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/diagnostic`}>Back to diagnostic</button>
+      <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/diagnostic`}>Retour au diagnostic</button>
     </div>
     <main className="questionnaire-page-content" style={{ maxWidth: 1100, margin: "auto", padding: 24 }}>
       {message && <p role="status">{message}</p>}
-      {rows.length > 0 && <div style={{ overflowX: "auto" }}><table><thead><tr><th>Year</th><th>Type</th><th>CA</th><th>EBE</th><th>REX</th><th>CAF</th><th>Net debt</th><th>CAPEX</th><th /></tr></thead>
-      <tbody>{rows.map(row => <tr key={`${row.year}-${row.kind}`}><td>{row.year}</td><td>{row.kind === "actual" ? "Actual" : "Forecast"}</td><td>{euro(row.revenue)}</td><td>{euro(row.ebitda)}</td><td>{euro(row.operating_result)}</td><td>{euro(row.cash_flow)}</td><td>{row.gross_debt == null || row.gross_cash == null ? "—" : euro(Number(row.gross_debt) - Number(row.gross_cash) + Number(row.factoring || 0))}</td><td>{euro(row.capex)}</td><td><button type="button" onClick={() => setForm({ ...empty(), ...Object.fromEntries(Object.entries(row).map(([k,v]) => [k, v ?? ""])) })}>Edit</button><button type="button" onClick={() => remove(row)}>Delete</button></td></tr>)}</tbody></table></div>}
+      {rows.length > 0 && <div style={{ overflowX: "auto" }}><table><thead><tr><th>Année</th><th>Type</th><th>CA</th><th>EBE</th><th>REX</th><th>CAF</th><th>Dette nette</th><th>CAPEX</th><th /></tr></thead>
+      <tbody>{rows.map(row => <tr key={`${row.year}-${row.kind}`}><td>{row.year}</td><td>{row.kind === "actual" ? "Réalisé" : "Prévisionnel"}</td><td>{euro(row.revenue)}</td><td>{euro(row.ebitda)}</td><td>{euro(row.operating_result)}</td><td>{euro(row.cash_flow)}</td><td>{row.gross_debt == null || row.gross_cash == null ? "—" : euro(Number(row.gross_debt) - Number(row.gross_cash) + Number(row.factoring || 0))}</td><td>{euro(row.capex)}</td><td><button type="button" onClick={() => setForm({ ...empty(), ...Object.fromEntries(Object.entries(row).map(([k,v]) => [k, v ?? ""])) })}>Modifier</button><button type="button" onClick={() => remove(row)}>Supprimer</button></td></tr>)}</tbody></table></div>}
       <form onSubmit={save}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 32, marginBottom: 20 }}>
-          <div className="form-group" style={{ minWidth: 180, margin: 0 }}><label style={{ display: "flex", flexDirection: "column", gap: 8 }}>Year<input type="number" min="1900" max="2200" required value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} /></label></div>
-          <div className="form-group" style={{ minWidth: 180, margin: 0 }}><label style={{ display: "flex", flexDirection: "column", gap: 8 }}>Type<select value={form.kind} onChange={e => setForm({ ...form, kind: e.target.value })}><option value="actual">Actual</option><option value="forecast">Forecast</option></select></label></div>
+          <div className="form-group" style={{ minWidth: 180, margin: 0 }}><label style={{ display: "flex", flexDirection: "column", gap: 8 }}>Année<input type="number" min="1900" max="2200" required value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} /></label></div>
+          <div className="form-group" style={{ minWidth: 180, margin: 0 }}><label style={{ display: "flex", flexDirection: "column", gap: 8 }}>Type<select value={form.kind} onChange={e => setForm({ ...form, kind: e.target.value })}><option value="actual">Réalisé</option><option value="forecast">Prévisionnel</option></select></label></div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
           {fields.map(([key,label]) => <div className="form-group" key={key}><label>{label} (€)<input type="text" inputMode="decimal" value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} /></label></div>)}
         </div>
         <div className="form-group"><label>Notes <textarea maxLength="2000" rows={5} style={{ width: "100%", boxSizing: "border-box", minHeight: 120 }} value={form.notes || ""} onChange={e => setForm({ ...form, notes: e.target.value })} /></label></div>
-        <button className="primary-button" disabled={saving}>{saving ? "Saving..." : "Save"}</button>
+        <button className="primary-button" disabled={saving}>{saving ? "Enregistrement en cours…" : "Enregistrer"}</button>
       </form>
     </main>
   </div>;

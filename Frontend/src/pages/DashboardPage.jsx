@@ -37,17 +37,17 @@ function DashboardPage() {
   async function trainCompanyStateModel() {
     try {
       setIsTrainingModel(true);
-      setMlMessage("Training model...");
+      setMlMessage("Entraînement du modèle en cours…");
 
       const response = await api.post("/ml/train-company-state-model");
 
       setMlMetrics(response.data.metrics);
-      setMlMessage("Model trained successfully.");
+      setMlMessage("Modèle entraîné avec succès.");
     } catch (error) {
       console.error("Train ML model error:", error.response?.data || error);
 
       setMlMessage(
-        error?.response?.data?.detail || "Failed to train the model."
+        error?.response?.data?.detail || "Impossible de entraîner le modèle."
       );
     } finally {
       setIsTrainingModel(false);
@@ -57,26 +57,21 @@ function DashboardPage() {
   return (
     <div className="app-page">
       <AppHeader
-        title="Dashboard"
-        subtitle="Select axes, open questionnaires, and follow progress."
+        title="Tableau de bord"
+        subtitle="Sélectionnez les axes, ouvrez les questionnaires et suivez leur progression."
       />
 
       <main className="dashboard-content">
         <section className="hero-card">
           <div>
             <h2>UIMM Boost</h2>
-            <p>
-              Manage companies, diagnostics, reports, and prediction tools from
-              one place.
-            </p>
+            <p>Gérez les entreprises, les diagnostics, les rapports et les outils de prédiction depuis un seul espace.</p>
           </div>
 
           <button
             className="primary-button hero-button"
             onClick={() => goTo("/companies")}
-          >
-            Open companies
-          </button>
+          >Voir les entreprises</button>
         </section>
 
         <section className="dashboard-grid">
@@ -86,41 +81,32 @@ function DashboardPage() {
                 className="dashboard-card"
                 onClick={() => goTo("/admin/axes")}
               >
-                <span className="card-title">Diagnostic axes</span>
-                <span className="card-text">
-                  Edit the name and description of 7 axes.
-                </span>
+                <span className="card-title">Axes de diagnostic</span>
+                <span className="card-text">Modifiez le nom et la description des 7 axes.</span>
               </button>
 
               <button
                 className="dashboard-card"
                 onClick={() => goTo("/admin/axis-questions")}
               >
-                <span className="card-title">Axis questions</span>
-                <span className="card-text">
-                  Manage categories, diagnostic questions, visibility, and
-                  order.
-                </span>
+                <span className="card-title">Questions par axe</span>
+                <span className="card-text">Gérez les catégories, les questions de diagnostic, leur visibilité et leur ordre.</span>
               </button>
 
               <button
                 className="dashboard-card"
                 onClick={() => goTo("/admin/profile-questions")}
               >
-                <span className="card-title">Company profile</span>
-                <span className="card-text">
-                  Manage qualitative profile questions for company context.
-                </span>
+                <span className="card-title">Profil de l’entreprise</span>
+                <span className="card-text">Gérez les questions qualitatives pour préciser le contexte de l’entreprise.</span>
               </button>
 
               <button
                 className="dashboard-card"
                 onClick={() => goTo("/admin/users")}
               >
-                <span className="card-title">Users</span>
-                <span className="card-text">
-                  Create consultants and manage access to the application.
-                </span>
+                <span className="card-title">Utilisateurs</span>
+                <span className="card-text">Créez des comptes consultants et gérez les accès à l’application.</span>
               </button>
 
               <article
@@ -130,15 +116,13 @@ function DashboardPage() {
                   setShowMlModal(true);
                 }}
               >
-                <h3 className="card-title">Company state prediction</h3>
+                <h3 className="card-title">Prédiction de l’état de l’entreprise</h3>
 
                 <p className="dashboard-ml-status">
-                  {mlMetrics ? "Ready" : "Not trained yet"}
+                  {mlMetrics ? "Prêt" : "Pas encore entraîné"}
                 </p>
 
-                <p className="card-text dashboard-ml-description">
-                  Predicts Bon, À suivre or Attention from diagnostic scores.
-                </p>
+                <p className="card-text dashboard-ml-description">Prédit l’état Bon, À suivre ou Attention à partir des scores du diagnostic.</p>
 
                 <button
                   type="button"
@@ -148,9 +132,7 @@ function DashboardPage() {
                     setMlMessage("");
                     setShowMlModal(true);
                   }}
-                >
-                  View details
-                </button>
+                >Voir les détails</button>
               </article>
             </>
           )}
@@ -161,11 +143,8 @@ function DashboardPage() {
             <div className="dashboard-ml-modal">
               <div className="modal-header">
                 <div>
-                  <h2>Company state prediction</h2>
-                  <p>
-                    This model predicts the company state using diagnostic
-                    scores and company size.
-                  </p>
+                  <h2>Prédiction de l’état de l’entreprise</h2>
+                  <p>Ce modèle prédit l’état de l’entreprise à partir des scores du diagnostic et de sa taille.</p>
                 </div>
 
                 <button
@@ -181,29 +160,29 @@ function DashboardPage() {
 
               <div className="dashboard-ml-details">
                 <div className="dashboard-ml-detail-row">
-                  <span>Status</span>
-                  <strong>{mlMetrics ? "Ready" : "Not trained yet"}</strong>
+                  <span>Statut</span>
+                  <strong>{mlMetrics ? "Prêt" : "Pas encore entraîné"}</strong>
                 </div>
 
                 <div className="dashboard-ml-detail-row">
-                  <span>Algorithm</span>
+                  <span>Algorithme</span>
                   <strong>
                     {mlMetrics?.algorithm || "RandomForestClassifier"}
                   </strong>
                 </div>
 
                 <div className="dashboard-ml-detail-row">
-                  <span>Dataset size</span>
+                  <span>Nombre de données</span>
                   <strong>{mlMetrics?.dataset_size || "—"}</strong>
                 </div>
 
                 <div className="dashboard-ml-detail-row">
-                  <span>Dataset source</span>
+                  <span>Source des données</span>
                   <strong>{mlMetrics?.dataset_source || "—"}</strong>
                 </div>
 
                 <div className="dashboard-ml-detail-row">
-                  <span>Accuracy</span>
+                  <span>Taux de bonnes prédictions</span>
                   <strong>
                     {mlMetrics?.accuracy !== undefined
                       ? `${Math.round(mlMetrics.accuracy * 100)}%`
@@ -212,28 +191,23 @@ function DashboardPage() {
                 </div>
 
                 <div className="dashboard-ml-detail-row">
-                  <span>Last trained</span>
+                  <span>Dernier entraînement</span>
                   <strong>
                     {mlMetrics?.trained_at
-                      ? new Date(mlMetrics.trained_at).toLocaleString()
+                      ? new Date(mlMetrics.trained_at).toLocaleString("fr-FR")
                       : "—"}
                   </strong>
                 </div>
               </div>
 
-              <p className="dashboard-ml-note">
-                Training is reserved for administration. Consultants only use
-                the prediction result from the Analysis page.
-              </p>
+              <p className="dashboard-ml-note">L’entraînement est réservé à l’administration. Les consultants consultent le résultat de la prédiction sur la page Analyse.</p>
 
               <div className="modal-actions">
                 <button
                   type="button"
                   className="secondary-button"
                   onClick={() => setShowMlModal(false)}
-                >
-                  Close
-                </button>
+                >Fermer</button>
 
                 <button
                   type="button"
@@ -241,7 +215,7 @@ function DashboardPage() {
                   onClick={trainCompanyStateModel}
                   disabled={isTrainingModel}
                 >
-                  {isTrainingModel ? "Training..." : "Train / Retrain model"}
+                  {isTrainingModel ? "Entraînement en cours…" : "Entraîner / Réentraîner le modèle"}
                 </button>
               </div>
             </div>

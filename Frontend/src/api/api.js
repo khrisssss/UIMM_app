@@ -1,3 +1,4 @@
+import { translateErrorDetail } from "../utils/french";
 import axios from "axios";
 
 const api = axios.create({
@@ -39,6 +40,10 @@ api.interceptors.response.use(
           },
         })
       );
+    }
+
+    if (error?.response?.data?.detail !== undefined) {
+      error.response.data.detail = translateErrorDetail(detail);
     }
 
     return Promise.reject(error);

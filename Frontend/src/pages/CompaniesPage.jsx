@@ -117,7 +117,7 @@ function CompaniesPage() {
 
       setDiagnosticAxesByCompanyId(Object.fromEntries(axesEntries));
     } catch (error) {
-      setMessage("Failed to load companies.");
+      setMessage("Impossible de charger les entreprises.");
       console.error(error);
     }
   }
@@ -155,7 +155,7 @@ function CompaniesPage() {
     event.preventDefault();
 
     if (!newCompany.name.trim()) {
-      setMessage("Company name is required.");
+      setMessage("Le nom de l’entreprise est obligatoire.");
       return;
     }
 
@@ -170,7 +170,7 @@ function CompaniesPage() {
         status: newCompany.status,
       });
 
-      setMessage("Company created.");
+      setMessage("Entreprise créée.");
 
       setNewCompany({
         name: "",
@@ -185,7 +185,7 @@ function CompaniesPage() {
       setShowCreateModal(false);
       loadCompanies();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to create company."));
+      setMessage(getErrorMessage(error, "Impossible de créer l’entreprise."));
       console.error(error);
     }
   }
@@ -259,9 +259,9 @@ function CompaniesPage() {
         )
       );
 
-      setMessage("État général updated.");
+      setMessage("État général mis à jour.");
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update état général."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour l’état général."));
       console.error(error);
     }
   }
@@ -289,7 +289,7 @@ function CompaniesPage() {
       setEditingDiagnosticCompany(company);
       setEditingDiagnosticAxes(response.data);
     } catch (error) {
-      setMessage("Failed to load diagnostic axes.");
+      setMessage("Impossible de charger les axes de diagnostic.");
       console.error(error);
     }
   }
@@ -389,13 +389,13 @@ function CompaniesPage() {
         [editingDiagnosticCompany.id]: refreshedSelectedAxes,
       }));
 
-      setMessage("Diagnostic information saved.");
+      setMessage("Informations du diagnostic enregistrées.");
       setEditingDiagnosticCompany(null);
       setEditingDiagnosticAxes([]);
       loadCompanies();
     } catch (error) {
       setMessage(
-        getErrorMessage(error, "Failed to save diagnostic information.")
+        getErrorMessage(error, "Impossible de enregistrer les informations du diagnostic.")
       );
       console.error(error);
     }
@@ -414,14 +414,14 @@ function CompaniesPage() {
           editingMissionCompany.mission_restitution_date || null,
       });
 
-      setMessage("Mission complémentaire information saved.");
+      setMessage("Informations de la mission complémentaire enregistrées.");
       setEditingMissionCompany(null);
       loadCompanies();
     } catch (error) {
       setMessage(
         getErrorMessage(
           error,
-          "Failed to save mission complémentaire information."
+          "Impossible de enregistrer les informations de la mission complémentaire."
         )
       );
       console.error(error);

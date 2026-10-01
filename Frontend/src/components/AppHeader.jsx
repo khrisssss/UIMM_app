@@ -1,3 +1,4 @@
+import { displayLabel } from "../utils/french";
 import "../App.css";
 
 function AppHeader({ title, subtitle }) {
@@ -26,19 +27,15 @@ function AppHeader({ title, subtitle }) {
       </div>
 
       <div className="top-header-actions">
-        <button className="secondary-button" onClick={goHome}>
-          Home
-        </button>
+        <button className="secondary-button" onClick={goHome}>Accueil</button>
 
         <div className="user-panel compact">
           <div>
-            <p className="user-name">{user?.full_name || "User"}</p>
-            <p className="user-role">{user?.role || "consultant"}</p>
+            <p className="user-name">{user?.full_name || "Utilisateur"}</p>
+            <p className="user-role">{displayLabel(user?.role || "consultant")}</p>
           </div>
 
-          <button className="secondary-button" onClick={logout}>
-            Logout
-          </button>
+          <button className="secondary-button" onClick={logout}>Déconnexion</button>
         </div>
       </div>
     </header>

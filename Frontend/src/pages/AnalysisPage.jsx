@@ -1,3 +1,4 @@
+import { displayLabel } from "../utils/french";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -102,7 +103,7 @@ function AnalysisPage() {
       (axisItem) => Number(axisItem.id) === Number(score.axis_id)
     );
 
-    return foundAxis ? foundAxis.name : `Axis ${score.axis_id}`;
+    return foundAxis ? foundAxis.name : `Axe ${score.axis_id}`;
   }
 
   function getScorePercentage(score) {
@@ -203,7 +204,7 @@ function AnalysisPage() {
         fillSwotForm(null);
       }
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load analysis data."));
+      setMessage(getErrorMessage(error, "Impossible de charger les données de l’analyse."));
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -289,7 +290,7 @@ function AnalysisPage() {
   async function predictGeneralState() {
     try {
       setIsPredictingState(true);
-      setMessage("Predicting company state...");
+      setMessage("Prédiction de l’état de l’entreprise en cours…");
 
       const response = await api.post(`/companies/${companyId}/predict-state`);
 
@@ -298,7 +299,7 @@ function AnalysisPage() {
       setMessage("");
     } catch (error) {
       console.error("ML prediction error:", error.response?.data || error);
-      setMessage(getErrorMessage(error, "Failed to predict company state."));
+      setMessage(getErrorMessage(error, "Impossible de prédire l’état de l’entreprise."));
     } finally {
       setIsPredictingState(false);
     }
@@ -313,9 +314,9 @@ function AnalysisPage() {
         general_state: mlPrediction.predicted_state,
       });
       setCompany(response.data);
-      setMessage("Prediction applied to company state.");
+      setMessage("Prédiction appliquée à l’état de l’entreprise.");
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to apply prediction."));
+      setMessage(getErrorMessage(error, "Impossible de appliquer la prédiction."));
     } finally {
       setIsApplyingPrediction(false);
     }
@@ -325,16 +326,16 @@ function AnalysisPage() {
     if (isGenerating || isSaving) return;
     try {
       setIsGenerating(true);
-      setMessage("Generating SWOT...");
+      setMessage("Génération du SWOT en cours…");
 
       const response = await api.post(`/companies/${companyId}/generate-swot`);
 
       setSwot(response.data);
       fillSwotForm(response.data);
 
-      setMessage("SWOT generated.");
+      setMessage("SWOT généré.");
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to generate SWOT."));
+      setMessage(getErrorMessage(error, "Impossible de générer le SWOT."));
       console.error(error);
     } finally {
       setIsGenerating(false);
@@ -367,10 +368,10 @@ function AnalysisPage() {
       setSwot(response.data);
       fillSwotForm(response.data);
 
-      setMessage("SWOT saved and validated.");
+      setMessage("SWOT enregistré et validé.");
     } catch (error) {
       console.error("SWOT save error:", error.response?.data || error);
-      setMessage(getErrorMessage(error, "Failed to save SWOT."));
+      setMessage(getErrorMessage(error, "Impossible de enregistrer le SWOT."));
     } finally {
       setIsSaving(false);
     }
@@ -388,7 +389,7 @@ function AnalysisPage() {
     return (
       <div className="app-page">
         <main className="analysis-page-content">
-          <p>Loading analysis...</p>
+          <p>Chargement de l’analyse…</p>
         </main>
       </div>
     );
@@ -402,18 +403,14 @@ function AnalysisPage() {
     <div className="app-page">
       <AppHeader
         title={company ? company.name : "Radar / SWOT"}
-        subtitle="Radar chart, archive average, and SWOT analysis."
+        subtitle="Graphique radar, moyenne des entreprises archivées et analyse SWOT."
       />
 
       <main className="analysis-page-content">
         <div className="analysis-top-actions">
-          <button className="secondary-button" onClick={openDiagnosticOverview}>
-            Back to diagnostic
-          </button>
+          <button className="secondary-button" onClick={openDiagnosticOverview}>Retour au diagnostic</button>
 
-          <button className="primary-button" onClick={openReport}>
-            Continue to report
-          </button>
+          <button className="primary-button" onClick={openReport}>Continuer vers le rapport</button>
         </div>
 
         {message && <div className="toast-message" role="status">{message}</div>}
@@ -422,8 +419,8 @@ function AnalysisPage() {
           <div className="analysis-card">
             {radarData.length === 0 ? (
               <div className="empty-card">
-                <h3>No scores yet</h3>
-                <p>Complete questionnaires first.</p>
+                <h3>Aucun score pour le moment</h3>
+                <p>Complétez d’abord les questionnaires.</p>
               </div>
             ) : (
               <>
@@ -486,7 +483,7 @@ function AnalysisPage() {
                       <Tooltip
                         formatter={(value, name) => {
                           if (value === null || value === undefined) {
-                            return ["No archive data", name];
+                            return ["Aucune donnée d’archive", name];
                           }
 
                           return [`${value}%`, name];
@@ -514,7 +511,7 @@ function AnalysisPage() {
                     onClick={predictGeneralState}
                     disabled={isPredictingState}
                   >
-                    {isPredictingState ? "Predicting..." : "Predict state"}
+                    {isPredictingState ? "Prédiction en cours…" : "Prédire l’état"}
                   </button>
                 </div>
               </>
@@ -534,7 +531,7 @@ function AnalysisPage() {
               onClick={generateSwot}
               disabled={isGenerating || isSaving}
             >
-              {isGenerating ? "Generating..." : "Generate SWOT"}
+              {isGenerating ? "Génération en cours…" : "Générer le SWOT"}
             </button>
           </div>
 
@@ -543,7 +540,7 @@ function AnalysisPage() {
               <span>S</span><span>W</span><span>O</span><span>T</span>
             </div>
             <div className="form-group swot-card swot-card-strengths">
-              <label htmlFor="swot-strengths">Strengths</label>
+              <label htmlFor="swot-strengths">Forces</label>
               <textarea
                 id="swot-strengths"
                 disabled={isGenerating || isSaving}
@@ -553,12 +550,12 @@ function AnalysisPage() {
                 onChange={(event) =>
                   updateSwotField("strengths", event.target.value)
                 }
-                placeholder="Add strengths..."
+                placeholder="Ajouter des forces…"
               />
             </div>
 
             <div className="form-group swot-card swot-card-weaknesses">
-              <label htmlFor="swot-weaknesses">Weaknesses</label>
+              <label htmlFor="swot-weaknesses">Faiblesses</label>
               <textarea
                 id="swot-weaknesses"
                 disabled={isGenerating || isSaving}
@@ -568,12 +565,12 @@ function AnalysisPage() {
                 onChange={(event) =>
                   updateSwotField("weaknesses", event.target.value)
                 }
-                placeholder="Add weaknesses..."
+                placeholder="Ajouter des faiblesses…"
               />
             </div>
 
             <div className="form-group swot-card swot-card-opportunities">
-              <label htmlFor="swot-opportunities">Opportunities</label>
+              <label htmlFor="swot-opportunities">Opportunités</label>
               <textarea
                 id="swot-opportunities"
                 disabled={isGenerating || isSaving}
@@ -583,12 +580,12 @@ function AnalysisPage() {
                 onChange={(event) =>
                   updateSwotField("opportunities", event.target.value)
                 }
-                placeholder="Add opportunities..."
+                placeholder="Ajouter des opportunités…"
               />
             </div>
 
             <div className="form-group swot-card swot-card-threats">
-              <label htmlFor="swot-threats">Threats</label>
+              <label htmlFor="swot-threats">Menaces</label>
               <textarea
                 id="swot-threats"
                 disabled={isGenerating || isSaving}
@@ -598,7 +595,7 @@ function AnalysisPage() {
                 onChange={(event) =>
                   updateSwotField("threats", event.target.value)
                 }
-                placeholder="Add threats..."
+                placeholder="Ajouter des menaces…"
               />
             </div>
           </div>
@@ -609,12 +606,10 @@ function AnalysisPage() {
               onClick={saveSwot}
               disabled={!company || isSaving || isGenerating}
             >
-              {isSaving ? "Saving..." : "Save SWOT"}
+              {isSaving ? "Enregistrement en cours…" : "Enregistrer le SWOT"}
             </button>
 
-            <button className="secondary-button" onClick={openReport}>
-              Continue to report
-            </button>
+            <button className="secondary-button" onClick={openReport}>Continuer vers le rapport</button>
           </div>
         </section>
       </main>
@@ -623,8 +618,8 @@ function AnalysisPage() {
           <div className="ml-prediction-modal">
             <div className="modal-header">
               <div>
-                <h2>Company state prediction</h2>
-                <p>Based on diagnostic scores and company size.</p>
+                <h2>Prédiction de l’état de l’entreprise</h2>
+                <p>À partir des scores du diagnostic et de la taille de l’entreprise.</p>
               </div>
 
               <button
@@ -637,7 +632,7 @@ function AnalysisPage() {
             </div>
 
             <div className="ml-prediction-main-result">
-              <p className="ml-prediction-label">Predicted state</p>
+              <p className="ml-prediction-label">État prédit</p>
 
               <h3
                 className={
@@ -648,11 +643,11 @@ function AnalysisPage() {
                     : "prediction-orange"
                 }
               >
-                {mlPrediction.predicted_state_label}
+                {displayLabel(mlPrediction.predicted_state)}
               </h3>
 
               <p className="ml-confidence">
-                Confidence: {Math.round(mlPrediction.confidence * 100)}%
+                Indice de confiance : {Math.round(mlPrediction.confidence * 100)}%
               </p>
             </div>
 
@@ -660,25 +655,20 @@ function AnalysisPage() {
               {Object.entries(mlPrediction.probabilities || {}).map(
                 ([state, value]) => (
                   <div key={state} className="ml-probability-row">
-                    <span>{value.label}</span>
+                    <span>{displayLabel(state)}</span>
                     <strong>{Math.round(value.probability * 100)}%</strong>
                   </div>
                 )
               )}
             </div>
 
-            <p className="ml-warning-text">
-              This is a decision-support prediction. The consultant remains
-              responsible for validating the final company state.
-            </p>
+            <p className="ml-warning-text">Cette prédiction aide à la décision. Le consultant reste responsable de la validation de l’état final de l’entreprise.</p>
 
             <div className="modal-actions">
               <button
                 className="secondary-button"
                 onClick={() => setShowMlPredictionModal(false)}
-              >
-                Close
-              </button>
+              >Fermer</button>
 
               <button
                 className="primary-button"
@@ -686,8 +676,8 @@ function AnalysisPage() {
                 disabled={isApplyingPrediction}
               >
                 {isApplyingPrediction
-                  ? "Applying..."
-                  : "Apply prediction to company state"}
+                  ? "Application en cours…"
+                  : "Appliquer la prédiction à l’état de l’entreprise"}
               </button>
             </div>
           </div>
@@ -717,7 +707,7 @@ function AnalysisPage() {
               <button
                 type="button"
                 className="modal-close-button"
-                aria-label="Close score details"
+                aria-label="Fermer le détail des scores"
                 onClick={() => setShowScoreDetailsModal(false)}
               >
                 ×
@@ -736,24 +726,19 @@ function AnalysisPage() {
 
             <div className="modal-average-row">
               <article className="modal-average-card">
-                <span>Average company score</span>
+                <span>Score moyen de l’entreprise</span>
                 <strong>{averageScore}%</strong>
-                <p>
-                  This is the average score of the current company across the selected
-                  diagnostic axes.
-                </p>
+                <p>Il s’agit du score moyen de l’entreprise pour les axes de diagnostic sélectionnés.</p>
               </article>
 
               <article className="modal-average-card">
-                <span>Archive average</span>
+                <span>Moyenne des entreprises archivées</span>
                 <strong>
                   {archiveGlobalAverage === null
-                    ? "No archive yet"
+                    ? "Aucune archive pour le moment"
                     : `${archiveGlobalAverage}%`}
                 </strong>
-                <p>
-                  This is the average score from the archived companies in your database.
-                </p>
+                <p>Il s’agit du score moyen des entreprises archivées dans la base de données.</p>
               </article>
             </div>
 

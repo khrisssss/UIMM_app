@@ -14,7 +14,7 @@ function LoginPage() {
     event.preventDefault();
 
     if (!username || !password) {
-      setMessage("Please enter your username and password.");
+      setMessage("Veuillez saisir votre identifiant et votre mot de passe.");
       return;
     }
 
@@ -33,7 +33,7 @@ function LoginPage() {
         window.location.href = "/companies";
       }
     } catch (error) {
-      setMessage("Invalid username or password.");
+      setMessage("Identifiant ou mot de passe incorrect.");
       console.error(error);
     }
   }
@@ -42,13 +42,13 @@ function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-card-header">
-          <h2>Login to your account</h2>
-          <p>Enter your username and password to login to your account.</p>
+          <h2>Connexion à votre compte</h2>
+          <p>Saisissez votre identifiant et votre mot de passe pour vous connecter.</p>
         </div>
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Identifiant</label>
             <input
               id="username"
               type="text"
@@ -60,7 +60,7 @@ function LoginPage() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Mot de passe</label>
             <input
               id="password"
               type="password"
@@ -73,9 +73,7 @@ function LoginPage() {
 
           {message && <p className="error-message">{message}</p>}
 
-          <button type="submit" className="primary-button full-width">
-            Login
-          </button>
+          <button type="submit" className="primary-button full-width">Se connecter</button>
         </form>
       </div>
     </div>

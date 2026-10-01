@@ -25,18 +25,14 @@ function PortfolioHero() {
     <section className="portfolio-hero">
       <nav className="portfolio-navbar">
         <div className="portfolio-brand" onClick={goHome}>
-          <img src={logo} alt="UIMM logo" />
+          <img src={logo} alt="Logo UIMM" />
           <span>UIMM Boost</span>
         </div>
 
         <div className="portfolio-nav-links">
-          <button type="button" onClick={goHome}>
-            Home
-          </button>
+          <button type="button" onClick={goHome}>Accueil</button>
 
-          <button type="button" className="logout-link" onClick={logout}>
-            Logout
-          </button>
+          <button type="button" className="logout-link" onClick={logout}>Déconnexion</button>
         </div>
       </nav>
 

@@ -40,7 +40,7 @@ function AdminProfileQuestionsPage() {
         response.data.slice().sort((a, b) => a.order_index - b.order_index)
       );
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load profile sections."));
+      setMessage(getErrorMessage(error, "Impossible de charger les sections de profil."));
       console.error(error);
     }
   }
@@ -59,7 +59,7 @@ function AdminProfileQuestionsPage() {
         })
       );
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load profile questions."));
+      setMessage(getErrorMessage(error, "Impossible de charger les questions de profil."));
       console.error(error);
     }
   }
@@ -203,7 +203,7 @@ function AdminProfileQuestionsPage() {
     event.preventDefault();
 
     if (!newSection.name.trim()) {
-      setMessage("Section name is required.");
+      setMessage("Le nom de la section est obligatoire.");
       return;
     }
 
@@ -212,11 +212,11 @@ function AdminProfileQuestionsPage() {
         name: newSection.name.trim(),
       });
 
-      setMessage("Section created.");
+      setMessage("Section créée.");
       closeCreateSectionModal();
       await loadPageData();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to create section."));
+      setMessage(getErrorMessage(error, "Impossible de créer la section."));
       console.error(error);
     }
   }
@@ -225,7 +225,7 @@ function AdminProfileQuestionsPage() {
     event.preventDefault();
 
     if (!editingSection.name.trim()) {
-      setMessage("Section name is required.");
+      setMessage("Le nom de la section est obligatoire.");
       return;
     }
 
@@ -234,18 +234,18 @@ function AdminProfileQuestionsPage() {
         name: editingSection.name.trim(),
       });
 
-      setMessage("Section updated.");
+      setMessage("Section mise à jour.");
       closeEditSectionModal();
       await loadPageData();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update section."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour la section."));
       console.error(error);
     }
   }
 
   async function deleteSection(sectionId) {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this section? All questions inside it and all related company profile answers will also be deleted."
+      "Voulez-vous supprimer cette section ? Toutes ses questions et les réponses de profil associées seront également supprimées."
     );
 
     if (!confirmed) return false;
@@ -253,12 +253,12 @@ function AdminProfileQuestionsPage() {
     try {
       await api.delete(`/admin/company-profile-sections/${sectionId}`);
 
-      setMessage("Section, questions, and answers deleted.");
+      setMessage("Section, questions et réponses supprimées.");
       await loadPageData();
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to delete section."));
+      setMessage(getErrorMessage(error, "Impossible de supprimer la section."));
       console.error(error);
 
       return false;
@@ -269,12 +269,12 @@ function AdminProfileQuestionsPage() {
     event.preventDefault();
 
     if (!newQuestion.section_id) {
-      setMessage("Please choose a section.");
+      setMessage("Veuillez choisir une section.");
       return;
     }
 
     if (!newQuestion.question_text.trim()) {
-      setMessage("Question text is required.");
+      setMessage("Le texte de la question est obligatoire.");
       return;
     }
 
@@ -284,11 +284,11 @@ function AdminProfileQuestionsPage() {
         question_text: newQuestion.question_text.trim(),
       });
 
-      setMessage("Question created.");
+      setMessage("Question créée.");
       closeCreateQuestionModal();
       await loadQuestions();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to create question."));
+      setMessage(getErrorMessage(error, "Impossible de créer la question."));
       console.error(error);
     }
   }
@@ -297,12 +297,12 @@ function AdminProfileQuestionsPage() {
     event.preventDefault();
 
     if (!editingQuestion.section_id) {
-      setMessage("Please choose a section.");
+      setMessage("Veuillez choisir une section.");
       return;
     }
 
     if (!editingQuestion.question_text.trim()) {
-      setMessage("Question text is required.");
+      setMessage("Le texte de la question est obligatoire.");
       return;
     }
 
@@ -312,18 +312,18 @@ function AdminProfileQuestionsPage() {
         question_text: editingQuestion.question_text.trim(),
       });
 
-      setMessage("Question updated.");
+      setMessage("Question mise à jour.");
       closeEditQuestionModal();
       await loadQuestions();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update question."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour la question."));
       console.error(error);
     }
   }
 
   async function deleteQuestion(questionId) {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this question? All related company profile answers will also be deleted."
+      "Voulez-vous supprimer cette question ? Toutes les réponses de profil associées seront également supprimées."
     );
 
     if (!confirmed) return false;
@@ -331,12 +331,12 @@ function AdminProfileQuestionsPage() {
     try {
       await api.delete(`/admin/company-profile-questions/${questionId}`);
 
-      setMessage("Question and answers deleted.");
+      setMessage("Question et réponses supprimées.");
       await loadQuestions();
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to delete question."));
+      setMessage(getErrorMessage(error, "Impossible de supprimer la question."));
       console.error(error);
 
       return false;
@@ -352,43 +352,34 @@ function AdminProfileQuestionsPage() {
   return (
     <div className="app-page">
       <AppHeader
-        title="Admin — Company profile questionnaire"
-        subtitle="Manage company profile sections and questions."
+        title="Administration — Questionnaire de profil de l’entreprise"
+        subtitle="Gérez les sections et les questions du profil de l’entreprise."
       />
 
       <main className="admin-profile-page-content">
         {message && <div className="toast-message">{message}</div>}
 
         <section className="profile-top-bar">
-          <button className="secondary-button" onClick={goBackToDashboard}>
-            Back to dashboard
-          </button>
+          <button className="secondary-button" onClick={goBackToDashboard}>Retour au tableau de bord</button>
 
           <div className="profile-actions">
             <button
               className="secondary-button"
               onClick={openCreateSectionModal}
-            >
-              + Create section
-            </button>
+            >+ Créer une section</button>
 
             <button
               className="primary-button"
               onClick={() => openCreateQuestionModal()}
-            >
-              + Create question
-            </button>
+            >+ Créer une question</button>
           </div>
         </section>
 
         <section className="profile-summary-card">
           <div>
-            <p className="eyebrow">Company profile</p>
-            <h2>Profile questionnaire setup</h2>
-            <p>
-              These questions appear on the company information page and give
-              useful context for the SWOT and future report.
-            </p>
+            <p className="eyebrow">Profil de l’entreprise</p>
+            <h2>Configuration du questionnaire de profil</h2>
+            <p>Ces questions apparaissent sur la fiche de l’entreprise et apportent un contexte utile pour l’analyse SWOT et le rapport.</p>
           </div>
 
           <div className="profile-summary-stats">
@@ -408,14 +399,14 @@ function AdminProfileQuestionsPage() {
           <div className="section-title-row">
             <div>
               <p className="eyebrow">Questionnaire</p>
-              <h2>Sections and questions</h2>
+              <h2>Sections et questions</h2>
             </div>
           </div>
 
           {groupedQuestions.length === 0 ? (
             <div className="empty-card">
-              <h3>No profile questionnaire yet</h3>
-              <p>Create a section first, then add questions inside it.</p>
+              <h3>Aucun questionnaire de profil pour le moment</h3>
+              <p>Créez une section, puis ajoutez ses questions.</p>
             </div>
           ) : (
             <div className="profile-section-box-list">
@@ -437,23 +428,19 @@ function AdminProfileQuestionsPage() {
                         <button
                           className="small-secondary-button"
                           onClick={() => openCreateQuestionModal(section.id)}
-                        >
-                          + Add question
-                        </button>
+                        >+ Ajouter une question</button>
 
                         <button
                           className="small-secondary-button"
                           onClick={() => openEditSectionModal(section)}
-                        >
-                          Edit section
-                        </button>
+                        >Modifier la section</button>
                       </div>
                     </div>
 
                     <div className="profile-question-list">
                       {group.questions.length === 0 ? (
                         <div className="empty-card compact">
-                          <p>No questions in this section yet.</p>
+                          <p>Aucune question dans cette section pour le moment.</p>
                         </div>
                       ) : (
                         group.questions.map((question) => (
@@ -475,9 +462,7 @@ function AdminProfileQuestionsPage() {
                               <button
                                 className="secondary-button"
                                 onClick={() => openEditQuestionModal(question)}
-                              >
-                                Edit
-                              </button>
+                              >Modifier</button>
                             </div>
                           </article>
                         ))
@@ -496,8 +481,8 @@ function AdminProfileQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Create section</h2>
-                <p>Add a new section to the company profile questionnaire.</p>
+                <h2>Créer une section</h2>
+                <p>Ajoutez une section au questionnaire de profil de l’entreprise.</p>
               </div>
 
               <button
@@ -511,14 +496,14 @@ function AdminProfileQuestionsPage() {
 
             <form className="company-create-form" onSubmit={createSection}>
               <div className="form-group">
-                <label>Section name</label>
+                <label>Nom de la section</label>
                 <input
                   type="text"
                   value={newSection.name}
                   onChange={(event) =>
                     updateNewSection("name", event.target.value)
                   }
-                  placeholder="Example: Informations générales"
+                  placeholder="Exemple : Informations générales"
                 />
               </div>
 
@@ -527,13 +512,9 @@ function AdminProfileQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeCreateSectionModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Create section
-                </button>
+                <button type="submit" className="primary-button">Créer une section</button>
               </div>
             </form>
           </div>
@@ -545,8 +526,8 @@ function AdminProfileQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Edit section</h2>
-                <p>Update the section name.</p>
+                <h2>Modifier la section</h2>
+                <p>Modifiez le nom de la section.</p>
               </div>
 
               <div className="modal-header-actions">
@@ -560,9 +541,7 @@ function AdminProfileQuestionsPage() {
                       closeEditSectionModal();
                     }
                   }}
-                >
-                  Delete
-                </button>
+                >Supprimer</button>
 
                 <button
                   type="button"
@@ -576,7 +555,7 @@ function AdminProfileQuestionsPage() {
 
             <form className="company-create-form" onSubmit={saveEditingSection}>
               <div className="form-group">
-                <label>Section name</label>
+                <label>Nom de la section</label>
                 <input
                   type="text"
                   value={editingSection.name}
@@ -591,13 +570,9 @@ function AdminProfileQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeEditSectionModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Save changes
-                </button>
+                <button type="submit" className="primary-button">Enregistrer les modifications</button>
               </div>
             </form>
           </div>
@@ -609,8 +584,8 @@ function AdminProfileQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Create profile question</h2>
-                <p>Add a question inside a company profile section.</p>
+                <h2>Créer une question de profil</h2>
+                <p>Ajoutez une question à une section du profil de l’entreprise.</p>
               </div>
 
               <button
@@ -631,7 +606,7 @@ function AdminProfileQuestionsPage() {
                     updateNewQuestion("section_id", event.target.value)
                   }
                 >
-                  <option value="">Choose a section</option>
+                  <option value="">Choisir une section</option>
 
                   {sections.map((section) => (
                     <option key={section.id} value={section.id}>
@@ -642,14 +617,14 @@ function AdminProfileQuestionsPage() {
               </div>
 
               <div className="form-group">
-                <label>Question text</label>
+                <label>Texte de la question</label>
                 <textarea
                   rows="4"
                   value={newQuestion.question_text}
                   onChange={(event) =>
                     updateNewQuestion("question_text", event.target.value)
                   }
-                  placeholder="Write the company profile question..."
+                  placeholder="Saisissez la question du profil de l’entreprise…"
                 />
               </div>
 
@@ -658,13 +633,9 @@ function AdminProfileQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeCreateQuestionModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Create question
-                </button>
+                <button type="submit" className="primary-button">Créer une question</button>
               </div>
             </form>
           </div>
@@ -676,8 +647,8 @@ function AdminProfileQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Edit profile question</h2>
-                <p>Update this company profile question.</p>
+                <h2>Modifier la question de profil</h2>
+                <p>Modifiez cette question du profil de l’entreprise.</p>
               </div>
 
               <div className="modal-header-actions">
@@ -691,9 +662,7 @@ function AdminProfileQuestionsPage() {
                       closeEditQuestionModal();
                     }
                   }}
-                >
-                  Delete
-                </button>
+                >Supprimer</button>
 
                 <button
                   type="button"
@@ -714,7 +683,7 @@ function AdminProfileQuestionsPage() {
                     updateEditingQuestion("section_id", event.target.value)
                   }
                 >
-                  <option value="">Choose a section</option>
+                  <option value="">Choisir une section</option>
 
                   {sections.map((section) => (
                     <option key={section.id} value={section.id}>
@@ -725,7 +694,7 @@ function AdminProfileQuestionsPage() {
               </div>
 
               <div className="form-group">
-                <label>Question text</label>
+                <label>Texte de la question</label>
                 <textarea
                   rows="4"
                   value={editingQuestion.question_text}
@@ -740,13 +709,9 @@ function AdminProfileQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeEditQuestionModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Save changes
-                </button>
+                <button type="submit" className="primary-button">Enregistrer les modifications</button>
               </div>
             </form>
           </div>
