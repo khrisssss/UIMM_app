@@ -392,14 +392,6 @@ function ReportsPage() {
 
                 <div className="report-save-actions">
                   <button
-                    className="secondary-button"
-                    onClick={() => saveReportEdits("draft")}
-                    disabled={isSaving}
-                  >
-                    {isSaving ? "Enregistrement en cours…" : "Enregistrer le brouillon"}
-                  </button>
-
-                  <button
                     className="primary-button"
                     onClick={() => saveReportEdits("validated")}
                     disabled={isSaving}
