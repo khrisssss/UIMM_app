@@ -88,7 +88,7 @@ export default function FinancePage() {
   return <div className="app-page">
     <AppHeader title={company?.name || "Finance"} />
     <div style={{ padding: "20px 24px 0", textAlign: "left" }}>
-      <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/diagnostic`}>Retour au diagnostic</button>
+      <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/analysis`}>Voir le radar / SWOT</button>
     </div>
     <main className="questionnaire-page-content" style={{ maxWidth: 1100, margin: "auto", padding: 24 }}>
       {message && <p role="status">{message}</p>}
