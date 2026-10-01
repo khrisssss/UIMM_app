@@ -1,3 +1,4 @@
+import PageBackButton from "./PageBackButton";
 import { displayLabel } from "../utils/french";
 import "../App.css";
 
@@ -19,6 +20,7 @@ function AppHeader({ title, subtitle }) {
   }
 
   return (
+    <>
     <header className="top-app-header">
       <div>
         <p className="eyebrow">UIMM Boost</p>
@@ -39,6 +41,8 @@ function AppHeader({ title, subtitle }) {
         </div>
       </div>
     </header>
+    <PageBackButton />
+    </>
   );
 }
 
