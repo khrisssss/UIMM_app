@@ -256,8 +256,11 @@ def build_swot_by_axis_from_global_swot(swot, scores, axis_comments, axis_analys
             "score_percentage": score["score_percentage"],
             "comment": axis_comments.get(axis_name, ""),
             **{
-                category: limit_items(findings.get(category, []), 5)
-                or limit_items(axis_swot_items(getattr(swot, category, None), axis_name), 5)
+                category: (
+                    limit_items(findings[category], 5)
+                    if category in findings
+                    else limit_items(axis_swot_items(getattr(swot, category, None), axis_name), 5)
+                )
                 for category in ("strengths", "weaknesses", "opportunities", "threats")
             },
         })

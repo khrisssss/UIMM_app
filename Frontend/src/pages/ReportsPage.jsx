@@ -8,6 +8,22 @@ import "../App.css";
 import "../styles/forms.css";
 import "../styles/reports.css";
 
+const SWOT_CATEGORIES = [
+  ["strengths", "Forces"],
+  ["weaknesses", "Faiblesses"],
+  ["opportunities", "Opportunités"],
+  ["threats", "Menaces"],
+];
+
+function readAxisAnalysis(value) {
+  try {
+    const parsed = typeof value === "string" ? JSON.parse(value || "{}") : value;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
 function ReportsPage() {
   const { companyId } = useParams();
 
@@ -22,6 +38,30 @@ function ReportsPage() {
     return error?.response?.data?.detail || fallbackMessage;
   }
 
+  async function loadReportRestitution(report) {
+    const response = await api.get(
+      `/companies/${companyId}/reports/${report.id}/restitution`
+    );
+    const analysis = {};
+    response.data.forEach((axis) => {
+      analysis[axis.axis_name] = Object.fromEntries(
+        SWOT_CATEGORIES.map(([key]) => [key, axis[key] || []])
+      );
+    });
+    return { ...report, axis_analysis: JSON.stringify(analysis) };
+  }
+
+  function updateAxisFinding(axisName, category, value) {
+    setSelectedReport((previous) => {
+      const analysis = readAxisAnalysis(previous.axis_analysis);
+      analysis[axisName] = {
+        ...analysis[axisName],
+        [category]: value.split("\n"),
+      };
+      return { ...previous, axis_analysis: JSON.stringify(analysis) };
+    });
+  }
+
   async function loadReportsData() {
     try {
       const companyResponse = await api.get(`/companies/${companyId}`);
@@ -30,7 +70,7 @@ function ReportsPage() {
       const reportsResponse = await api.get(`/companies/${companyId}/reports`);
 
       if (reportsResponse.data.length > 0) {
-        setSelectedReport(reportsResponse.data[0]);
+        setSelectedReport(await loadReportRestitution(reportsResponse.data[0]));
       }
     } catch (error) {
       setMessage(getErrorMessage(error, "Impossible de charger les rapports."));
@@ -123,6 +163,7 @@ function ReportsPage() {
           executive_summary: selectedReport.executive_summary,
           diagnostic_summary: selectedReport.diagnostic_summary,
           swot_summary: selectedReport.swot_summary,
+          axis_analysis: selectedReport.axis_analysis,
           recommendations: selectedReport.recommendations,
           conclusion: selectedReport.conclusion,
           status: status,
@@ -291,17 +332,38 @@ function ReportsPage() {
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>Synthèse SWOT</label>
-                    <textarea
-                      rows="5"
-                      value={selectedReport.swot_summary || ""}
-                      onInput={autoResizeTextarea}
-                      onChange={(event) =>
-                        updateReportField("swot_summary", event.target.value)
-                      }
-                    />
-                  </div>
+                  <section className="report-restitution" aria-labelledby="restitution-title">
+                    <h3 id="restitution-title">Restitution</h3>
+                    {Object.entries(readAxisAnalysis(selectedReport.axis_analysis)).length === 0 ? (
+                      <p>Aucune analyse par axe disponible. Générez le rapport avec l’IA pour la compléter.</p>
+                    ) : (
+                      Object.entries(readAxisAnalysis(selectedReport.axis_analysis)).map(([axisName, findings]) => (
+                        <section className="report-axis-card" key={axisName}>
+                          <h4>{axisName}</h4>
+                          <div className="report-axis-swot">
+                            {SWOT_CATEGORIES.map(([category, label]) => (
+                              <div className="form-group" key={category}>
+                                <label>
+                                  {label}
+                                  <textarea
+                                    rows="4"
+                                    value={Array.isArray(findings[category])
+                                      ? findings[category].join("\n")
+                                      : findings[category] || ""}
+                                    placeholder="Aucun élément renseigné."
+                                    onInput={autoResizeTextarea}
+                                    onChange={(event) =>
+                                      updateAxisFinding(axisName, category, event.target.value)
+                                    }
+                                  />
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </section>
+                      ))
+                    )}
+                  </section>
 
                   <div className="form-group">
                     <label>Préconisations</label>

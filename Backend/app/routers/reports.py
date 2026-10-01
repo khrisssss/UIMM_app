@@ -9,6 +9,7 @@ from app.models.financial_year import FinancialYear
 from app.models.reports import Report
 from app.models.user import User
 from app.schemas.report import ReportRead, ReportUpdate
+from app.services.boost_powerpoint_content_service import build_boost_powerpoint_content
 from app.services.report_context import build_report_context
 from app.services.report_ai_service import generate_report_draft
 from app.dependencies.auth import require_consultant_or_admin
@@ -172,6 +173,25 @@ def update_report(
 
     return report
 
+
+
+@router.get("/{company_id}/reports/{report_id}/restitution")
+def get_report_restitution(
+    company_id: int,
+    report_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_consultant_or_admin),
+):
+    """Return the same axis findings used by the PowerPoint restitution."""
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    report = db.query(Report).filter(
+        Report.id == report_id, Report.company_id == company_id
+    ).first()
+    if report is None:
+        raise HTTPException(status_code=404, detail="Report not found")
+    return build_boost_powerpoint_content(db, company, report)["swot_by_axis"]
 
 # to generate report in powerpoint format
 @router.post("/{company_id}/reports/{report_id}/generate-powerpoint")

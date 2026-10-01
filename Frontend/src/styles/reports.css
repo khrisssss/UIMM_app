@@ -225,3 +225,25 @@
     align-items: stretch;
   }
 }
+.report-restitution {
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  padding: 20px;
+  background: #f8fafc;
+}
+.report-restitution h3 { margin: 0 0 18px; color: #0f172a; }
+.report-axis-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  background: #ffffff;
+}
+.report-axis-card h4 { margin: 0 0 16px; color: #1e3a8a; font-size: 18px; }
+.report-axis-swot { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.report-axis-swot label { display: block; }
+.report-axis-swot textarea { margin-top: 8px; box-sizing: border-box; }
+@media (max-width: 760px) {
+  .report-axis-swot { grid-template-columns: 1fr; }
+  .report-restitution, .report-axis-card { padding: 14px; }
+}
