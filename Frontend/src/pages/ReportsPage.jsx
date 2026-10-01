@@ -205,7 +205,7 @@ function ReportsPage() {
         {message && <div className="toast-message">{message}</div>}
 
         <section className="reports-top-actions">
-          <button className="secondary-button" onClick={goBack}>Retour à l’entreprise</button>
+          <button className="secondary-button" onClick={goBack}>Profil</button>
 
           <button
             className="primary-button"
