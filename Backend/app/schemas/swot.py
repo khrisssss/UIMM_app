@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any
 
 
-# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# schema not used in current routes, retained for reference.
 # class SWOTAxisScoreContext(BaseModel):
 #     axis_id: int
 #     axis_name: str
@@ -14,7 +14,7 @@ from typing import Any
 #     answered_questions: int
 
 
-# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# schema not used in current routes, retained for reference.
 # class SWOTQuestionContext(BaseModel):
 #     axis_id: int
 #     axis_name: str
