@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from typing import Any
+# from typing import Any  # Utilisé uniquement par les schémas commentés.
 
 
 # schema not used in current routes, retained for reference.
@@ -37,14 +37,15 @@ from typing import Any
 #     threat_hint: Optional[str] = None
 
 
-class SWOTContextRead(BaseModel):
-    company: dict[str, Any]
-    selected_axes: list[dict[str, Any]]
-    axis_scores: list[dict[str, Any]]  # Ancien schéma SWOTAxisScoreContext désactivé.
-    company_profile: list[dict[str, Any]]
-    diagnostic_answers: list[dict[str, Any]]
-    swot_evidence: dict[str, list[dict[str, Any]]]
-       
+# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# class SWOTContextRead(BaseModel):
+#     company: dict[str, Any]
+#     selected_axes: list[dict[str, Any]]
+#     axis_scores: list[dict[str, Any]]  # Ancien schéma SWOTAxisScoreContext désactivé.
+#     company_profile: list[dict[str, Any]]
+#     diagnostic_answers: list[dict[str, Any]]
+#     swot_evidence: dict[str, list[dict[str, Any]]]
+
 
 class SWOTCreate(BaseModel):
     axis_id: Optional[int] = None
