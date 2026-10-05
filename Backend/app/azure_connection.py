@@ -29,7 +29,7 @@ model_name = ""
 deployment = ""
 
 subscription_key = ""
-api_version = "
+api_version = "2024-12-01-preview"
 
 client = AzureOpenAI(
     api_version=api_version,
@@ -40,11 +40,15 @@ client = AzureOpenAI(
 response = client.chat.completions.create(
     messages=[
         {
+            "role": "system",
+            "content": "You are a helpful assistant.",
+        },
+        {
             "role": "user",
-            "content": "what is the capital in philippines",
+            "content": "I am going to Paris, what should I see?",
         }
     ],
-  
+    max_completion_tokens=16384,
     model=deployment
 )
 
