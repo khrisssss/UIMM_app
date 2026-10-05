@@ -217,7 +217,7 @@ def get_latest_swot(db, company_id):
     )
 
 
-def get_axis_answers_summary(db, company_id):
+def get_axis_answers_summary(db, company_id): #Builds an answer summary per axis
     rows = (
         db.query(Answer, Question, Axis)
         .join(Question, Answer.question_id == Question.id)

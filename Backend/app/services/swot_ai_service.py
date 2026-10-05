@@ -39,15 +39,15 @@ Expected JSON format:
         user_payload=swot_context,
     )
 
-def normalize_swot_section(value):
-    """Store one finding per line, including axis labels when AI groups findings."""
-    if isinstance(value, dict):
-        return "\n".join(
-            f"{axis} : {item}"
-            for axis, entries in value.items()
-            for item in (entries if isinstance(entries, list) else [entries])
-            if isinstance(item, str) and item.strip()
-        )
-    if isinstance(value, list):
-        return "\n".join(item.strip() for item in value if isinstance(item, str) and item.strip())
-    return value.strip() if isinstance(value, str) else ""
+#def normalize_swot_section(value):
+#    """Store one finding per line, including axis labels when AI groups findings."""
+#    if isinstance(value, dict):
+#        return "\n".join(
+#            f"{axis} : {item}"
+#            for axis, entries in value.items()
+#            for item in (entries if isinstance(entries, list) else [entries])
+#            if isinstance(item, str) and item.strip()
+#        )
+#    if isinstance(value, list):
+#        return "\n".join(item.strip() for item in value if isinstance(item, str) and item.strip())
+#    return value.strip() if isinstance(value, str) else ""

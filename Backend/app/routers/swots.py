@@ -22,19 +22,19 @@ router = APIRouter(
     tags=["SWOT"]
 )
 
-@router.get("/debug/test-azure-ai")
-def test_azure_ai(
-    current_user=Depends(require_consultant_or_admin)
-):
-    """Send a small test request to Azure AI to check that the integration responds. This calls the AI service."""
-    result = generate_json_response(
-        system_prompt="You are a helpful assistant. Return only valid JSON.",
-        user_payload={
-            "task": "Return a JSON object with message: Azure connection works."
-        },
-    )
-
-    return result
+#simply to check whether Azure AI responds
+#@router.get("/debug/test-azure-ai")
+#def test_azure_ai(
+#    current_user=Depends(require_consultant_or_admin)
+#):
+#    """Send a small test request to Azure AI to check that the integration responds. This calls the AI service."""
+#    result = generate_json_response(
+#        system_prompt="You are a helpful assistant. Return only valid JSON.",
+#        user_payload={
+#            "task": "Return a JSON object with message: Azure connection works."
+#        },
+#    )
+#    return result
 
 @router.post("/{company_id}/swot", response_model=SWOTRead)
 def create_or_update_swot(
@@ -42,7 +42,7 @@ def create_or_update_swot(
     swot_data: SWOTCreate,
     db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
 ):
-    """Save a manually written SWOT without calling AI. Creates a record or replaces the contents for the same company and axis. Omit axis_id for a company-wide SWOT; send status validated to save it as validated."""
+    """Save MANUALLY written SWOT without calling AI. Creates a record or replaces the contents for the same company and axis. Omit axis_id for a company-wide SWOT; send status validated to save it as validated."""
     company = db.query(Company).filter(Company.id == company_id).first()
 
     if company is None:
@@ -60,16 +60,16 @@ def create_or_update_swot(
                 detail="Axis not found"
             )
 
-    existing_swot = (
+    existing_swot = ( # this part only searches the database
         db.query(SWOT)
         .filter(
             SWOT.company_id == company_id,
             SWOT.axis_id == swot_data.axis_id
         )
-        .first()
+        .first() # Find the first SWOT belonging to this company and this axis
     )
 
-    if existing_swot is None:
+    if existing_swot is None: # if none it will create a new SWOT 
         new_swot = SWOT(
             company_id=company_id,
             axis_id=swot_data.axis_id,
@@ -83,12 +83,13 @@ def create_or_update_swot(
             status=swot_data.status
         )
 
-        db.add(new_swot)
-        db.commit()
-        db.refresh(new_swot)
+        db.add(new_swot) #Add the new record to the session 
+        db.commit()   # Save the new record or the changes to PostgreSQL.
+        db.refresh(new_swot)#Reload that record’s latest values from PostgreSQL nNOT refresh the whole database new_swot 
 
         return new_swot
 
+    # if exist it will Replace a field on the existing record
     existing_swot.strengths = swot_data.strengths
     existing_swot.weaknesses = swot_data.weaknesses
     existing_swot.opportunities = swot_data.opportunities
@@ -98,10 +99,10 @@ def create_or_update_swot(
     existing_swot.ai_model = swot_data.ai_model
     existing_swot.status = swot_data.status
 
-    db.commit()
-    db.refresh(existing_swot)
+    db.commit() # Save the new record or the changes to PostgreSQL. 
+    db.refresh(existing_swot)  #Reload that record’s latest values from PostgreSQL nNOT refresh the whole database existing_swot
 
-    return existing_swot
+    return existing_swot #Send the updated SWOT back to whoever called the route. 
 
 
 @router.get("/{company_id}/swot", response_model=list[SWOTRead])
@@ -165,7 +166,7 @@ def generate_swot(
         .all()
     )
     ai_payload = make_swot_ai_payload(swot_context, financial_years)
-    ai_result = generate_swot_with_ai(ai_payload)
+    ai_result = generate_swot_with_ai(ai_payload) #the prompt 
 
     strengths = ai_result.get("strengths", [])
     weaknesses = ai_result.get("weaknesses", [])

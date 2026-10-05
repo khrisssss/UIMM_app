@@ -1,17 +1,23 @@
-"""Build the restricted diagnostic payload sent to the SWOT AI service."""
+"""Prepares the information to send to the AI for SWOT generation, (readact_text)hiding company and contact details."""
 
-from app.services.report_ai_payload import FINANCIAL_FIELDS, redact_text
+from app.services.report_ai_payload import FINANCIAL_FIELDS, redact_text # redact text hides the name of the company before sending it to ai 
 
 
 def make_swot_ai_payload(context, financial_years):
-    """Keep identifiers, contact data and arbitrary free text out of the AI request."""
+    """Prepare diagnostic and financial information for AI SWOT generation,
+    masking [masqué] known company names, contact names, emails, phones and addresses
+    when they appear in the text."""
+    #example 
+    #Before: “ABC Métal wants to recruit.”
+    #After:  “[masqué] wants to recruit.”
+    #Other detected emails and phone numbers are replaced with [email masqué] and [téléphone masqué].
     company = context.get("company") or {}
     return {
-        "selected_axes": [
+        "selected_axes": [ # Which axes did you select? Includes the general comment written for each axis. #examplke Stratégie — “La stratégie doit être mieux partagée.” 
             {"axis": item["axis_name"], "comment": redact_text(item.get("diagnostic_comment"), company)}
             for item in context.get("selected_axes", [])
         ],
-        "axis_scores": [
+        "axis_scores": [ # What is the overall result for each axis? example Stratégie: 70%, with 10 questions answered.
             {
                 "axis": item["axis_name"],
                 "percentage": item["percentage"],
@@ -19,7 +25,7 @@ def make_swot_ai_payload(context, financial_years):
             }
             for item in context.get("axis_scores", [])
         ],
-        "answer_scores": [
+        "answer_scores": [ #What did you answer for each question? example “La stratégie est-elle écrite ?” → “Oui, mais elle n’est pas actualisée.” Score: 3 out of 5. Comment: “Dernière mise à jour en 2023.”
             {
                 "axis": item["axis_name"],
                 "question": redact_text(item.get("question_text"), company),
@@ -31,19 +37,19 @@ def make_swot_ai_payload(context, financial_years):
             }
             for item in context.get("diagnostic_answers", [])
         ],
-        "company_context": {
+        "company_context": { # Basic information about the company’s situation. example Size: 11–50 employees. RSE approach: yes. General comment: “L’entreprise souhaite se développer.”
             "size": company.get("company_size"),
             "has_rse": company.get("has_rse"),
             "regulatory_constraints": redact_text(company.get("specific_regulatory_constraints"), company),
             "general_comment": redact_text(company.get("general_comment"), company),
         },
-        "company_profile": [
+        "company_profile": [ # Your answers to the company profile questions. example “Quelle est l’activité de l’entreprise ?” → “Fabrication de pièces métalliques.”
             {"section": redact_text(item.get("section"), company),
              "question": redact_text(item.get("question"), company),
              "answer": redact_text(item.get("answer"), company)}
             for item in context.get("company_profile", [])
         ],
-        "financial_years": [
+        "financial_years": [ # The financial numbers you saved example 2025, actual: revenue €2,400,000. 2026, forecast: revenue €2,600,000.
             {
                 "year": row.year,
                 "kind": row.kind,
