@@ -386,7 +386,7 @@ function AxisQuestionnairePage() {
                         </div>
 
                         <div className="form-group">
-                          <label>Commentaire du consultant</label>
+                          <label>Commentaire</label>
 
                           <textarea
                             rows="2"
