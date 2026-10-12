@@ -130,7 +130,7 @@ def get_company_feature_row(db: Session, company_id: int):
     return row
 
 
-def build_real_training_dataset(db: Session):
+def training_dataset(db: Session):
     companies = (
         db.query(Company)
         .filter(
@@ -213,7 +213,7 @@ def build_demo_training_dataset():
 
 
 def get_training_dataset(db: Session):
-    real_dataset = build_real_training_dataset(db)
+    real_dataset = training_dataset(db)
 
     if len(real_dataset) >= 9 and real_dataset["target"].nunique() >= 2:
         return real_dataset, "real_database"
