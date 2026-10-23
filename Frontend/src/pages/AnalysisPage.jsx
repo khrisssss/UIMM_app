@@ -632,6 +632,9 @@ function AnalysisPage() {
             </div>
 
             <div className="ml-prediction-main-result">
+              {mlPrediction.is_demo && (
+                <p role="status">Modèle de démonstration sur données fictives : résultat pédagogique, non validé sur des entreprises réelles.</p>
+              )}
               <p className="ml-prediction-label">État prédit</p>
 
               <h3
@@ -807,3 +810,4 @@ function AnalysisPage() {
 }
 
 export default AnalysisPage;
+
