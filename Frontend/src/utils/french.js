@@ -4,7 +4,7 @@ const labels = {
   manual: "Saisie manuelle", ai: "Généré par l’IA", azure_openai: "Généré par l’IA",
   openai: "Généré par l’IA", ollama: "Généré par l’IA", fake: "Démonstration",
   admin: "Administrateur", consultant: "Consultant",
-  green: "Bon", orange: "À suivre", red: "Attention",
+  unassessed: "Non évalué", green: "Bon", orange: "À suivre", red: "Attention",
   active: "Actif", inactive: "Inactif", actual: "Réalisé", forecast: "Prévisionnel",
 };
 
