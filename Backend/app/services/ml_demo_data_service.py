@@ -62,7 +62,7 @@ def seed_demo_data(db, *, apply=False, per_class=20, seed=42):
             result['companies_added'] += 1
             if not apply:
                 continue
-            company = Company(name=name, company_size=size, status='Client', is_archived=True, general_state=state, general_comment='DONNÉES FICTIVES — démonstration ML. État simulé, non validé par un expert. Ne pas renommer cette entreprise.')
+            company = Company(name=name, is_synthetic=True, company_size=size, status='Client', is_archived=True, general_state=state, general_comment='DONNÉES FICTIVES — démonstration ML. État simulé, non validé par un expert. Ne pas renommer cette entreprise.')
             db.add(company)
             db.flush()
             by_axis = defaultdict(list)
