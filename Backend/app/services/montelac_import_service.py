@@ -166,6 +166,7 @@ def install_montelac(db):
     responses = response_index(case['axis_responses'], 'axis')
     profiles = response_index(case['profile_responses'], 'section')
     planned = []
+    unmapped = []
     for name in case['axes']:
         axis = axes[normalize(name)]
         scale, levels = scoring(db, axis)
@@ -174,7 +175,12 @@ def install_montelac(db):
         if not questions:
             raise ValueError(f'No active questions: {name}')
         for q in questions:
-            response = question_response(q, axis, responses)
+            try:
+                response = question_response(q, axis, responses)
+            except ValueError:
+                unmapped.append({'axis': name, 'question_id': q.id, 'question': q.question_text,
+                                 'maximum': q.max_score})
+                continue
             desired = response['score']
             # Legacy questions can have a smaller maximum than today's scale.
             value = min(desired, q.max_score) if q.max_score is not None else None
@@ -188,8 +194,11 @@ def install_montelac(db):
                                                          CompanyProfileSection.is_active.is_(True))):
         response = profiles.get((normalize(section.name), normalize(q.question_text)))
         if response is None:
-            raise ValueError(f'No specific profile answer for live question {q.id} [{section.name}]: {q.question_text}')
+            unmapped.append({'section': section.name, 'question_id': q.id, 'question': q.question_text})
+            continue
         profile_plan.append((q, response['answer']))
+    if unmapped:
+        raise ValueError('No specific answer for live questions: ' + json.dumps(unmapped, ensure_ascii=False))
     company = Company(**case['company'])
     db.add(company); db.flush()
     for axis, q, level, answer in planned:

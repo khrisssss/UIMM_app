@@ -1584,6 +1584,12 @@
       "question": "L'entreprise a-t-elle identifié ses enjeux RSE prioritaires ?",
       "score": 3,
       "answer": "Un premier plan RSE priorise l’énergie, les déchets et la transmission des compétences. Une référente qualité coordonne les actions ; certains objectifs et indicateurs extra-financiers restent à définir."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Est elle compatible avec les moyen?",
+      "score": 3,
+      "answer": "Les moyens actuels permettent une croissance modérée ; le projet de 650 000 € d’investissement reste conditionné au financement et au recrutement de deux profils techniques."
     }
   ],
   "profile_responses": [
