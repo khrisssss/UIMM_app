@@ -12,7 +12,20 @@ def make_swot_ai_payload(context, financial_years):
     #After:  “[masqué] wants to recruit.”
     #Other detected emails and phone numbers are replaced with [email masqué] and [téléphone masqué].
     company = context.get("company") or {}
+    has_diagnostic_evidence = any(
+        item.get("score_value") is not None or item.get("answer_text") or item.get("comment")
+        for item in context.get("diagnostic_answers", [])
+    )
+    public_only = not has_diagnostic_evidence and any(
+        "recherche documentaire publique" in str(item.get("question", "")).casefold()
+        for item in context.get("company_profile", [])
+    )
     return {
+        "evidence_basis": {
+            "mode": "public_sources_only" if public_only else "diagnostic",
+            "assessment_status": "not_assessed" if public_only else "to_review",
+            "note": "Pré-analyse documentaire publique à valider ; aucune réponse interne ni maturité déduite des données manquantes." if public_only else "Constats limités aux éléments fournis.",
+        },
         "selected_axes": [ # Which axes did you select? Includes the general comment written for each axis. #examplke Stratégie — “La stratégie doit être mieux partagée.” 
             {"axis": item["axis_name"], "comment": redact_text(item.get("diagnostic_comment"), company)}
             for item in context.get("selected_axes", [])
@@ -24,6 +37,7 @@ def make_swot_ai_payload(context, financial_years):
                 "answered_questions": item["answered_questions"],
             }
             for item in context.get("axis_scores", [])
+            if (item.get("answered_questions") or 0) > 0
         ],
         "answer_scores": [ #What did you answer for each question? example “La stratégie est-elle écrite ?” → “Oui, mais elle n’est pas actualisée.” Score: 3 out of 5. Comment: “Dernière mise à jour en 2023.”
             {
@@ -39,7 +53,7 @@ def make_swot_ai_payload(context, financial_years):
         ],
         "company_context": { # Basic information about the company’s situation. example Size: 11–50 employees. RSE approach: yes. General comment: “L’entreprise souhaite se développer.”
             "size": company.get("company_size"),
-            "has_rse": company.get("has_rse"),
+            "has_rse": None if public_only else company.get("has_rse"),
             "regulatory_constraints": redact_text(company.get("specific_regulatory_constraints"), company),
             "general_comment": redact_text(company.get("general_comment"), company),
         },
