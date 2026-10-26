@@ -89,3 +89,29 @@ def test_rse_uses_the_number_of_true_statements():
     for response in load_montelac()['axis_responses']:
         if response.get('source_question_id', 0) >= 7001:
             assert response['score'] == sum(line.startswith('Satisfaite :') for line in response['answer'].splitlines())
+
+
+def test_actual_live_wordings_and_additional_security_questions_are_fully_answered(configured_db):
+    import json
+    from pathlib import Path
+    from app.models.company_profile_section import CompanyProfileSection
+    from app.models.company_profile_question import CompanyProfileQuestion
+    db = configured_db
+    import_questionnaire(db, apply=True, activate=True); db.commit()
+    live = json.loads((Path(__file__).parent / 'fixtures' / 'montelac_live_questions.json').read_text())
+    for item in live:
+        if 'axis' in item:
+            axis = db.query(Axis).filter_by(name=item['axis']).one()
+            db.add(Question(axis_id=axis.id, question_text=item['question'], max_score=item['maximum'], is_active=True))
+        else:
+            section = db.query(CompanyProfileSection).filter_by(name=item['section']).one()
+            db.add(CompanyProfileQuestion(section_id=section.id, question_text=item['question'], is_active=True))
+    strategy = db.query(Axis).filter_by(name='Stratégie').one()
+    db.add(Question(axis_id=strategy.id, question_text='Est elle compatible avec les moyen?', max_score=5, is_active=True))
+    db.commit()
+    result = install_montelac(db); db.commit()
+    assert result['axis_answers'] == 256 and result['profile_answers'] == 22
+    assert db.query(Answer).count() == 256
+    assert all(s.answered_questions == s.total_questions for s in db.query(Score))
+    antivirus = db.query(Question).filter_by(question_text='Un antivirus ou EDR administré est-il déployé sur les postes ?').one()
+    assert 'antivirus' in db.query(Answer).filter_by(question_id=antivirus.id).one().answer_text

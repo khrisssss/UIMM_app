@@ -1590,6 +1590,330 @@
       "question": "Est elle compatible avec les moyen?",
       "score": 3,
       "answer": "Les moyens actuels permettent une croissance modérée ; le projet de 650 000 € d’investissement reste conditionné au financement et au recrutement de deux profils techniques."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Quelle est la perception des attentes du marché, des clients ?",
+      "score": 4,
+      "answer": "Les clients recherchent conformité, traçabilité, petites séries et délais fiables. Les retours commerciaux sont examinés mensuellement ; aucune étude de marché complète n’a été réalisée récemment."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Quelle sont les 3 principales difficultés ?",
+      "score": 3,
+      "answer": "Trois difficultés : recrutement de deux profils techniques, consolidation encore manuelle de certaines données atelier et diversification commerciale insuffisamment régulière."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Existe-t-il une structure de management (Copil,...) ?",
+      "score": 4,
+      "answer": "Un comité de direction réunit chaque mois direction, production, qualité, commerce et administration/RH."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Y'a-t-il des rituels (Copil, Codir...) ?",
+      "score": 4,
+      "answer": "Réunion atelier quotidienne de 15 minutes, réunion charge/capacité hebdomadaire et comité de direction mensuel ; les actions ne sont pas toutes clôturées dans les délais."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "La stratégie est-elle partagée avec la structure de direction, les salariés ?",
+      "score": 3,
+      "answer": "La feuille de route est partagée au comité de direction ; les salariés ont reçu une présentation générale sans déclinaison complète par équipe."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "La performance financière est-elle mesurée (mensuel) ?",
+      "score": 4,
+      "answer": "CA, marge sur coûts directs, trésorerie et carnet de commandes sont revus chaque mois ; la clôture analytique complète est trimestrielle."
+    },
+    {
+      "axis": "Performance",
+      "question": "Quelles sont les cerifications de l'entreprise (ISO etc…)",
+      "score": 4,
+      "answer": "L’entreprise dispose d’un système qualité certifié ISO 9001. Elle n’a pas de certification environnementale ou sectorielle complémentaire dans ce profil."
+    },
+    {
+      "axis": "Performance",
+      "question": "Gestion des flux: Mesurez-vous la performance de livraison et mise à jour (quelle fréquence) ?",
+      "score": 4,
+      "answer": "Livraison à l’heure mesurée chaque semaine : 87 % des lignes à la date confirmée. Revue mensuelle des causes de retard."
+    },
+    {
+      "axis": "Performance",
+      "question": "formalisation et contractualisation des prévisions / comment formaliser vous les prévision",
+      "score": 3,
+      "answer": "Prévisions à trois mois transmises aux fournisseurs critiques par courriel ; elles sont indicatives, avec peu d’accords sur les variations acceptables."
+    },
+    {
+      "axis": "Performance",
+      "question": "méthodes de résolution de problème (paretos 8D)",
+      "score": 4,
+      "answer": "Pareto mensuel des défauts et 8D sur les réclamations majeures ; les analyses de causes ne sont pas systématiques pour les petits incidents récurrents."
+    },
+    {
+      "axis": "Performance",
+      "question": "mesure et correction temps passé/alloués",
+      "score": 3,
+      "answer": "Les temps passés sont relevés sur fiches puis saisis ; les écarts importants sont examinés mais la mise à jour des gammes n’est pas systématique."
+    },
+    {
+      "axis": "Performance",
+      "question": "mesure de taux de rotation des stocks et plan d'amélioration",
+      "score": 3,
+      "answer": "Couverture de stock suivie à 65 jours. La rotation est revue trimestriellement ; les stocks dormants ne disposent pas tous d’un plan de traitement."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Diversification Client: Combien y'a-t-il de clients et % du CA ?",
+      "score": 4,
+      "answer": "58 clients actifs : premier client 22 %, deuxième 16 %, troisième 12 %, soit 50 % pour les trois premiers ; les 55 autres clients représentent 50 %."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Diversification Marchés: Quels sont les marchés et % de CA ?",
+      "score": 4,
+      "answer": "Aéronautique 40 %, équipements industriels 40 %, énergie 20 %. Objectif 2029 : respectivement 35 %, 40 % et 25 %."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Y'a-t-il une prévision de vente (/Client, /marché) ?",
+      "score": 3,
+      "answer": "Prévisions trimestrielles pour les dix premiers clients ; pas de prévision probabilisée complète pour les prospects et nouveaux marchés."
+    },
+    {
+      "axis": "Marketing",
+      "question": "La satisfaction est-elle mesurée ?",
+      "score": 3,
+      "answer": "Enquête annuelle auprès des vingt premiers clients ; dernier résultat 90 % de répondants satisfaits sur 16 réponses. Les non-répondants et les petits clients sont peu analysés."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Existe-t-il un support de présenation de l'entreprise adapté aux objéctifs commerciaux ?",
+      "score": 4,
+      "answer": "Plaquette, site vitrine et fiches savoir-faire existent. Les cas clients et supports propres aux marchés énergie et équipements industriels restent à renforcer."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Existe-t-il un plan de dévelopement commercial ?",
+      "score": 3,
+      "answer": "Plan commercial annuel ciblant équipements industriels et énergie, avec liste de prospects, deux salons et objectifs trimestriels. Le budget par campagne et le suivi des gains restent partiels."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Les prix de revient sont-ils connus ? Si oui, existe-t-il une vérification",
+      "score": 4,
+      "answer": "Marge sur coûts directs cible de 38 % et vérification des coûts prévus ; analyse des coûts réels après livraison encore irrégulière."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Identification des principaux concurrents ? Fréquence des mises à jour ?",
+      "score": 3,
+      "answer": "Cinq concurrents sont identifiés. Revue annuelle des offres visibles et retours clients, sans veille structurée sur capacités, prix et investissements."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Êtes-vous bien positionné par rapport aux concurrents (prix, délai, qualité) ?",
+      "score": 4,
+      "answer": "Bonne reconnaissance qualité et réactivité ; prix intermédiaire. La livraison à l’heure de 87 % limite l’avantage concurrentiel face aux acteurs plus fiables."
+    },
+    {
+      "axis": "Marketing",
+      "question": "Avez-vous un taux acceptable (>XXX% à définir) de transformation des offres ? quel est votre taux ?",
+      "score": 3,
+      "answer": "Transformation des devis de 36 % sur les douze derniers mois, cible interne de 42 %. Taux mesuré trimestriellement ; les motifs de perte restent irrégulièrement renseignés."
+    },
+    {
+      "axis": "RH",
+      "question": "Il existe une matrice/cartographie des compétences",
+      "score": 3,
+      "answer": "Matrice de polyvalence en production, actualisée deux fois par an ; pas de cartographie complète pour commerce, numérique et fonctions support."
+    },
+    {
+      "axis": "RH",
+      "question": "Les entretiens annuels sont réalisés (suivants le calendrier et la procédure définis)",
+      "score": 4,
+      "answer": "Campagne annuelle organisée au premier trimestre ; 43 entretiens sur 46 réalisés lors de la dernière campagne."
+    },
+    {
+      "axis": "RH",
+      "question": "L'organisation, incluant rôles et responsabilités,  est clairement définie, expliquée et communiquée à l'ensemble des salariés (lisibilité, niveaux hirérachiques-fonctionnels)",
+      "score": 4,
+      "answer": "Organigramme partagé à l’accueil et affiché. Les liens entre méthodes, qualité et production sont expliqués mais certaines suppléances restent implicites."
+    },
+    {
+      "axis": "RH",
+      "question": "Les souhaits émis par les salariés (formation, mobilité) sont pris en compte et un retour est systématiquement fait",
+      "score": 3,
+      "answer": "Les demandes sont recueillies mais le retour sur les décisions et délais de traitement n’est pas systématique."
+    },
+    {
+      "axis": "RH",
+      "question": "Anticipation des besoins en compétences (court/moyen terme)",
+      "score": 3,
+      "answer": "Les besoins à douze mois sont discutés en comité ; pas de projection structurée des départs et compétences à trois ans."
+    },
+    {
+      "axis": "RH",
+      "question": "Il existe un processus de recrutement (formalisation, délais,outils)",
+      "score": 3,
+      "answer": "Validation du besoin, annonce, entretien et essai technique sont définis ; les délais et critères d’évaluation ne sont pas tous formalisés."
+    },
+    {
+      "axis": "RH",
+      "question": "Les processus de décision existent, sont clairs, fonctionnent",
+      "score": 4,
+      "answer": "Les décisions opérationnelles sont prises par les responsables ; les investissements et engagements importants remontent à la dirigeante, avec quelques ralentissements en son absence."
+    },
+    {
+      "axis": "RH",
+      "question": "Les résultats sont exploités",
+      "score": 3,
+      "answer": "Les évaluations alimentent les demandes de formation, mais leur exploitation pour la mobilité et les compétences reste partielle."
+    },
+    {
+      "axis": "RH",
+      "question": "Le processus d'augmentation est connu, respecté et basé sur des critères d'appréciation objectifs et non discrimants",
+      "score": 3,
+      "answer": "La direction arbitre les augmentations après propositions des managers ; les critères sont définis de manière générale mais insuffisamment documentés et communiqués."
+    },
+    {
+      "axis": "RH",
+      "question": "Il existe une évaluation systématique, à chaud et à froid",
+      "score": 2,
+      "answer": "Évaluation à chaud recueillie pour la majorité des formations ; pas d’évaluation à froid systématique ni de mesure des compétences acquises au poste."
+    },
+    {
+      "axis": "RH",
+      "question": "Les formations réalisées sous tutorat le sont dans le respect de la procédure existante, et sont efficaces",
+      "score": 3,
+      "answer": "Tuteurs désignés pour les métiers techniques ; le contenu et les critères de validation du tutorat varient selon les équipes."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les logiciels critiques ont-ils un propriétaire métier identifié ?",
+      "score": 3,
+      "answer": "Le responsable production porte le besoin métier de l’ERP et la responsable administrative celui de la paie et de la comptabilité. La propriété des fichiers Excel critiques n’est pas formalisée pour tous les usages."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Un référent numérique ou responsable de transformation est-il nommé ?",
+      "score": 3,
+      "answer": "Le responsable production est nommé référent numérique à temps partiel et coordonne le prestataire informatique. Son temps disponible et les relais métiers ne sont pas encore définis pour chaque projet."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les versions des logiciels clés sont-elles connues et mises à jour ?",
+      "score": 3,
+      "answer": "Le prestataire tient les versions de l’ERP, du serveur et des postes et organise leurs mises à jour. Les logiciels liés aux anciennes machines ne sont pas tous inclus dans le même suivi."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les sauvegardes sont-elles automatiques, isolées et surveillées ?",
+      "score": 4,
+      "answer": "Sauvegarde automatique quotidienne de l’ERP et des dossiers partagés, copie isolée et alertes surveillées par le prestataire. Les fichiers locaux d’atelier restent insuffisamment couverts."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les irritants opérationnels majeurs sont-ils connus et documentés ?",
+      "score": 3,
+      "answer": "Les irritants majeurs sont connus : doubles saisies, versions des plannings et recherche de plans. Certains sont décrits dans les comptes rendus d’équipe, sans registre centralisé ni priorisation commune."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Existe-t-il des fichiers ou outils critiques non officiellement gérés par l’entreprise ?",
+      "score": 2,
+      "answer": "Oui. Des fichiers Excel de calcul de temps et des carnets de réglage restent dépendants de leurs auteurs, sans propriétaire de remplacement ni documentation suffisante."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Un test de restauration a-t-il été réalisé au cours des 12 derniers mois ?",
+      "score": 3,
+      "answer": "Un test de restauration de la base ERP a réussi en juin 2026. Les résultats sont conservés ; la restauration complète des dossiers atelier et du poste de pilotage n’a pas encore été testée."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les contrats des prestataires informatiques sont-ils connus et accessibles ?",
+      "score": 4,
+      "answer": "Contrats de support ERP, hébergement, sauvegarde et maintenance regroupés dans un dossier à accès restreint. La responsable administrative suit les échéances et les contacts de support."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Un antivirus ou EDR administré est-il déployé sur les postes ?",
+      "score": 4,
+      "answer": "Un antivirus administré est installé sur les postes bureautiques et le serveur, avec console de supervision du prestataire. Les postes de certaines machines anciennes nécessitent encore une solution compatible."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les incidents informatiques sont-ils suivis et analysés ?",
+      "score": 3,
+      "answer": "Les demandes sont enregistrées chez le prestataire et les incidents majeurs sont revus avec le référent numérique. Les incidents mineurs atelier et leur temps perdu ne sont pas tous consolidés."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Un pare-feu administré protège-t-il les accès réseau ?",
+      "score": 4,
+      "answer": "Un pare-feu administré protège les accès réseau ; la configuration et les accès distants sont gérés par le prestataire. La segmentation complète entre bureautique et équipements industriels reste à finaliser."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les collaborateurs sont-ils sensibilisés aux risques phishing, mots de passe et pièces jointes ?",
+      "score": 3,
+      "answer": "Une sensibilisation annuelle couvre phishing, mots de passe et pièces jointes, avec rappel à l’accueil. Pas encore de simulations régulières ni de mesure consolidée de la compréhension."
+    },
+    {
+      "axis": "RSE",
+      "question": "Réaliser une analyse financière régulière, un plan de fiancement",
+      "score": 1,
+      "answer": "Oui. CA, marge et trésorerie sont revus mensuellement, avec situation trimestrielle. Un plan de financement accompagne le projet d’investissement de 650 000 €. Cette question porte sur une affirmation individuelle satisfaite."
+    },
+    {
+      "axis": "RSE",
+      "question": "Définir et formaliser de valeurs",
+      "score": 1,
+      "answer": "Oui. Qualité, fiabilité, coopération et sécurité sont formalisées dans le livret d’accueil et rappelées en réunion. L’affirmation individuelle est satisfaite."
+    },
+    {
+      "axis": "RSE",
+      "question": "Identifier les risque et opportunitiés (ex: SWOT, PESTEL...)",
+      "score": 1,
+      "answer": "Oui. Dépendance client, recrutement, capacité et énergie sont examinés en comité ; les opportunités énergie et équipements industriels sont inscrites dans la feuille de route 2029. L’affirmation individuelle est satisfaite."
+    },
+    {
+      "axis": "RSE",
+      "question": "Assurer un contrôle de gestion, un plan d'amélioration financière à moyen et long terme",
+      "score": 1,
+      "answer": "Oui. Contrôle de gestion trimestriel et trajectoire financière 2027–2029 existent, avec actions sur marge, encours et financement. L’affirmation individuelle est satisfaite ; les scénarios restent à approfondir."
+    },
+    {
+      "axis": "RSE",
+      "question": "Formaliser un code de conduite por tous les salariés (ex: charte éthique, formation du management...)",
+      "score": 0,
+      "answer": "Non. Les valeurs sont écrites, mais aucun code de conduite général ou charte éthique distincte n’est encore déployé à tous les salariés."
+    },
+    {
+      "axis": "RSE",
+      "question": "Définir un projet d'entreprose à long terme (ex: 5 à 10 ans)",
+      "score": 0,
+      "answer": "Le projet écrit couvre 2027–2029. Il n’existe pas encore de projet formalisé à cinq à dix ans ; cette exigence précise n’est donc pas satisfaite."
+    },
+    {
+      "axis": "RSE",
+      "question": "Suivi des données extra-financières pour améliorere la performance sociale, environementale, socétale (ex: Rapport RSE, indicateurs RSE, capital humaine...)",
+      "score": 0,
+      "answer": "Des données énergie, déchets et RH sont disponibles séparément. Elles ne sont pas réunies dans un pilotage extra-financier complet avec objectifs, responsables et revue des impacts sociaux, environnementaux et sociétaux."
+    },
+    {
+      "axis": "RSE",
+      "question": "Déployer des actions concrétes de mise en oeuvre des valeurs (ex: bonnes pratiques commerciales...)",
+      "score": 1,
+      "answer": "Oui. Traçabilité qualité, sécurité à l’accueil, tutorat et contrôles des offres traduisent les valeurs dans les pratiques. L’affirmation individuelle est satisfaite."
+    },
+    {
+      "axis": "RSE",
+      "question": "Définir des plans stratégiques (ex: commercial, industriel, ressources humaines, achats, plan de continuité d'activité, économie circulaire...)",
+      "score": 1,
+      "answer": "Oui. Plans commercial et industriel définis, complétés d’un plan annuel de formation et d’une trajectoire budgétaire. Les achats responsables et la continuité d’activité restent moins détaillés. L’affirmation individuelle de planification stratégique est satisfaite."
     }
   ],
   "profile_responses": [
@@ -1712,6 +2036,16 @@
       "answer": "Tri des métaux, cartons, déchets courants et déchets dangereux, avec prestataires spécialisés pour huiles et fluides. Bordereaux archivés et quantités revues trimestriellement ; coûts non consolidés chaque mois.",
       "source_question_id": 23,
       "section": "RSE"
+    },
+    {
+      "section": "RH",
+      "question": "Revue des indicateurs RH Taux d’absentéisme, Turn Over, Tx d’accidents etc…",
+      "answer": "Absentéisme 3,6 %, turnover annuel 7 %, un accident avec arrêt sur les douze derniers mois. Revue mensuelle des effectifs et de l’absentéisme, revue trimestrielle du turnover et de la sécurité. L’engagement et les effets des formations ne sont pas encore mesurés régulièrement."
+    },
+    {
+      "section": "Commercial & Marketing",
+      "question": "Quelle est votre organisation commerciale ? Qui assure & comment faites-vous la prospection commerciale?",
+      "answer": "Un responsable commercial et une assistante gèrent les 58 clients actifs. La dirigeante intervient sur les comptes stratégiques. Un CRM suit les opportunités depuis six mois ; la prospection cible les équipements industriels et l’énergie, mais son rythme reste irrégulier."
     }
   ],
   "question_updates": [
