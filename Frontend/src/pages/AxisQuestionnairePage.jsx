@@ -358,7 +358,7 @@ function AxisQuestionnairePage() {
                         </span>
                       </div>
 
-                      <p className="question-text">{question.question_text}</p>
+                      <p className="question-text" style={{ whiteSpace: "pre-line" }}>{question.question_text}</p>
 
                       <div className="question-answer-grid">
                         <div className="form-group">
