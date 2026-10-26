@@ -90,11 +90,7 @@ function DiagnosticPage() {
   }
 
   function openQuestionnaire(axis) {
-    const isFinanceWithoutQuestions =
-      axis.axis_name?.trim().toLowerCase() === "finance" && Number(axis.total_questions) === 0;
-    window.location.href = isFinanceWithoutQuestions
-      ? `/companies/${companyId}/finance`
-      : `/companies/${companyId}/diagnostic/${axis.axis_id}`;
+    window.location.href = `/companies/${companyId}/diagnostic/${axis.axis_id}`;
   }
 
   function openAnalysis() {
@@ -252,9 +248,7 @@ function DiagnosticPage() {
                           className="primary-button questionnaire-button"
                           onClick={() => openQuestionnaire(axis)}
                         >
-                          {axis.axis_name?.trim().toLowerCase() === "finance" && Number(axis.total_questions) === 0
-                            ? "Données financières et prévisions"
-                            : "Ouvrir le questionnaire"}
+                          Ouvrir le questionnaire
                         </button>
                       </div>
                     </article>

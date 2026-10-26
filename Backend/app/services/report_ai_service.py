@@ -140,7 +140,7 @@ For axis_analysis, write professional conclusions in French, as in a consultant'
 Never repeat the question wording, show a score in a finding, or format as a question and answer.
 Ground each finding in the supplied answers, comments, scores, profile, SWOT, or financial figures. Explain the business implication rather than merely restating a score.
 Do not turn a question into a factual claim solely because it was asked.
-Finance has financial figures, not a questionnaire score. Distinguish actuals from forecasts.
+Use only the six selected diagnostic axes: Stratégie, Performance, Marketing, RH, Digitalisation and RSE. Do not add a Finance axis.
 At most two short findings per SWOT category and axis, each under 140 characters. If an axis has no usable evidence, use empty arrays. Do not invent interviews.
 
 5. recommendations

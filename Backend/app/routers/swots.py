@@ -5,7 +5,6 @@ from app.database import get_db
 from app.models.company import Company
 from app.models.axis import Axis
 from app.models.swot import SWOT
-from app.models.financial_year import FinancialYear
 from app.schemas.swot import SWOTCreate, SWOTRead, SWOTUpdate 
 
 #from app.services.swot_ai_service import generate_swot_draft
@@ -139,12 +138,7 @@ def preview_swot_ai_payload(
     context = build_swot_context(db, company_id)
     if context is None:
         raise HTTPException(status_code=404, detail="Company not found")
-    financial_years = (
-        db.query(FinancialYear)
-        .filter(FinancialYear.company_id == company_id)
-        .order_by(FinancialYear.year, FinancialYear.kind)
-        .all()
-    )
+    financial_years = ()
     return make_swot_ai_payload(context, financial_years)
 
 
@@ -159,12 +153,7 @@ def generate_swot(
     if not swot_context:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    financial_years = (
-        db.query(FinancialYear)
-        .filter(FinancialYear.company_id == company_id)
-        .order_by(FinancialYear.year, FinancialYear.kind)
-        .all()
-    )
+    financial_years = ()
     ai_payload = make_swot_ai_payload(swot_context, financial_years)
     ai_result = generate_swot_with_ai(ai_payload) #the prompt 
 

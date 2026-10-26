@@ -34,7 +34,7 @@ def test_invalid_datasets_rejected_before_training(dataset, artifacts, problem):
     elif problem == 'rare_class': frame.loc[0, 'target'] = 'red'
     elif problem == 'one_class': frame['target'] = 'red'
     elif problem == 'duplicate_company': frame.loc[0, 'company_id'] = frame.loc[1, 'company_id']
-    elif problem == 'unknown_size': frame.loc[0, ml.FEATURE_COLUMNS[7:]] = 0
+    elif problem == 'unknown_size': frame.loc[0, ml.FEATURE_COLUMNS[len(ml.AXIS_FEATURES):]] = 0
     elif problem == 'non_numeric': frame['rh_score'] = 'not a score'
     with pytest.raises(ValueError):
         ml.train_model_from_dataset(frame, dataset_source='demo_database_only', use_demo=True)

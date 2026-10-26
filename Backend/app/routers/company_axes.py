@@ -33,7 +33,7 @@ def question_matches_company_size(question: Question, company_size: str | None) 
 
 
 def ensure_company_axes_exist(company: Company, db: Session):
-    axes = db.query(Axis).order_by(Axis.order_index).all()
+    axes = db.query(Axis).filter(Axis.is_active.is_(True)).order_by(Axis.order_index).all()
 
     for axis in axes:
         existing = (
@@ -100,7 +100,7 @@ def get_company_axes_selection(
     company_axes = (
         db.query(CompanyAxis)
         .join(Axis, CompanyAxis.axis_id == Axis.id)
-        .filter(CompanyAxis.company_id == company_id)
+        .filter(CompanyAxis.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -129,9 +129,11 @@ def update_company_axis_selection(
 
     company_axis = (
         db.query(CompanyAxis)
+        .join(Axis, CompanyAxis.axis_id == Axis.id)
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.axis_id == axis_id,
+            Axis.is_active.is_(True),
         )
         .first()
     )
@@ -173,6 +175,7 @@ def get_diagnostic_overview(
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -254,9 +257,11 @@ def get_company_axis_questions(
 
     company_axis = (
         db.query(CompanyAxis)
+        .join(Axis, CompanyAxis.axis_id == Axis.id)
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.axis_id == axis_id,
+            Axis.is_active.is_(True),
             CompanyAxis.is_selected == True,
         )
         .first()

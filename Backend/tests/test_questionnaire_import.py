@@ -10,10 +10,10 @@ from app.scripts.convert_powerapps_questionnaire import convert
 
 def test_bank_keeps_all_powerapps_questions_and_rse_statements():
     bank = load_bank()
-    assert len(bank) == 239
-    assert len({r['QuestionID'] for r in bank}) == 239
+    assert len(bank) == 236
+    assert len({r['QuestionID'] for r in bank}) == 236
     assert len([r for r in bank if 'Axe' in r]) == 216
-    assert len([r for r in bank if 'Section' in r]) == 23
+    assert len([r for r in bank if 'Section' in r]) == 20
     rse = [r for r in bank if r.get('Axe') == 'RSE']
     assert len(rse) == 25
     assert all(r['Affirmations'].count('•') == 3 for r in rse)
@@ -31,7 +31,7 @@ def test_converter_keeps_concatenated_statements_and_escaped_quotes():
 def test_import_preview_does_not_write(configured_db):
     summary = import_questionnaire(configured_db)
     assert summary['axis_questions_added'] == 216
-    assert summary['profile_questions_added'] == 23
+    assert summary['profile_questions_added'] == 20
     assert configured_db.query(Question).count() == 0
     assert configured_db.query(CompanyProfileQuestion).count() == 0
     assert not configured_db.new
@@ -51,12 +51,12 @@ def test_import_is_idempotent_preserves_answers_and_existing_settings(configured
     db.commit()
     assert first['axis_questions_added'] == 215
     assert db.query(Question).count() == 216
-    assert db.query(CompanyProfileQuestion).count() == 23
+    assert db.query(CompanyProfileQuestion).count() == 20
     assert db.query(Answer).one().question_id == old_id
     assert not existing.is_active and existing.order_index == 99
     second = import_questionnaire(db, apply=True, activate=True)
     assert second['axis_questions_added'] == second['profile_questions_added'] == 0
-    assert second['existing_questions_kept'] == 239
+    assert second['existing_questions_kept'] == 236
     rse = db.query(Question).join(Axis).filter(Axis.name == 'RSE').all()
     assert all(q.max_score == 3 and q.question_text.count('•') == 3 for q in rse)
     digital = db.query(Question).join(Axis).filter(Axis.name == 'Digitalisation').all()

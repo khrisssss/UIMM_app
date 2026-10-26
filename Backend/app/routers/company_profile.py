@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from app.database import get_db
 from app.dependencies.auth import require_admin, require_consultant_or_admin
@@ -87,6 +88,7 @@ def admin_get_company_profile_sections(
     """List company profile sections for administration."""
     return (
         db.query(CompanyProfileSection)
+        .filter(~func.lower(func.trim(CompanyProfileSection.name)).in_(['finance', 'finances']))
         .order_by(CompanyProfileSection.order_index)
         .all()
     )
@@ -240,6 +242,7 @@ def admin_get_company_profile_questions(
     questions = (
         db.query(CompanyProfileQuestion)
         .join(CompanyProfileSection)
+        .filter(~func.lower(func.trim(CompanyProfileSection.name)).in_(['finance', 'finances']))
         .order_by(
             CompanyProfileSection.order_index,
             CompanyProfileQuestion.order_index,

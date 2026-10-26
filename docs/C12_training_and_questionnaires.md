@@ -2,22 +2,24 @@
 
 This change provides a repeatable questionnaire import, fictional completed diagnostics, an explicit demo training mode, and automated tests of the ML pipeline. It does not certify predictive quality on real companies or validate a competence on behalf of the assessor.
 
+The app now has six diagnostic axes; see [Six_axes.md](Six_axes.md) for retirement, deployment and model retraining details.
+
 ## What is imported
 
 | Questionnaire | Questions |
 | --- | ---: |
-| Company profile | 23 |
+| Company profile | 20 |
 | Stratégie | 26 |
 | Performance | 40 |
 | Marketing | 17 |
 | RH | 58 |
 | Digitalisation | 50 |
 | RSE | 25 |
-| **Total** | **239** |
+| **Total** | **236** |
 
-The bank is in `Backend/app/data/powerapps_questionnaire.json`. Original Power Apps IDs, order, categories, size flags and question types remain in that file. They are not used as database primary keys. RSE retains the issue title and all three statements, with visible line breaks. Digitalisation uses Domaine as the displayed category. The ERP OuiNon profile question uses the application's existing text answer field: enter Oui or Non. No database schema migration is required.
+The original 239-record export is in `Backend/app/data/powerapps_questionnaire.json`; the importer excludes the three retired Finances profile questions. Original Power Apps IDs, order, categories, size flags and question types remain in that file. They are not used as database primary keys. RSE retains the issue title and all three statements, with visible line breaks. Digitalisation uses Domaine as the displayed category. The ERP OuiNon profile question uses the application's existing text answer field: enter Oui or Non. No database schema migration is required.
 
-The supplied file contains no new scored Finance questionnaire. Its three qualitative Finances profile questions are included. The existing financial-year form is unchanged. RH, RSE and Digitalisation omit size flags in the source; these questions default to all three sizes. The historical app calls its first size group `<10`, while the Power Apps source describes the first group as 1–10. The ML encoder accepts both strings in this same historical group; the boundary wording should be confirmed with UIMM before changing company categories.
+The supplied file contains no new scored Finance questionnaire. Its three qualitative Finances profile questions are excluded from the active questionnaire. The Finance axis and financial-year form are retired; historical financial records remain in the database. RH, RSE and Digitalisation omit size flags in the source; these questions default to all three sizes. The historical app calls its first size group `<10`, while the Power Apps source describes the first group as 1–10. The ML encoder accepts both strings in this same historical group; the boundary wording should be confirmed with UIMM before changing company categories.
 
 Performance source IDs 2029 and 2030 have identical text in the same category. Both are preserved at their source order. Review whether both should remain active in the administration screen before using the rubric for real diagnostics.
 
@@ -79,7 +81,7 @@ Demo and real model bundles have separate paths under `Backend/ml_artifacts` (in
 
 Real mode no longer silently adds synthetic rows when data is insufficient. It requires at least 12 eligible archived diagnostics, at least two states, and at least four companies per represented state. Each stored axis score must describe a fully answered questionnaire. Zero scores are valid; duplicate score rows, unknown company sizes, missing/non-finite features and invalid score ranges are rejected. Consultants must review `general_state` before archiving: the database's default orange label is not an expert annotation, and archiving alone cannot verify label quality.
 
-This version uses seven axis percentages and three company-size indicators. Missing axes still map to zero, as in the previous implementation. Keep the selected axes and rubric consistent when comparing companies; an explicit missing-axis strategy and questionnaire-version tracking remain future model improvements. Do not use the model's own suggestions as independent ground-truth labels. For a defensible real evaluation, collect independently reviewed examples of all relevant states and keep an additional untouched validation set when tuning the model. The fixed 25% holdout here verifies a single training run; repeated tuning against that holdout would bias the result.
+This version uses six axis percentages and three company-size indicators. Missing axes still map to zero, as in the previous implementation. Keep the selected axes and rubric consistent when comparing companies; an explicit missing-axis strategy and questionnaire-version tracking remain future model improvements. Do not use the model's own suggestions as independent ground-truth labels. For a defensible real evaluation, collect independently reviewed examples of all relevant states and keep an additional untouched validation set when tuning the model. The fixed 25% holdout here verifies a single training run; repeated tuning against that holdout would bias the result.
 
 Synthetic states are generated from simulated maturity profiles. A high demo score only confirms that the model can learn the generator's patterns. It is not evidence of real-world predictive accuracy, and adding more simulated companies does not solve that limitation.
 
