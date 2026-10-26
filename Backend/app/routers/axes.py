@@ -53,6 +53,9 @@ def update_axis(
         )
 
     update_data = axis_data.model_dump(exclude_unset=True)
+    from app.services.diagnostic_scope_service import is_finance_name
+    if is_finance_name(axis.name) or is_finance_name(update_data.get("name", "")):
+        raise HTTPException(status_code=400, detail="Finance is no longer a diagnostic axis")
 
     for key, value in update_data.items():
         setattr(axis, key, value)
@@ -72,7 +75,7 @@ def get_scoring_scales_by_axis(
     """Read the active scoring scale and its answer levels for an axis. Returns 404 when no active scale exists."""
     axis = db.query(Axis).filter(Axis.id == axis_id).first()
 
-    if axis is None:
+    if axis is None or not axis.is_active:
         raise HTTPException(
             status_code=404,
             detail="Axis not found",

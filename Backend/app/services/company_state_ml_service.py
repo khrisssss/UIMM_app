@@ -24,15 +24,13 @@ from app.models.axis import Axis
 
 
 ML_ARTIFACT_DIR = "ml_artifacts"
-MODEL_PATH = os.path.join(ML_ARTIFACT_DIR, "company_state_model_v2.joblib")
-METRICS_PATH = os.path.join(ML_ARTIFACT_DIR, "company_state_metrics_v2.joblib")
+MODEL_PATH = os.path.join(ML_ARTIFACT_DIR, "company_state_model_six_axes.joblib")
 
 AXIS_FEATURES = [
     "strategie_score",
     "performance_score",
     "marketing_score",
     "rh_score",
-    "finance_score",
     "digitalisation_score",
     "rse_score",
 ]
@@ -71,9 +69,6 @@ def normalize_axis_name(axis_name):
 
     if axis_name == "rh" or "ressources" in axis_name or "humain" in axis_name:
         return "rh_score"
-
-    if "finance" in axis_name:
-        return "finance_score"
 
     if "digital" in axis_name or "num" in axis_name:
         return "digitalisation_score"
@@ -126,7 +121,7 @@ def get_company_feature_row(db: Session, company_id: int):
     score_rows = (
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
-        .filter(Score.company_id == company_id)
+        .filter(Score.company_id == company_id, Axis.is_active.is_(True))
         .all()
     )
 
@@ -156,7 +151,7 @@ def training_dataset(db: Session, *, use_demo=False):
     for company in companies:
         if is_demo_company(company) != use_demo:
             continue
-        scores = db.query(Score).filter_by(company_id=company.id).all()
+        scores = db.query(Score).join(Axis, Score.axis_id == Axis.id).filter(Score.company_id == company.id, Axis.is_active.is_(True)).all()
         if not scores or any(s.total_questions <= 0 or s.answered_questions != s.total_questions for s in scores):
             continue
         if len({s.axis_id for s in scores}) != len(scores):
@@ -174,25 +169,18 @@ def build_demo_training_dataset():
     Never added automatically to a real database dataset.
     """
 
-    demo_rows = [
-        # Good companies
-        [90, 85, 80, 82, 75, 88, 78, "<10", "green"],
-        [78, 82, 76, 80, 85, 79, 74, "11-50", "green"],
-        [88, 90, 84, 86, 80, 83, 82, ">50", "green"],
-        [72, 76, 70, 74, 78, 75, 73, "11-50", "green"],
-
-        # To follow
-        [60, 55, 48, 58, 62, 50, 55, "<10", "orange"],
-        [55, 65, 42, 60, 58, 47, 50, "11-50", "orange"],
-        [68, 52, 50, 55, 60, 45, 57, ">50", "orange"],
-        [50, 58, 55, 52, 48, 60, 54, "11-50", "orange"],
-
-        # Attention
-        [35, 40, 28, 32, 45, 25, 38, "<10", "red"],
-        [42, 35, 30, 38, 40, 32, 36, "11-50", "red"],
-        [25, 30, 22, 28, 35, 20, 30, ">50", "red"],
-        [45, 42, 25, 30, 38, 28, 34, "<10", "red"],
-    ]
+    demo_rows = [[90, 85, 80, 82, 88, 78, '<10', 'green'],
+     [78, 82, 76, 80, 79, 74, '11-50', 'green'],
+     [88, 90, 84, 86, 83, 82, '>50', 'green'],
+     [72, 76, 70, 74, 75, 73, '11-50', 'green'],
+     [60, 55, 48, 58, 50, 55, '<10', 'orange'],
+     [55, 65, 42, 60, 47, 50, '11-50', 'orange'],
+     [68, 52, 50, 55, 45, 57, '>50', 'orange'],
+     [50, 58, 55, 52, 60, 54, '11-50', 'orange'],
+     [35, 40, 28, 32, 25, 38, '<10', 'red'],
+     [42, 35, 30, 38, 32, 36, '11-50', 'red'],
+     [25, 30, 22, 28, 20, 30, '>50', 'red'],
+     [45, 42, 25, 30, 28, 34, '<10', 'red']]
 
     rows = []
 
@@ -202,13 +190,12 @@ def build_demo_training_dataset():
             "performance_score": row[1],
             "marketing_score": row[2],
             "rh_score": row[3],
-            "finance_score": row[4],
-            "digitalisation_score": row[5],
-            "rse_score": row[6],
+            "digitalisation_score": row[4],
+            "rse_score": row[5],
         }
 
-        feature_row.update(encode_company_size(row[7]))
-        feature_row["target"] = row[8]
+        feature_row.update(encode_company_size(row[6]))
+        feature_row["target"] = row[7]
         feature_row["company_id"] = f"demo_{index}"
 
         rows.append(feature_row)
@@ -241,9 +228,9 @@ def validate_training_dataset(dataset):
         raise ValueError("Features must be numeric") from error
     if not np.isfinite(values).all():
         raise ValueError("Features must be finite")
-    if ((values[:, :7] < 0) | (values[:, :7] > 100)).any():
+    if ((values[:, :len(AXIS_FEATURES)] < 0) | (values[:, :len(AXIS_FEATURES)] > 100)).any():
         raise ValueError("Axis scores must be between 0 and 100")
-    sizes = values[:, 7:]
+    sizes = values[:, len(AXIS_FEATURES):]
     if not np.isin(sizes, [0, 1]).all() or not (sizes.sum(axis=1) == 1).all():
         raise ValueError("Each company needs a known size: <10 / 1-10, 11-50 or >50")
 
@@ -254,7 +241,7 @@ def split_training_dataset(dataset):
 
 
 def artifact_path(use_demo=False):
-    return Path(ML_ARTIFACT_DIR) / "company_state_demo_model.joblib" if use_demo else Path(MODEL_PATH)
+    return Path(ML_ARTIFACT_DIR) / "company_state_demo_six_axes.joblib" if use_demo else Path(MODEL_PATH)
 
 
 def train_model_from_dataset(dataset, *, dataset_source, use_demo=False):
@@ -271,6 +258,7 @@ def train_model_from_dataset(dataset, *, dataset_source, use_demo=False):
     labels = list(STATE_LABELS)
     metrics = {
         "model_name": "company_state_prediction",
+        "feature_schema": "six_axes_v1",
         "algorithm": "RandomForestClassifier",
         "accuracy": round(float(accuracy_score(test["target"], predicted)), 3),
         "macro_f1": round(float(f1_score(test["target"], predicted, average="macro", zero_division=0)), 3),

@@ -89,7 +89,7 @@ function DashboardPage() {
                 onClick={() => goTo("/admin/axes")}
               >
                 <span className="card-title">Axes de diagnostic</span>
-                <span className="card-text">Modifiez le nom et la description des 7 axes.</span>
+                <span className="card-text">Modifiez le nom et la description des 6 axes.</span>
               </button>
 
               <button

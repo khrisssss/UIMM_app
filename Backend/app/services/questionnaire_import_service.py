@@ -23,7 +23,9 @@ def key(value):
 
 
 def load_bank():
-    return json.loads(BANK_PATH.read_text(encoding='utf-8'))['questions']
+    from app.services.diagnostic_scope_service import is_finance_name
+    return [record for record in json.loads(BANK_PATH.read_text(encoding='utf-8'))['questions']
+            if not is_finance_name(record.get('Axe') or record.get('Section') or '')]
 
 
 def question_text(record):

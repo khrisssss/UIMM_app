@@ -24,7 +24,7 @@ function PageBackButton() {
     // Directly opened pages have no previous application history entry.
     const company = location.pathname.match(/^\/companies\/([^/]+)/);
     const fallback = company
-      ? (/\/(finance|diagnostic\/[^/]+)$/.test(location.pathname)
+      ? (/\/(diagnostic\/[^/]+)$/.test(location.pathname)
           ? `/companies/${company[1]}/diagnostic`
           : "/companies")
       : home;

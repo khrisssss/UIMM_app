@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.company import Company
-from app.models.financial_year import FinancialYear
 from app.models.reports import Report
 from app.models.user import User
 from app.schemas.report import ReportRead, ReportUpdate
@@ -55,7 +54,7 @@ def create_report_draft(
     if report_context is None:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    financial_years = db.query(FinancialYear).filter(FinancialYear.company_id == company_id).order_by(FinancialYear.year, FinancialYear.kind).all()
+    financial_years = ()
     generated_report = generate_report_draft(report_context, financial_years)
     # Restore the name locally after the anonymized AI request returns.
     generated_report["title"] = f"Rapport de diagnostic — {company.name}"

@@ -27,19 +27,14 @@ def seed_axes():
             "order_index": 4,
         },
         {
-            "name": "Finance",
-            "description": "Pilotage financier et indicateurs économiques.",
-            "order_index": 5,
-        },
-        {
             "name": "Digitalisation",
             "description": "Outils numériques, données et maturité digitale.",
-            "order_index": 6,
+            "order_index": 5,
         },
         {
             "name": "RSE",
             "description": "Responsabilité sociétale et environnementale.",
-            "order_index": 7,
+            "order_index": 6,
         },
     ]
 

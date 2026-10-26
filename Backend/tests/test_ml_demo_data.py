@@ -26,7 +26,7 @@ def test_demo_seed_preview_and_idempotency_and_score_consistency(configured_db):
     assert again['companies_added'] == 0 and again['companies_kept'] == 12
     assert real.name == 'Existing customer' and real.general_state == 'orange'
     assert db.query(Company).count() == 13
-    assert db.query(CompanyProfileAnswer).count() == 12 * 23
+    assert db.query(CompanyProfileAnswer).count() == 12 * 20
     for score in db.query(Score).all():
         pairs = db.query(Answer, Question).join(Question, Answer.question_id == Question.id).filter(Answer.company_id == score.company_id, Question.axis_id == score.axis_id).all()
         assert score.score_total == sum(a.score_value for a, _ in pairs)
