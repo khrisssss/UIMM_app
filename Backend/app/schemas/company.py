@@ -67,6 +67,7 @@ class CompanyUpdate(BaseModel):
     general_state: Optional[str] = None
 
 class CompanyRead(CompanyBase):
+    is_synthetic: bool = False
     id: int
     is_archived: bool
     created_at: datetime

@@ -135,7 +135,7 @@ def get_company_feature_row(db: Session, company_id: int):
 
 
 def is_demo_company(company):
-    return company.name.strip().upper().startswith("DEMO")
+    return bool(getattr(company, "is_synthetic", False)) or company.name.strip().upper().startswith("DEMO")
 
 
 def training_dataset(db: Session, *, use_demo=False):

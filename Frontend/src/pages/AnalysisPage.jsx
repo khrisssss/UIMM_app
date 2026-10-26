@@ -415,6 +415,9 @@ function AnalysisPage() {
           <button className="primary-button" onClick={openReport}>Continuer vers le rapport</button>
         </div>
 
+        {company?.is_synthetic && (
+          <p className="page-message" role="note">Cas d’étude fictif : réponses et scores générés à partir d’un scénario pédagogique.</p>
+        )}
         {message && <div className="toast-message" role="status">{message}</div>}
 
         <section className="analysis-top-grid">

@@ -51,6 +51,8 @@ Base.metadata.create_all(bind=engine)
 
 # Add the independent portfolio selection to databases created before this field existed.
 with engine.begin() as connection:
+    connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS is_synthetic BOOLEAN NOT NULL DEFAULT FALSE"))
+    connection.execute(text("UPDATE companies SET is_synthetic = TRUE WHERE is_synthetic = FALSE AND (name LIKE 'DEMO ML - %' OR name LIKE 'DEMO — %')"))
     connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))
     connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS axis_analysis TEXT"))
     connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS presentation_content TEXT"))
