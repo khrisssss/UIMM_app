@@ -4,10 +4,13 @@ from collections import defaultdict
 
 from app.models.answer import Answer
 from app.models.axis import Axis
+# Register relationship targets when this service is used by the standalone CLI.
+from app.models.axis_question_category import AxisQuestionCategory  # noqa: F401
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
 from app.models.company_profile_answer import CompanyProfileAnswer
 from app.models.company_profile_question import CompanyProfileQuestion
+from app.models.company_profile_section import CompanyProfileSection  # noqa: F401
 from app.models.question import Question
 from app.models.score import Score
 from app.models.scoring_level import ScoringLevel
