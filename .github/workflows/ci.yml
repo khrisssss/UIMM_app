@@ -140,9 +140,20 @@ jobs:
             http://127.0.0.1:8080/api/db-test
 
           echo
+          # Run this requested installation once, including on a retried deploy.
+          # A later intentional deletion must not recreate the company on deploy.
+          migration_marker="$HOME/.uimm_precision_montelac_v1_installed"
+          if [ ! -f "$migration_marker" ]; then
+            docker compose --env-file .env.production \
+              -f compose.production.yml exec -T backend \
+              python -m app.scripts.install_precision_montelac --apply
+            touch "$migration_marker"
+          fi
+
           echo "Deployment and database check succeeded."
           REMOTE
 
       - name: Remove temporary SSH key
         if: always()
         run: rm -f ~/.ssh/deploy_key
+

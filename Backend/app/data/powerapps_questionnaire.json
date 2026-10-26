@@ -267,7 +267,7 @@
       "QuestionID": 1011,
       "Axe": "Stratégie",
       "Categorie": "Général",
-      "Question": "Connaissez-vous le positionnement de l'entreprise par rapport au marché et à la concurrence ?",
+      "Question": "Connaissez-vous le positionnement de l'entreprise/marché/concurrence ?",
       "Ordre": 11,
       "CibleMoins10": true,
       "Cible10_50": true,
@@ -1998,6 +1998,26 @@
       "Categorie": "Innovation",
       "Question": "Les projets numériques sont-ils reliés au lean, à la qualité ou à la performance industrielle ?",
       "Ordre": 50
+    },
+    {
+      "QuestionID": 1027,
+      "Axe": "Stratégie",
+      "Categorie": "Général",
+      "Question": "Le dirigeant peut-il s'absenter plus d'une journée sans téléphone ?",
+      "Ordre": 27,
+      "CibleMoins10": true,
+      "Cible10_50": true,
+      "CiblePlus50": true
+    },
+    {
+      "QuestionID": 3018,
+      "Axe": "Marketing",
+      "Categorie": "Offres commerciales",
+      "Question": "Il y a-t-il un système de validation des offres ? Qui les fait / les valide ?",
+      "Ordre": 18,
+      "CibleMoins10": true,
+      "Cible10_50": true,
+      "CiblePlus50": true
     }
   ]
 }

@@ -1,0 +1,1733 @@
+{
+  "name": "Précision Montelac",
+  "company": {
+    "name": "Précision Montelac",
+    "address": "24 rue des Ateliers, 31140 Aucamville, France",
+    "company_size": "11-50",
+    "contact_name": "Juliette Caron",
+    "contact_email": "contact@precision-montelac.example",
+    "contact_phone": "0500000001",
+    "status": "Diag en cours",
+    "prediag_origin": "Autre",
+    "prediag_origin_other": "Rencontre du réseau industriel territorial",
+    "has_rse": true,
+    "specific_regulatory_constraints": "Points à examiner selon les activités du site : sécurité machines, exposition aux fluides de coupe, huiles et déchets dangereux, protection des données. Traçabilité matière et documentaire exigée par les clients. ISO 9001 relève du système qualité et des exigences contractuelles.",
+    "general_comment": "Développer les marchés équipements industriels et énergie, fiabiliser les délais, sécuriser la transmission des compétences et prioriser les investissements numériques. Objectif : CA de 9 M€ en 2029 et livraison à l’heure de 97 %.",
+    "general_state": "orange",
+    "is_archived": false,
+    "is_synthetic": true
+  },
+  "activity": "Usinage de précision et assemblage de sous-ensembles métalliques",
+  "employee_count": 46,
+  "diagnostic_context": "Développer les marchés équipements industriels et énergie, fiabiliser les délais, sécuriser la transmission des compétences et prioriser les investissements numériques. Objectif : CA de 9 M€ en 2029 et livraison à l’heure de 97 %.",
+  "axes": [
+    "Stratégie",
+    "Performance",
+    "Marketing",
+    "RH",
+    "Digitalisation",
+    "RSE"
+  ],
+  "axis_responses": [
+    {
+      "question": "Comment voyez-vous l'entreprise dans 3 ans ?",
+      "answer": "Atteindre 9 M€ de CA en 2029 et rééquilibrer les marchés : aéronautique 35 %, équipements industriels 40 %, énergie 25 %. Atteindre 97 % de livraison à l’heure et financer 650 000 € d’investissement.",
+      "source_question_id": 1001,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Est-ce que la stratégie est écrite ?",
+      "answer": "Oui, une feuille de route 2027–2029 existe. Elle décrit les priorités mais certains responsables, jalons et budgets restent à préciser.",
+      "source_question_id": 1002,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Est elle compatible avec les moyens ?",
+      "answer": "Les moyens actuels permettent une croissance modérée ; le projet de 650 000 € d’investissement reste conditionné au financement et au recrutement de deux profils techniques.",
+      "source_question_id": 1003,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "La stratégie est-elle partagée avec la structure de direction et les salariés ?",
+      "answer": "La feuille de route est partagée au comité de direction ; les salariés ont reçu une présentation générale sans déclinaison complète par équipe.",
+      "source_question_id": 1004,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Y'a-t-il une définition des valeurs de l'entreprise, sont-elles partagées ?",
+      "answer": "Qualité, fiabilité des engagements, coopération et sécurité sont écrites dans le livret d’accueil et rappelées en réunion ; leur traduction en comportements n’est pas évaluée.",
+      "source_question_id": 1005,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Si vous aviez une baguette magique, ... ",
+      "answer": "Réduire la dépendance aux grands donneurs d’ordres, disposer d’un planning fiable et recruter plus facilement des régleurs CN. Ces souhaits ne disposent pas tous d’un plan d’exécution chiffré.",
+      "source_question_id": 1006,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "En cas d'absence, qui assure les fonctions de management ?",
+      "answer": "Le responsable production coordonne les opérations ; la responsable administrative assure RH et paiements. Une matrice de suppléance couvre les décisions courantes et les urgences, avec un point de situation au retour de la dirigeante.",
+      "source_question_id": 1007,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Les règles de délégation sont-elles formalisées ?",
+      "answer": "Matrice écrite des responsabilités et suppléances, revue annuellement. Les engagements stratégiques restent soumis à l’autorisation de la dirigeante.",
+      "source_question_id": 1008,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Les règles de délégation de signature sont elles formalisées ?",
+      "answer": "Délégations écrites : achats courants jusqu’à 8 000 € pour la production, offres standard jusqu’à 30 000 € pour le commercial sous réserve de marge et de capacité validées. Contrats atypiques et investissements soumis à la direction.",
+      "source_question_id": 1009,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Quelle est la perception des attentes du marché et des clients ?",
+      "answer": "Les clients recherchent conformité, traçabilité, petites séries et délais fiables. Les retours commerciaux sont examinés mensuellement ; aucune étude de marché complète n’a été réalisée récemment.",
+      "source_question_id": 1010,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Connaissez-vous le positionnement de l'entreprise/marché/concurrence ?",
+      "answer": "PME régionale spécialisée dans les pièces techniques en séries de 20 à 500 unités. Positionnement prix intermédiaire et qualité élevée. Marchés : aéronautique 40 %, équipements industriels 40 %, énergie 20 %. Premier client : 22 % du CA.",
+      "source_question_id": 1011,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Vous différenciez-vous sur le marché par rapport à vos concurrents ? Si oui, comment ?",
+      "answer": "Différenciation par l’appui technique, l’intégration usinage-assemblage, la traçabilité et la flexibilité sur les séries de 20 à 500 unités ; ces atouts sont documentés dans les offres.",
+      "source_question_id": 1012,
+      "axis": "Stratégie",
+      "score": 5
+    },
+    {
+      "question": "L'organigramme est-il conforme aux objectifs ?",
+      "answer": "L’organigramme couvre les activités actuelles mais ne prévoit pas encore les moyens commerciaux et numériques nécessaires à la diversification.",
+      "source_question_id": 1013,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Quelles sont les 3 principales difficultés ?",
+      "answer": "Trois difficultés : recrutement de deux profils techniques, consolidation encore manuelle de certaines données atelier et diversification commerciale insuffisamment régulière.",
+      "source_question_id": 1014,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Existe-t-il une structure de management, par exemple Copil ?",
+      "answer": "Un comité de direction réunit chaque mois direction, production, qualité, commerce et administration/RH.",
+      "source_question_id": 1015,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Y a-t-il des rituels, par exemple Copil ou Codir ?",
+      "answer": "Réunion atelier quotidienne de 15 minutes, réunion charge/capacité hebdomadaire et comité de direction mensuel ; les actions ne sont pas toutes clôturées dans les délais.",
+      "source_question_id": 1016,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "L'ordre du jour de ces rituels est-il formalisé et correspond-il aux enjeux ?",
+      "answer": "Ordre du jour standard : sécurité, qualité, délais, charge, commerce et trésorerie. Les sujets numériques et RSE restent occasionnels.",
+      "source_question_id": 1017,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Y a-t-il un budget à 3 ans réaliste ?",
+      "answer": "Une trajectoire 2027–2029 existe, mais les scénarios de financement, de hausse des coûts et de baisse des commandes ne sont pas encore détaillés.",
+      "source_question_id": 1018,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Comment est organisé l'exercice budgétaire annuel ? Budget de fonctionnement analytique ?",
+      "answer": "Budget annuel préparé au quatrième trimestre avec les responsables et l’expert-comptable ; analyse par atelier et grandes familles de charges, sans analytique complète par marché.",
+      "source_question_id": 1019,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "La performance financière est-elle mesurée mensuellement ?",
+      "answer": "CA, marge sur coûts directs, trésorerie et carnet de commandes sont revus chaque mois ; la clôture analytique complète est trimestrielle.",
+      "source_question_id": 1020,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Les taux horaires sont-ils définis par rapport au compte de résultat N-1 ou N-2 et utilisés pour les devis ?",
+      "answer": "Les taux horaires sont recalculés annuellement à partir de N−1 et utilisés dans l’ERP. Les évolutions en cours d’année ne sont répercutées qu’au cas par cas.",
+      "source_question_id": 1021,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Comment est assuré le contrôle de gestion ?",
+      "answer": "La responsable administrative suit les écarts avec l’expert-comptable ; les analyses par affaire sont disponibles mais les causes d’écarts ne sont pas systématiquement exploitées.",
+      "source_question_id": 1022,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Existe-t-il un compte de résultat simplifié trimestriel ou une situation trimestrielle ?",
+      "answer": "Oui, un compte de résultat simplifié trimestriel est produit et discuté en comité de direction.",
+      "source_question_id": 1023,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Effectuez-vous une situation intermédiaire ?",
+      "answer": "Une situation semestrielle est réalisée avec l’expert-comptable ; aucun arrêté complet mensuel n’est organisé.",
+      "source_question_id": 1024,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Le relationnel avec les institutionnels est-il défini : qui et quand ?",
+      "answer": "La dirigeante gère les relations avec UIMM, la banque et les acteurs territoriaux ; il n’existe pas de calendrier partagé ni de suivi centralisé des échanges.",
+      "source_question_id": 1025,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Faites-vous des RETEX ? Quels outils, quelles conséquences ?",
+      "answer": "Des retours d’expérience sont organisés sur les réclamations et projets importants. Ils sont stockés dans des comptes rendus, sans base commune ni vérification systématique de réutilisation.",
+      "source_question_id": 1026,
+      "axis": "Stratégie",
+      "score": 3
+    },
+    {
+      "question": "Quelles sont les certifications de l'entreprise (ISO etc...) ?",
+      "answer": "L’entreprise dispose d’un système qualité certifié ISO 9001. Elle n’a pas de certification environnementale ou sectorielle complémentaire dans ce profil.",
+      "source_question_id": 2001,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Comment utilisez-vous / quels rituels reprenez-vous les outputs de la revue de direction ?",
+      "answer": "La revue de direction annuelle produit un plan qualité ; les actions sont reprises au comité mensuel, mais certaines échéances sont reportées sans analyse approfondie.",
+      "source_question_id": 2002,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "À quel pourcentage l'ERP est-il utilisé ?",
+      "answer": "Environ 70 % du périmètre fonctionnel utile de l’ERP est exploité. Devis, commandes, achats, stocks, fabrication et facturation sont couverts ; la planification fine et les temps atelier restent partiellement sous Excel.",
+      "source_question_id": 2003,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Existe-t-il des rituels de suivi (Type SQCDP,...) ?",
+      "answer": "Un point SQCDP quotidien existe dans l’atelier. Les indicateurs sont affichés mais plusieurs sont mis à jour manuellement.",
+      "source_question_id": 2004,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Existe-t-il des gammes (phases, temps alloués), nomenclatures ?",
+      "answer": "Gammes et nomenclatures existent pour 90 % des références actives ; certaines pièces anciennes ont des temps standards à réviser.",
+      "source_question_id": 2005,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Existe-t-il un système de récompense de la performance ?",
+      "answer": "Une prime collective annuelle prend en compte qualité et délais. Les règles existent mais les résultats ne sont pas expliqués régulièrement à toutes les équipes.",
+      "source_question_id": 2006,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Gestion de la charge/capacité : avez-vous des AR de commande ?",
+      "answer": "Les commandes confirmées reçoivent un accusé de réception avec quantité et délai ; les changements sont tracés dans l’ERP, parfois après validation manuelle de la charge.",
+      "source_question_id": 2007,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Gestion de la charge/capacité : avez-vous une analyse de la charge ?",
+      "answer": "La charge est analysée chaque semaine par centre de travail sur six semaines à partir des commandes et des gammes.",
+      "source_question_id": 2008,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Gestion de la charge/capacité : avez-vous une analyse de la capacité ?",
+      "answer": "La capacité nominale est connue ; absences, réglages longs et arrêts ne sont pas toujours intégrés au calcul disponible.",
+      "source_question_id": 2009,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Gestion de la charge/capacité : êtes-vous capable de vérifier l'adéquation charge/capacité ?",
+      "answer": "La comparaison charge/capacité est faite sous Excel chaque semaine, avec un risque d’écart lié aux saisies tardives et aux temps standards anciens.",
+      "source_question_id": 2010,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Gestion de la charge/capacité : avez-vous un pilotage court terme de l'atelier (planning, lancement, exécution) ?",
+      "answer": "Un planning glissant de deux semaines est partagé avec les chefs d’équipe et ajusté chaque jour ; les urgences client entraînent encore des replanifications.",
+      "source_question_id": 2011,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "PDP sur flux majeurs",
+      "answer": "Un PDP à six semaines existe pour les flux d’usinage majeurs ; il ne couvre pas tous les sous-ensembles assemblés et change fréquemment.",
+      "source_question_id": 2012,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "PIC par famille",
+      "answer": "Un PIC mensuel couvre les familles usinage et assemblage sur trois mois ; les scénarios commerciaux à six mois et la traduction financière sont encore incomplets.",
+      "source_question_id": 2013,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Revue PIC/PDP",
+      "answer": "Revue hebdomadaire du PDP et revue PIC mensuelle ; l’intégration de la finance et des hypothèses de prospection reste partielle.",
+      "source_question_id": 2014,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Organisation des ressources humaines et moyens / évolution de la charge",
+      "answer": "Heures supplémentaires, polyvalence et sous-traitance servent à absorber les pics ; les décisions restent surtout réactives.",
+      "source_question_id": 2015,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Gestion des flux : mesurez-vous la performance de livraison et sa mise à jour ? Quelle fréquence ?",
+      "answer": "Livraison à l’heure mesurée chaque semaine : 87 % des lignes à la date confirmée. Revue mensuelle des causes de retard.",
+      "source_question_id": 2016,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Gestion des flux : mesurez-vous la profondeur du retard ?",
+      "answer": "Le nombre de lignes en retard est suivi, mais l’ancienneté du retard en jours n’est pas analysée systématiquement par client et cause.",
+      "source_question_id": 2017,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Gestion des flux : avez-vous un objectif de performance de la livraison ?",
+      "answer": "Objectif de livraison à l’heure : 97 %, contre 94 % mesuré. Plan mensuel sur retards matières, réglages et disponibilité machines, avec pilotes désignés.",
+      "source_question_id": 2018,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Management des flux physiques : 5S, FIFO",
+      "answer": "5S déployé dans deux zones pilotes et FIFO identifié pour les matières ; application irrégulière sur les encours et absence d’audit mensuel généralisé.",
+      "source_question_id": 2019,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Mesure des cycles et recalage ERP",
+      "answer": "Des mesures de cycle existent pour les références récurrentes ; les temps ERP ne sont mis à jour qu’après un écart important.",
+      "source_question_id": 2020,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Mesure des en-cours et plan d'action de réduction",
+      "answer": "Les encours sont évalués mensuellement ; couverture de stock et d’encours de 65 jours, cible 50 jours. Plan de réduction non détaillé par atelier.",
+      "source_question_id": 2021,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Mesure et correction des temps passés/alloués",
+      "answer": "Les temps passés sont relevés sur fiches puis saisis ; les écarts importants sont examinés mais la mise à jour des gammes n’est pas systématique.",
+      "source_question_id": 2022,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Mesure du taux de rotation des stocks et plan d'amélioration",
+      "answer": "Couverture de stock suivie à 65 jours. La rotation est revue trimestriellement ; les stocks dormants ne disposent pas tous d’un plan de traitement.",
+      "source_question_id": 2023,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Suivi et amélioration TRS",
+      "answer": "TRS mesuré manuellement sur un centre pilote : 74 %, cible 80 %. Pas de déploiement à l’ensemble du parc.",
+      "source_question_id": 2024,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Avez-vous des rituels d'optimisation des flux ?",
+      "answer": "Une revue hebdomadaire traite les blocages de flux ; les actions portent surtout sur les urgences plutôt que sur une analyse globale des déplacements et attentes.",
+      "source_question_id": 2025,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Management de la qualité : mesurez-vous la non-qualité interne (rebut, retouche) ?",
+      "answer": "Rebuts et retouches sont valorisés mensuellement : coût de non-qualité interne 2,4 % du CA. La ventilation détaillée par cause reste à améliorer.",
+      "source_question_id": 2026,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Management de la qualité : mesurez-vous les retours clients ?",
+      "answer": "Réclamations et retours sont enregistrés dans l’ERP ; retours clients de 0,5 % des lignes livrées, avec revue qualité mensuelle.",
+      "source_question_id": 2027,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Management de la qualité : avez-vous un objectif de non-qualité, rebuts, retours ?",
+      "answer": "Cibles : coût de non-qualité interne inférieur à 1,5 % du CA et retours clients inférieurs à 0,3 % des lignes ; suivi mensuel avec actions correctives.",
+      "source_question_id": 2028,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Avez-vous un processus d'amélioration continue ?",
+      "answer": "Un plan d’amélioration continue existe, piloté par la responsable qualité avec les chefs d’équipe ; le suivi des gains reste partiel.",
+      "source_question_id": 2029,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Avez-vous un processus d'amélioration continue ?",
+      "answer": "Un plan d’amélioration continue existe, piloté par la responsable qualité avec les chefs d’équipe ; le suivi des gains reste partiel.",
+      "source_question_id": 2030,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Quels outils utilisez vous",
+      "answer": "Utilisation du PDCA, des 5 pourquoi, du Pareto, du 5S et du 8D sur les problèmes importants ; formation inégale selon les équipes.",
+      "source_question_id": 2031,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Analyse et action de protection du client",
+      "answer": "Isolement des lots suspects, contrôle renforcé avant expédition et information du client selon le risque ; l’efficacité des protections est revue après incident.",
+      "source_question_id": 2032,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Méthodes de résolution de problème (Pareto, 8D)",
+      "answer": "Pareto mensuel des défauts et 8D sur les réclamations majeures ; les analyses de causes ne sont pas systématiques pour les petits incidents récurrents.",
+      "source_question_id": 2033,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Fiabilisation des processus Cpk",
+      "answer": "Capabilité Cpk mesurée ponctuellement sur deux caractéristiques critiques ; absence de suivi régulier généralisé des procédés.",
+      "source_question_id": 2034,
+      "axis": "Performance",
+      "score": 2
+    },
+    {
+      "question": "Analyse de risque AMDEC process, produits, moyens",
+      "answer": "AMDEC réalisées pour les nouveaux produits critiques à la demande des clients ; mises à jour irrégulières après modification de procédé.",
+      "source_question_id": 2035,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Avez-vous une gestion des commandes fournisseurs ?",
+      "answer": "Commandes fournisseurs émises dans l’ERP avec référence, quantité, prix et délai ; les relances restent manuelles.",
+      "source_question_id": 2036,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Mesurez-vous la performance des fournisseurs ?",
+      "answer": "Délais et non-conformités suivis trimestriellement pour les principaux fournisseurs ; aucune notation complète du panel.",
+      "source_question_id": 2037,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Formalisation et contractualisation des prévisions : comment formalisez-vous les prévisions ?",
+      "answer": "Prévisions à trois mois transmises aux fournisseurs critiques par courriel ; elles sont indicatives, avec peu d’accords sur les variations acceptables.",
+      "source_question_id": 2038,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "Sélection des fournisseurs : comment choisissez-vous vos fournisseurs ?",
+      "answer": "Sélection selon qualité, prix, délai, capacité technique et traçabilité ; grille utilisée pour les fournisseurs critiques, moins formalisée pour les achats occasionnels.",
+      "source_question_id": 2039,
+      "axis": "Performance",
+      "score": 4
+    },
+    {
+      "question": "Règle de développement des fournisseurs : comment structurez-vous le panel fournisseur ?",
+      "answer": "Panel identifié avec quelques doubles sources ; pas de programme structuré de développement ni de revue annuelle de tous les fournisseurs stratégiques.",
+      "source_question_id": 2040,
+      "axis": "Performance",
+      "score": 3
+    },
+    {
+      "question": "L'activité est-elle diversifiée ?",
+      "answer": "Activités : usinage 60 %, assemblage 30 %, maintenance et outillage 10 %. Marchés : aéronautique 40 %, équipements industriels 40 %, énergie 20 %.",
+      "source_question_id": 3001,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Quelle est l'organisation de la fonction commerciale ?",
+      "answer": "Un responsable commercial et une assistante gèrent les 58 clients actifs. La dirigeante intervient sur les comptes stratégiques. Un CRM suit les opportunités depuis six mois ; la prospection cible les équipements industriels et l’énergie, mais son rythme reste irrégulier.",
+      "source_question_id": 3002,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "Avez-vous un client qui pèse plus de 33% de votre CA ?",
+      "answer": "Non. Le premier client représente 22 % du CA ; aucun client ne dépasse 33 %. La concentration est examinée trimestriellement.",
+      "source_question_id": 3003,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Diversification client : combien y a-t-il de clients et quel pourcentage du CA représentent-ils ?",
+      "answer": "58 clients actifs : premier client 22 %, deuxième 16 %, troisième 12 %, soit 50 % pour les trois premiers ; les 55 autres clients représentent 50 %.",
+      "source_question_id": 3004,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Diversification marchés : quels sont les marchés et quel pourcentage du CA représentent-ils ?",
+      "answer": "Aéronautique 40 %, équipements industriels 40 %, énergie 20 %. Objectif 2029 : respectivement 35 %, 40 % et 25 %.",
+      "source_question_id": 3005,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Y a-t-il une prévision de vente par client ou par marché ?",
+      "answer": "Prévisions trimestrielles pour les dix premiers clients ; pas de prévision probabilisée complète pour les prospects et nouveaux marchés.",
+      "source_question_id": 3006,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "Existe-t-il un CRM ?",
+      "answer": "Un CRM commun est utilisé depuis six mois par le responsable commercial et l’assistante. Les nouvelles opportunités sont saisies ; une partie des anciens échanges reste dans les messageries et fichiers Excel.",
+      "source_question_id": 3007,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "La satisfaction client est-elle mesurée ?",
+      "answer": "Enquête annuelle auprès des vingt premiers clients ; dernier résultat 90 % de répondants satisfaits sur 16 réponses. Les non-répondants et les petits clients sont peu analysés.",
+      "source_question_id": 3008,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "Existe-t-il un support de présentation de l'entreprise adapté aux objectifs commerciaux ?",
+      "answer": "Plaquette, site vitrine et fiches savoir-faire existent. Les cas clients et supports propres aux marchés énergie et équipements industriels restent à renforcer.",
+      "source_question_id": 3009,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Existe-t-il un plan de développement commercial ?",
+      "answer": "Plan commercial annuel ciblant équipements industriels et énergie, avec liste de prospects, deux salons et objectifs trimestriels. Le budget par campagne et le suivi des gains restent partiels.",
+      "source_question_id": 3010,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "Existe-t-il un outil de calcul de devis en fonction du taux horaire actuel ?",
+      "answer": "L’ERP calcule les devis selon matières, sous-traitance et taux horaires mis à jour annuellement ; les hausses de coût en cours d’année sont traitées au cas par cas.",
+      "source_question_id": 3011,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Une vérification des devis est-elle réalisée ?",
+      "answer": "Chaque devis fait l’objet d’un contrôle commercial et technique. Les offres supérieures à 30 000 €, à faible marge ou comportant des conditions atypiques sont validées par la direction.",
+      "source_question_id": 3012,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Le prix de vente est-il vérifié par rapport au prix de revient ?",
+      "answer": "Marge sur coûts directs cible de 38 % et vérification des coûts prévus ; analyse des coûts réels après livraison encore irrégulière.",
+      "source_question_id": 3013,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Les offres sont-elles relancées ?",
+      "answer": "Les relances sont planifiées dans le CRM à sept et vingt et un jours. Le commercial traite la majorité des échéances, mais les motifs de perte sont encore irrégulièrement renseignés.",
+      "source_question_id": 3014,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "Identifiez-vous les principaux concurrents ? À quelle fréquence les informations sont-elles mises à jour ?",
+      "answer": "Cinq concurrents sont identifiés. Revue annuelle des offres visibles et retours clients, sans veille structurée sur capacités, prix et investissements.",
+      "source_question_id": 3015,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "Êtes-vous bien positionné par rapport aux concurrents en prix, délai et qualité ?",
+      "answer": "Bonne reconnaissance qualité et réactivité ; prix intermédiaire. La livraison à l’heure de 87 % limite l’avantage concurrentiel face aux acteurs plus fiables.",
+      "source_question_id": 3016,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "question": "Avez-vous un taux acceptable de transformation des offres ? Quel est votre taux ?",
+      "answer": "Transformation des devis de 36 % sur les douze derniers mois, cible interne de 42 %. Taux mesuré trimestriellement ; les motifs de perte restent irrégulièrement renseignés.",
+      "source_question_id": 3017,
+      "axis": "Marketing",
+      "score": 3
+    },
+    {
+      "question": "1.1 Assurer la création de valeur financière et non financière\n\n• Réaliser une analyse financière régulière, un plan de financement\n• Assurer un contrôle de gestion, un plan d'amélioration financière à moyen et long terme\n• Suivre des données extra-financières pour améliorer la performance sociale, environnementale, sociétale",
+      "answer": "Satisfaite : Réaliser une analyse financière régulière, un plan de financement\nSatisfaite : Assurer un contrôle de gestion, un plan d'amélioration financière à moyen et long terme\nNon satisfaite à ce stade : Suivre des données extra-financières pour améliorer la performance sociale, environnementale, sociétale\nÉléments : Analyse mensuelle des résultats et contrôle de gestion trimestriel. Quelques mesures énergie/RH existent mais ne constituent pas encore un tableau de bord extra-financier complet.",
+      "source_question_id": 7001,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "1.2 Définir et respecter les valeurs de l'entreprise\n\n• Définir et formaliser des valeurs\n• Formaliser un code de conduite pour tous les salariés\n• Déployer des actions concrètes de mise en œuvre des valeurs",
+      "answer": "Satisfaite : Définir et formaliser des valeurs\nNon satisfaite à ce stade : Formaliser un code de conduite pour tous les salariés\nSatisfaite : Déployer des actions concrètes de mise en œuvre des valeurs\nÉléments : Valeurs qualité, fiabilité, coopération et sécurité formalisées et illustrées dans l’accueil. Aucun code de conduite général distinct n’est encore déployé.",
+      "source_question_id": 7002,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "1.3 Définir le projet d'entreprise en fonction des impacts, des risques et des opportunités\n\n• Identifier les risques et opportunités\n• Définir un projet d'entreprise à long terme\n• Définir des plans stratégiques",
+      "answer": "Satisfaite : Identifier les risques et opportunités\nSatisfaite : Définir un projet d'entreprise à long terme\nSatisfaite : Définir des plans stratégiques\nÉléments : Risques clients, recrutement et énergie revus au comité ; projet 2029 écrit et plans stratégiques commercial et industriel définis, avec certaines actions encore à détailler.",
+      "source_question_id": 7003,
+      "axis": "RSE",
+      "score": 3
+    },
+    {
+      "question": "1.4 Identifier, dialoguer et communiquer avec ses parties prenantes\n\n• Lister les parties prenantes internes et externes\n• Prioriser les parties prenantes\n• Dialoguer avec les parties prenantes",
+      "answer": "Satisfaite : Lister les parties prenantes internes et externes\nNon satisfaite à ce stade : Prioriser les parties prenantes\nSatisfaite : Dialoguer avec les parties prenantes\nÉléments : Clients, salariés, fournisseurs et partenaires territoriaux recensés et rencontrés ; leur priorisation explicite n’est pas encore formalisée.",
+      "source_question_id": 7004,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "1.5 Piloter l'organisation\n\n• Définir les structures de décision\n• Définir les méthodes de décision\n• Mettre en place un système de management structuré et formalisé",
+      "answer": "Satisfaite : Définir les structures de décision\nSatisfaite : Définir les méthodes de décision\nSatisfaite : Mettre en place un système de management structuré et formalisé\nÉléments : Organigramme, matrice de décision et routines de management documentés ; comité mensuel et suivi des actions en place.",
+      "source_question_id": 7005,
+      "axis": "RSE",
+      "score": 3
+    },
+    {
+      "question": "2.1 Créer des conditions d'emploi pérenne et agir pour la diversité et l'inclusion\n\n• Assurer la formation des jeunes et des demandeurs d'emploi\n• Définir le processus de recrutement\n• Contribuer à la diversité et à l'inclusion",
+      "answer": "Satisfaite : Assurer la formation des jeunes et des demandeurs d'emploi\nSatisfaite : Définir le processus de recrutement\nNon satisfaite à ce stade : Contribuer à la diversité et à l'inclusion\nÉléments : Deux alternants accueillis et processus de recrutement défini. Les actions d’inclusion et leurs indicateurs ne sont pas encore structurés.",
+      "source_question_id": 7006,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "2.2 Gérer et développer les compétences, la reconnaissance et l'évolution\n\n• Favoriser l'évolution des salariés\n• Favoriser la reconnaissance\n• Assurer la gestion prévisionnelle des compétences",
+      "answer": "Satisfaite : Favoriser l'évolution des salariés\nSatisfaite : Favoriser la reconnaissance\nNon satisfaite à ce stade : Assurer la gestion prévisionnelle des compétences\nÉléments : Trois parcours d’évolution et pratiques de reconnaissance existent ; la gestion prévisionnelle ne couvre pas encore tous les métiers à trois ans.",
+      "source_question_id": 7007,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "2.3 Développer et promouvoir la cohésion sociale\n\n• Faire fonctionner le dialogue social\n• Favoriser les échanges et la participation\n• Évaluer le climat social",
+      "answer": "Satisfaite : Faire fonctionner le dialogue social\nSatisfaite : Favoriser les échanges et la participation\nNon satisfaite à ce stade : Évaluer le climat social\nÉléments : CSE actif et réunions d’équipe régulières ; pas d’enquête structurée du climat social.",
+      "source_question_id": 7008,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "2.4 Préserver la santé et la sécurité au travail des salariés\n\n• Évaluer les risques professionnels\n• Assurer la formation des salariés\n• Établir des relations avec les parties prenantes",
+      "answer": "Satisfaite : Évaluer les risques professionnels\nSatisfaite : Assurer la formation des salariés\nSatisfaite : Établir des relations avec les parties prenantes\nÉléments : Évaluation des risques revue avec les équipes, formation sécurité à l’accueil et échanges réguliers avec le service de prévention et de santé au travail.",
+      "source_question_id": 7009,
+      "axis": "RSE",
+      "score": 3
+    },
+    {
+      "question": "2.5 Développer la qualité de vie et les conditions de travail\n\n• Évaluer le bien-être au travail individuel\n• Évaluer le bien-être au travail collectif\n• Favoriser un équilibre entre vie professionnelle et vie personnelle",
+      "answer": "Satisfaite : Évaluer le bien-être au travail individuel\nNon satisfaite à ce stade : Évaluer le bien-être au travail collectif\nSatisfaite : Favoriser un équilibre entre vie professionnelle et vie personnelle\nÉléments : Besoins individuels abordés en entretien et aménagements d’horaires possibles ; absence d’évaluation collective formalisée du bien-être.",
+      "source_question_id": 7010,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "3.1 Développer des solutions innovantes et durables\n\n• Mener une démarche de marketing\n• Disposer de moyens d'études et de développement\n• Développer des solutions innovantes intégrant des impacts sociaux, sociétaux et environnementaux",
+      "answer": "Satisfaite : Mener une démarche de marketing\nSatisfaite : Disposer de moyens d'études et de développement\nNon satisfaite à ce stade : Développer des solutions innovantes intégrant des impacts sociaux, sociétaux et environnementaux\nÉléments : Veille des besoins clients et moyens méthodes pour l’industrialisation ; critères sociaux et environnementaux pas systématiquement intégrés aux études.",
+      "source_question_id": 7011,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "3.2 Satisfaire le client pour mieux vendre\n\n• Cadrer les exigences clients\n• Assurer le SAV\n• Prendre en compte les impacts environnementaux du produit",
+      "answer": "Satisfaite : Cadrer les exigences clients\nSatisfaite : Assurer le SAV\nNon satisfaite à ce stade : Prendre en compte les impacts environnementaux du produit\nÉléments : Exigences techniques validées avant commande et traitement des réclamations assuré. Les impacts environnementaux du produit ne sont pas évalués systématiquement.",
+      "source_question_id": 7012,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "3.3 Définir et décliner une politique commerciale responsable\n\n• Cibler les clients selon les produits-services\n• Définir le ciblage des conditions\n• Définir et déployer des conditions d'affaires responsables",
+      "answer": "Satisfaite : Cibler les clients selon les produits-services\nSatisfaite : Définir le ciblage des conditions\nNon satisfaite à ce stade : Définir et déployer des conditions d'affaires responsables\nÉléments : Ciblage des marchés et conditions commerciales documentés ; critères de responsabilité des affaires non encore déployés dans une politique commune.",
+      "source_question_id": 7013,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "3.4 Développer des partenariats R&D\n\n• Mettre en œuvre une politique de partenariats R&D\n• Identifier et choisir des partenaires techniques et financiers\n• Mener des projets communs",
+      "answer": "Non satisfaite à ce stade : Mettre en œuvre une politique de partenariats R&D\nSatisfaite : Identifier et choisir des partenaires techniques et financiers\nNon satisfaite à ce stade : Mener des projets communs\nÉléments : Partenaires techniques et financement potentiel identifiés pour l’automatisation. Pas de politique R&D ni de projet commun de recherche engagé.",
+      "source_question_id": 7014,
+      "axis": "RSE",
+      "score": 1
+    },
+    {
+      "question": "3.5 Assurer une veille concurrentielle, technique et réglementaire\n\n• Assurer une veille des informations réglementaires\n• Assurer une veille des nouvelles techniques et nouveaux produits\n• Assurer une veille des informations sur la concurrence",
+      "answer": "Satisfaite : Assurer une veille des informations réglementaires\nSatisfaite : Assurer une veille des nouvelles techniques et nouveaux produits\nSatisfaite : Assurer une veille des informations sur la concurrence\nÉléments : Veille réglementaire par prestataires, veille technique par salons et éditeurs, revue concurrentielle annuelle ; sources conservées dans les dossiers métiers.",
+      "source_question_id": 7015,
+      "axis": "RSE",
+      "score": 3
+    },
+    {
+      "question": "4.1 Optimiser la performance industrielle\n\n• Assurer la qualité et le délai\n• Améliorer la productivité et la valeur ajoutée\n• Optimiser la performance globale en intégrant les aspects sociaux, sociétaux et environnementaux",
+      "answer": "Satisfaite : Assurer la qualité et le délai\nSatisfaite : Améliorer la productivité et la valeur ajoutée\nNon satisfaite à ce stade : Optimiser la performance globale en intégrant les aspects sociaux, sociétaux et environnementaux\nÉléments : Qualité, délais et productivité suivis. Les dimensions sociales et environnementales ne sont pas encore intégrées à tous les arbitrages de performance.",
+      "source_question_id": 7016,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "4.2 Optimiser l'utilisation des énergies et fluides\n\n• Identifier les énergies et fluides et suivre leurs consommations\n• Mettre en place des actions de réduction des consommations\n• Programmer ou réaliser des investissements pour réduire les consommations",
+      "answer": "Satisfaite : Identifier les énergies et fluides et suivre leurs consommations\nSatisfaite : Mettre en place des actions de réduction des consommations\nNon satisfaite à ce stade : Programmer ou réaliser des investissements pour réduire les consommations\nÉléments : Consommation 2025 de 600 MWh, relevés mensuels, actions LED et fuites d’air. Investissements d’efficacité énergétique non encore programmés dans un plan dédié.",
+      "source_question_id": 7017,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "4.3 Optimiser l'utilisation des matières et emballages\n\n• Identifier les matières et emballages et suivre leurs consommations\n• Mettre en place des actions de réduction des consommations\n• Programmer ou réaliser des investissements pour réduire la consommation",
+      "answer": "Satisfaite : Identifier les matières et emballages et suivre leurs consommations\nSatisfaite : Mettre en place des actions de réduction des consommations\nNon satisfaite à ce stade : Programmer ou réaliser des investissements pour réduire la consommation\nÉléments : Consommations matière et emballages suivies, optimisation des débits et réemploi des bacs. Aucun investissement dédié de réduction matière n’est encore programmé.",
+      "source_question_id": 7018,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "4.4 Produire en maîtrisant ses émissions de CO2\n\n• Identifier les principales sources d'émissions de gaz à effet de serre\n• Mettre en place des actions spécifiques de lutte contre le changement climatique\n• Réaliser une analyse de ses émissions de gaz à effet de serre",
+      "answer": "Satisfaite : Identifier les principales sources d'émissions de gaz à effet de serre\nNon satisfaite à ce stade : Mettre en place des actions spécifiques de lutte contre le changement climatique\nNon satisfaite à ce stade : Réaliser une analyse de ses émissions de gaz à effet de serre\nÉléments : Principales sources identifiées : électricité, transport et achats métalliques. Pas d’inventaire chiffré des émissions ni de programme climatique spécifique.",
+      "source_question_id": 7019,
+      "axis": "RSE",
+      "score": 1
+    },
+    {
+      "question": "4.5 Produire en maîtrisant les pollutions et les impacts sur la biodiversité\n\n• Identifier les impacts environnementaux\n• Mettre en place des mesures de réduction des impacts environnementaux\n• Assurer le dialogue avec les parties prenantes pertinentes",
+      "answer": "Satisfaite : Identifier les impacts environnementaux\nSatisfaite : Mettre en place des mesures de réduction des impacts environnementaux\nNon satisfaite à ce stade : Assurer le dialogue avec les parties prenantes pertinentes\nÉléments : Impacts huiles, fluides et déchets identifiés ; rétention et filières de traitement en place. Dialogue territorial sur la biodiversité non structuré.",
+      "source_question_id": 7020,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "5.1 Pratiquer les achats responsables\n\n• Garantir des contrats équitables\n• Définir un cahier des charges avec des critères RSE\n• Formaliser une charte relations fournisseurs responsables",
+      "answer": "Satisfaite : Garantir des contrats équitables\nNon satisfaite à ce stade : Définir un cahier des charges avec des critères RSE\nNon satisfaite à ce stade : Formaliser une charte relations fournisseurs responsables\nÉléments : Conditions d’achat équilibrées et contrats relus. Pas de cahier des charges RSE commun ni de charte fournisseurs responsables.",
+      "source_question_id": 7021,
+      "axis": "RSE",
+      "score": 1
+    },
+    {
+      "question": "5.2 Faire du numérique un facteur d'efficience\n\n• Développer la robotisation et le numérique industriel\n• Assurer la formation et l'accompagnement du personnel\n• Déployer un système de protection des données",
+      "answer": "Satisfaite : Développer la robotisation et le numérique industriel\nSatisfaite : Assurer la formation et l'accompagnement du personnel\nSatisfaite : Déployer un système de protection des données\nÉléments : ERP et machines numériques utilisés, utilisateurs formés, MFA et droits d’accès organisés ; amélioration à poursuivre sur les interfaces et la qualité des données.",
+      "source_question_id": 7022,
+      "axis": "RSE",
+      "score": 3
+    },
+    {
+      "question": "5.3 Optimiser le transport et la logistique industriels\n\n• Optimiser les flux\n• Choisir les transporteurs sur des critères sociaux, sociétaux et environnementaux\n• Prendre en compte des critères sociaux, sociétaux et environnementaux en logistique",
+      "answer": "Satisfaite : Optimiser les flux\nNon satisfaite à ce stade : Choisir les transporteurs sur des critères sociaux, sociétaux et environnementaux\nNon satisfaite à ce stade : Prendre en compte des critères sociaux, sociétaux et environnementaux en logistique\nÉléments : Expéditions regroupées par destination. Les critères sociaux et environnementaux ne sont pas intégrés formellement au choix des transporteurs ni aux règles logistiques.",
+      "source_question_id": 7023,
+      "axis": "RSE",
+      "score": 1
+    },
+    {
+      "question": "5.4 Interagir avec son écosystème industriel\n\n• Identifier les partenaires industriels potentiels\n• Identifier les partenaires potentiels pour les projets industriels\n• Mener des projets communs avec des industriels",
+      "answer": "Satisfaite : Identifier les partenaires industriels potentiels\nSatisfaite : Identifier les partenaires potentiels pour les projets industriels\nNon satisfaite à ce stade : Mener des projets communs avec des industriels\nÉléments : Sous-traitants et partenaires d’automatisation identifiés ; projets industriels communs encore à contractualiser.",
+      "source_question_id": 7024,
+      "axis": "RSE",
+      "score": 2
+    },
+    {
+      "question": "5.5 Interagir avec son écosystème autre qu'industriel\n\n• Identifier les parties prenantes territoriales\n• Établir des partenariats écoles-entreprise\n• Participer à des actions communes du territoire",
+      "answer": "Satisfaite : Identifier les parties prenantes territoriales\nSatisfaite : Établir des partenariats écoles-entreprise\nSatisfaite : Participer à des actions communes du territoire\nÉléments : Acteurs territoriaux connus, partenariats écoles et accueil d’alternants, participation à une journée de découverte des métiers industriels.",
+      "source_question_id": 7025,
+      "axis": "RSE",
+      "score": 3
+    },
+    {
+      "question": "Il existe une stratégie RH formalisée ou implicite",
+      "answer": "Une orientation RH existe autour du recrutement technique et de la transmission des compétences ; elle n’est pas réunie dans un document de stratégie RH.",
+      "source_question_id": 4001,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les objectifs RH sont alignés avec la stratégie de l'entreprise : croissance, diversification, digitalisation, etc.",
+      "answer": "Les priorités techniques soutiennent la croissance, mais les compétences commerciales et numériques nécessaires à la diversification sont encore peu planifiées.",
+      "source_question_id": 4002,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "L'anticipation des besoins en compétences est réalisée à court ou moyen terme",
+      "answer": "Les besoins à douze mois sont discutés en comité ; pas de projection structurée des départs et compétences à trois ans.",
+      "source_question_id": 4003,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les indicateurs RH sont suivis régulièrement : turnover, absentéisme, etc.",
+      "answer": "Absentéisme et effectif suivis mensuellement ; turnover et accidents revus trimestriellement. Les plans d’action ne sont pas tous évalués.",
+      "source_question_id": 4004,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Le système de management est organisé",
+      "answer": "Direction, responsables de fonction et chefs d’équipe sont identifiés ; routines quotidiennes, hebdomadaires et mensuelles en place.",
+      "source_question_id": 4005,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "L'organisation, incluant les rôles et responsabilités, est clairement définie, expliquée et communiquée à l'ensemble des salariés (lisibilité, niveaux hirérachiques-fonctionnels)",
+      "answer": "Organigramme partagé à l’accueil et affiché. Les liens entre méthodes, qualité et production sont expliqués mais certaines suppléances restent implicites.",
+      "source_question_id": 4006,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les rôles et responsabilités sont clairs : organigramme, fiche d'emploi, délégation",
+      "answer": "38 fiches de poste sur 46 sont à jour ; les délégations et remplacements ne couvrent pas toutes les fonctions.",
+      "source_question_id": 4007,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les processus de décision existent, sont clairs et fonctionnent",
+      "answer": "Les décisions opérationnelles sont prises par les responsables ; les investissements et engagements importants remontent à la dirigeante, avec quelques ralentissements en son absence.",
+      "source_question_id": 4008,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "La communication interne est efficace",
+      "answer": "Réunions d’équipe et affichage fonctionnent ; les informations stratégiques et les suites données aux suggestions ne sont pas toujours relayées.",
+      "source_question_id": 4009,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les points observables sont suivis : niveau d'autonomie, qualité de la communication, gestion des conflits",
+      "answer": "L’autonomie et les tensions sont discutées entre managers, sans grille commune ni suivi documenté de tous les engagements.",
+      "source_question_id": 4010,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Il y a une évaluation régulière des besoins en fonction du plan de charge (Charge/CAPA)",
+      "answer": "La réunion hebdomadaire charge/capacité examine les besoins d’effectif sur six semaines ; l’anticipation au-delà reste moins précise.",
+      "source_question_id": 4011,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les besoins en recrutement sont anticipés - Un plan de recrutement existe et permet d'anticiper la mise à disposition des ressources",
+      "answer": "Deux recrutements techniques sont prévus, mais le plan ne couvre pas toutes les compétences nécessaires à la diversification et au numérique.",
+      "source_question_id": 4012,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Il existe un processus de recrutement formalisé avec des délais et des outils",
+      "answer": "Validation du besoin, annonce, entretien et essai technique sont définis ; les délais et critères d’évaluation ne sont pas tous formalisés.",
+      "source_question_id": 4013,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les fiches d'emploi sont à jour",
+      "answer": "38 fiches sur 46 sont à jour ; révision nécessaire pour les emplois administratifs et les nouvelles responsabilités.",
+      "source_question_id": 4014,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Il existe un parcours d'intégration",
+      "answer": "Parcours d’accueil de quatre semaines avec sécurité, visite atelier, tutorat et point de fin de période ; traçabilité inégale selon les équipes.",
+      "source_question_id": 4015,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les indicateurs de recrutement sont suivis : délai moyen de recrutement, taux de réussite de la période d'essai, turnover des nouveaux embauchés",
+      "answer": "Délai moyen de recrutement : 75 jours. Les périodes d’essai sont suivies individuellement ; le taux de réussite et le turnover des nouveaux embauchés ne sont pas encore consolidés.",
+      "source_question_id": 4016,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Il existe une matrice ou cartographie des compétences",
+      "answer": "Matrice de polyvalence en production, actualisée deux fois par an ; pas de cartographie complète pour commerce, numérique et fonctions support.",
+      "source_question_id": 4017,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les compétences clés sont identifiées",
+      "answer": "Réglage CN, programmation, contrôle métrologique et méthodes sont identifiés comme critiques ; deux salariés concentrent certaines expertises.",
+      "source_question_id": 4018,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Il existe un plan de développement des compétences",
+      "answer": "Plan annuel de formation de 38 000 €, ciblant CN, qualité et sécurité. Articulation avec une projection à trois ans encore partielle.",
+      "source_question_id": 4019,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les entretiens de parcours professionnels sont réalisés",
+      "answer": "Les entretiens de parcours sont planifiés et suivis dans un tableau ; quelques comptes rendus doivent être complétés et les actions ne sont pas toutes clôturées.",
+      "source_question_id": 4020,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les besoins de formations sont clairement exprimés qu'ils soient individuels (plan de progression) ou collectifs (plan d'amélioration de l'entreprise/site)",
+      "answer": "Les managers recueillent les besoins lors des entretiens ; les priorités collectives et les objectifs de progression ne sont pas systématiquement chiffrés.",
+      "source_question_id": 4021,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Il existe une évaluation systématique des formations, à chaud et à froid",
+      "answer": "Évaluation à chaud recueillie pour la majorité des formations ; pas d’évaluation à froid systématique ni de mesure des compétences acquises au poste.",
+      "source_question_id": 4022,
+      "axis": "RH",
+      "score": 2
+    },
+    {
+      "question": "Les formations réalisées sous tutorat respectent la procédure existante et sont efficaces",
+      "answer": "Tuteurs désignés pour les métiers techniques ; le contenu et les critères de validation du tutorat varient selon les équipes.",
+      "source_question_id": 4023,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les entretiens annuels sont réalisés selon le calendrier et la procédure définis",
+      "answer": "Campagne annuelle organisée au premier trimestre ; 43 entretiens sur 46 réalisés lors de la dernière campagne.",
+      "source_question_id": 4024,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les souhaits émis par les salariés sont pris en compte et un retour est systématiquement fait",
+      "answer": "Les demandes sont recueillies mais le retour sur les décisions et délais de traitement n’est pas systématique.",
+      "source_question_id": 4025,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les potentiels identifiés par ce processus font l'objet d'un suivi et d'un traitement adéquat à leurs possibilités",
+      "answer": "Quelques potentiels sont identifiés par la direction ; absence de revue collective et de plan de développement systématique.",
+      "source_question_id": 4026,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Des plans d'évolution sont en cours pour certains salariés",
+      "answer": "Trois parcours d’évolution sont engagés en atelier ; les jalons et critères de progression ne sont pas tous écrits.",
+      "source_question_id": 4027,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Des objectifs individuels sont définis",
+      "answer": "Objectifs individuels définis pour les responsables et commerciaux, moins formalisés pour les opérateurs.",
+      "source_question_id": 4028,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Des entretiens annuels sont réalisés",
+      "answer": "43 entretiens annuels sur 46 ont été réalisés ; les trois restants doivent être reprogrammés.",
+      "source_question_id": 4029,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les managers sont formés à l'évaluation",
+      "answer": "Deux managers ont suivi une formation à l’entretien ; les autres utilisent le formulaire sans préparation commune.",
+      "source_question_id": 4030,
+      "axis": "RH",
+      "score": 2
+    },
+    {
+      "question": "Les résultats des évaluations sont exploités",
+      "answer": "Les évaluations alimentent les demandes de formation, mais leur exploitation pour la mobilité et les compétences reste partielle.",
+      "source_question_id": 4031,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Evaluation: maturité du système d'évaluation",
+      "answer": "Système d’évaluation existant avec formulaire et calendrier ; indicateurs de réalisation, qualité du retour et suivi des engagements incomplets.",
+      "source_question_id": 4032,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "La politique salariale est structurée",
+      "answer": "Grilles par familles de métiers et revue annuelle des salaires ; critères de progression et de prime encore peu explicités.",
+      "source_question_id": 4033,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "La politique salariale est cohérente et équitable (cohérence interne/marché)",
+      "answer": "Revue annuelle avec comparaison de quelques métiers au marché ; des écarts historiques restent à examiner.",
+      "source_question_id": 4034,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "L'ensemble des éléments composants la rémunération est connu du management qui sait l'expliquer et la commenter aux salariés.",
+      "answer": "Les managers connaissent fixe et prime collective ; ils ne disposent pas tous d’un support commun expliquant l’ensemble de la rémunération.",
+      "source_question_id": 4035,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Le processus d'augmentation est connu, respecté et basé sur des critères objectifs et non discriminants",
+      "answer": "La direction arbitre les augmentations après propositions des managers ; les critères sont définis de manière générale mais insuffisamment documentés et communiqués.",
+      "source_question_id": 4036,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les avantages sociaux sont attractifs",
+      "answer": "Mutuelle, titres-restaurant et prime collective sont proposés ; leur attractivité n’a pas été mesurée auprès des salariés.",
+      "source_question_id": 4037,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Il existe des outils de reconnaissance non financière",
+      "answer": "Remerciements en réunion et valorisation de réussites existent, sans pratique régulière commune à tous les managers.",
+      "source_question_id": 4038,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les indicateurs liés à la rémunération sont suivis : masse salariale, écart de rémunération, taux de promotion interne",
+      "answer": "Masse salariale suivie mensuellement ; écarts de rémunération et promotions internes analysés ponctuellement.",
+      "source_question_id": 4039,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les instances obligatoires sont présentes, actives et collaboratives",
+      "answer": "Un CSE fonctionne et échange avec la direction ; les comptes rendus sont disponibles et les actions font l’objet d’un suivi partiel.",
+      "source_question_id": 4040,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les obligations sont connues et les réunions sont tenues selon les fréquences et modalités exigées",
+      "answer": "Un calendrier des réunions et un suivi des obligations sont tenus par la responsable administrative avec appui externe ; les pièces sont revues périodiquement.",
+      "source_question_id": 4041,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les sujets abordés sont pertinents et traités de façon constructive et consensuelle",
+      "answer": "Sécurité, conditions de travail, effectifs et organisation sont abordés ; certains sujets complexes nécessitent plusieurs échanges avant décision.",
+      "source_question_id": 4042,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "La qualité du dialogue social permet de réduire les tensions ou conflits",
+      "answer": "Le dialogue social permet de traiter la plupart des difficultés tôt ; les managers ne disposent pas tous des mêmes pratiques de médiation.",
+      "source_question_id": 4043,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Le climat social est mesuré",
+      "answer": "Aucune enquête structurée de climat social ; appréciation fondée sur les échanges, l’absentéisme et les remontées au CSE.",
+      "source_question_id": 4044,
+      "axis": "RH",
+      "score": 2
+    },
+    {
+      "question": "Les risques psychosociaux sont évalués",
+      "answer": "Les risques psychosociaux figurent dans l’évaluation des risques ; l’analyse reste générale et le suivi d’actions peu documenté.",
+      "source_question_id": 4045,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Il existe des actions QVCT et elles sont suivies",
+      "answer": "Actions ergonomiques et aménagements d’horaires en place, sans plan QVCT complet avec responsables, délais et indicateurs d’efficacité.",
+      "source_question_id": 4046,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Indicateurs: Absentéisme/ Turnover/Taux d'engagement/Accident du travail/conflit disciplinaire/Reclamations salariés/évolution des effectifs/HS/Reésultats des entretiens annuels/Utilisation des formations",
+      "answer": "Absentéisme 3,6 %, turnover 7 %, effectif 46 et un accident avec arrêt suivis. Heures supplémentaires disponibles ; engagement, réclamations et effets des formations ne sont pas consolidés.",
+      "source_question_id": 4047,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Les données administratives du personnel sont complètes et à jour",
+      "answer": "Dossiers du personnel centralisés et revus lors des changements ; contrôle périodique assuré par la responsable administrative.",
+      "source_question_id": 4048,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Le suivi médical du personnel est réalisé selon les fréquences et modalités définies",
+      "answer": "Échéances médicales suivies dans un calendrier avec rappels ; les justificatifs sont conservés dans les dossiers à accès limité.",
+      "source_question_id": 4049,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les affichages obligatoires sont présents",
+      "answer": "Affichages revus lors de la mise à jour documentaire annuelle et lors des changements signalés par le conseil externe.",
+      "source_question_id": 4050,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les contrats de travail sont sécurisés",
+      "answer": "Modèles contractuels préparés avec appui externe et revue avant signature ; avenants conservés dans les dossiers du personnel.",
+      "source_question_id": 4051,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "La paie est fiable",
+      "answer": "Paie externalisée, variables contrôlées en interne et rapprochement mensuel ; les anomalies identifiées sont tracées et corrigées rapidement.",
+      "source_question_id": 4052,
+      "axis": "RH",
+      "score": 5
+    },
+    {
+      "question": "Il existe des outils SIRH",
+      "answer": "Pas de SIRH intégré ; utilisation du portail paie et de plusieurs tableaux Excel pour congés, formation et compétences.",
+      "source_question_id": 4053,
+      "axis": "RH",
+      "score": 2
+    },
+    {
+      "question": "Des indicateurs de pilotage RH existent",
+      "answer": "Tableau RH comprenant effectif, absentéisme, turnover et accidents ; données disponibles mais consolidation manuelle.",
+      "source_question_id": 4054,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les indicateurs RH sont utilisés et suivis",
+      "answer": "Absentéisme revu mensuellement et turnover/sécurité trimestriellement ; actions décidées avec les managers, efficacité inégalement vérifiée.",
+      "source_question_id": 4055,
+      "axis": "RH",
+      "score": 4
+    },
+    {
+      "question": "Les plans d'actions sociales sont définis, suivis et régulièrement évalués",
+      "answer": "Plans ponctuels sur sécurité et recrutement ; absence de revue complète de tous les plans sociaux et QVCT avec bilan chiffré.",
+      "source_question_id": 4056,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Le management connaît et applique les bases du réglementaire social",
+      "answer": "Les responsables connaissent les principes courants, mais seuls deux ont été formés ; recours fréquent à la responsable RH pour les situations complexes.",
+      "source_question_id": 4057,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "Une veille sociale et une gestion anticipée des conflits limitent les litiges et contentieux",
+      "answer": "Veille assurée par le prestataire paie et le conseil externe ; les remontées de tension sont traitées mais sans procédure commune d’alerte et de médiation.",
+      "source_question_id": 4058,
+      "axis": "RH",
+      "score": 3
+    },
+    {
+      "question": "La direction a-t-elle une vision claire du rôle du numérique dans la performance ?",
+      "answer": "La direction a défini trois priorités numériques : fiabiliser la charge/capacité, connecter le suivi commercial et réduire les doubles saisies. Feuille de route écrite et budget 2026 de 90 000 € ; gains par projet à préciser.",
+      "source_question_id": 6001,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Cette vision numérique est-elle partagée avec les managers et référents métiers ?",
+      "answer": "Les responsables connaissent les priorités, mais la vision n’a pas été déclinée en objectifs par métier ni partagée à l’ensemble du personnel.",
+      "source_question_id": 6002,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les projets numériques sont-ils priorisés selon des critères explicites : risque, gain, urgence, faisabilité ?",
+      "answer": "Les projets sont choisis selon urgence et gain attendu ; aucune grille commune ne compare risque, coût, faisabilité et retour attendu.",
+      "source_question_id": 6003,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Un budget numérique annuel est-il identifié ?",
+      "answer": "Budget numérique 2026 de 90 000 € identifié, incluant licences, maintenance informatique et évolutions ; la ventilation par projet doit être affinée.",
+      "source_question_id": 6004,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "L’entreprise dispose-t-elle d’une cartographie simple de ses outils numériques ?",
+      "answer": "Liste ERP, bureautique, comptabilité et logiciels machine disponible ; les interfaces et responsabilités ne sont pas toutes cartographiées.",
+      "source_question_id": 6005,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les outils clés sont-ils connus, maintenus et supportés ?",
+      "answer": "ERP et infrastructure couverts par des contrats de support ; certains fichiers Excel critiques dépendent encore de leur créateur.",
+      "source_question_id": 6006,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les postes, serveurs, tablettes et machines connectées sont-ils inventoriés ?",
+      "answer": "Postes et serveur inventoriés par le prestataire ; équipements industriels connectés et tablettes pas tous intégrés dans un registre unique.",
+      "source_question_id": 6007,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Le réseau informatique est-il documenté, même simplement ?",
+      "answer": "Un schéma réseau existe chez le prestataire, mais il n’est pas actualisé après chaque modification d’atelier.",
+      "source_question_id": 6008,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les mots de passe suivent-ils des règles minimales formalisées ?",
+      "answer": "Charte définissant mots de passe et comptes individuels ; application moins homogène sur certains postes d’atelier partagés.",
+      "source_question_id": 6009,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "L’authentification multi-facteur est-elle activée pour les accès sensibles ?",
+      "answer": "MFA active pour messagerie, accès distant, comptes administrateurs et ERP compatible. Revue des exceptions par le prestataire chaque trimestre.",
+      "source_question_id": 6010,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les comptes inutiles ou anciens sont-ils supprimés régulièrement ?",
+      "answer": "Désactivation prévue au départ des salariés ; pas de revue trimestrielle formalisée des comptes anciens et comptes prestataires.",
+      "source_question_id": 6011,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les droits administrateurs sont-ils limités aux personnes nécessaires ?",
+      "answer": "Droits administrateurs limités au prestataire et à un référent interne ; quelques exceptions locales sur des postes machine restent à justifier.",
+      "source_question_id": 6012,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les données critiques de l’entreprise sont-elles identifiées ?",
+      "answer": "Plans clients, programmes CN, devis et données RH sont identifiés comme critiques ; classification et consignes détaillées encore incomplètes.",
+      "source_question_id": 6013,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les données sont-elles fiables ou souvent contestées ?",
+      "answer": "Facturation et commandes sont relativement fiables ; stocks, temps atelier et délais présentent des écarts liés aux saisies différées.",
+      "source_question_id": 6014,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les données sont-elles réparties dans plusieurs fichiers ou logiciels sans cohérence globale ?",
+      "answer": "Oui. ERP, fichiers Excel commerciaux et fichiers atelier coexistent sans modèle de données partagé ; plusieurs rapprochements sont manuels.",
+      "source_question_id": 6015,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Existe-t-il plusieurs versions d’une même donnée : client, article, fournisseur, prix, délai ?",
+      "answer": "Oui. Des versions différentes de prix et délais subsistent entre Excel et ERP ; aucun responsable unique des données de référence n’est désigné.",
+      "source_question_id": 6016,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Les indicateurs sont-ils mis à jour automatiquement ?",
+      "answer": "La plupart des indicateurs sont consolidés manuellement chaque semaine ou chaque mois ; seule une partie des données ERP est extraite automatiquement.",
+      "source_question_id": 6017,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Les KPI production, qualité, maintenance, finance et commerce sont-ils disponibles ?",
+      "answer": "Indicateurs disponibles pour production, qualité, finance et commerce ; maintenance peu couverte, avec des définitions et fréquences hétérogènes.",
+      "source_question_id": 6018,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les tableaux de bord évitent-ils les ressaisies manuelles ?",
+      "answer": "Non. Les tableaux de bord exigent encore des exports ERP, copier-coller et ressaisies de fiches atelier.",
+      "source_question_id": 6019,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Les devis sont-ils encore largement gérés manuellement ?",
+      "answer": "Une base de devis existe dans l’ERP ; les chiffrages techniques complexes sont préparés sous Excel puis reportés dans l’ERP.",
+      "source_question_id": 6020,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les commandes clients sont-elles ressaisies entre plusieurs outils ?",
+      "answer": "Oui, certaines commandes reçues par courriel sont ressaisies dans Excel de suivi et dans l’ERP ; pas d’interface unique.",
+      "source_question_id": 6021,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les bons de livraison sont-ils dématérialisés ?",
+      "answer": "Bons générés dans l’ERP et archivés en PDF ; une copie papier accompagne encore les expéditions et la preuve de réception est peu centralisée.",
+      "source_question_id": 6022,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les factures sont-elles générées à partir des données de commande ou de livraison ?",
+      "answer": "Oui, les factures sont produites à partir des livraisons ERP, avec contrôle des quantités, prix et avoirs avant émission.",
+      "source_question_id": 6023,
+      "axis": "Digitalisation",
+      "score": 5
+    },
+    {
+      "question": "Les dirigeants connaissent-ils les principaux usages possibles de l’IA pour une PME industrielle ?",
+      "answer": "La direction connaît les usages d’assistance documentaire, de préparation des devis et de synthèse de données. Deux pistes sont étudiées, mais les gains et conditions de mise en production ne sont pas encore chiffrés.",
+      "source_question_id": 6024,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Des collaborateurs utilisent-ils déjà ChatGPT, Copilot ou équivalent ?",
+      "answer": "Quatre salariés utilisent un assistant IA pour des textes généraux et de la documentation interne non sensible. Les usages autorisés sont recensés par le référent numérique.",
+      "source_question_id": 6025,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les usages IA sont-ils encadrés par des règles simples ?",
+      "answer": "Une charte IA courte définit les usages permis, les données interdites et la validation humaine des résultats. La sensibilisation de tous les salariés reste à terminer.",
+      "source_question_id": 6026,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les données sensibles sont-elles protégées lors de l’usage d’outils IA ?",
+      "answer": "Les données clients, plans et données personnelles sont exclus des assistants publics. Les utilisateurs ont reçu la consigne et une validation du référent est requise pour un nouveau cas d’usage ; aucun contrôle technique automatique des envois n’est déployé.",
+      "source_question_id": 6027,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Le planning de production est-il géré de façon numérique, fiable et partagée ?",
+      "answer": "Planning Excel partagé, alimenté depuis l’ERP ; mises à jour quotidiennes mais versions et contraintes de capacité pas toujours fiables.",
+      "source_question_id": 6028,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les ordres de fabrication sont-ils disponibles numériquement ?",
+      "answer": "Ordres disponibles dans l’ERP ; les opérateurs travaillent majoritairement avec des impressions et saisissent les retours en différé.",
+      "source_question_id": 6029,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Des informations critiques d’atelier existent-elles uniquement sur papier ou de tête ?",
+      "answer": "Oui. Réglages particuliers et consignes de dépannage reposent encore sur des cahiers et l’expérience de deux salariés clés.",
+      "source_question_id": 6030,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Les opérateurs disposent-ils facilement des bonnes instructions, plans et versions ?",
+      "answer": "Plans validés sur un dossier réseau, avec copies papier en atelier ; risque d’utilisation d’une ancienne impression faute de retrait systématique.",
+      "source_question_id": 6031,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "La maintenance est-elle essentiellement réactive ou structurée ?",
+      "answer": "Maintenance préventive planifiée sur les machines critiques ; le reste demeure surtout réactif et les historiques sont incomplets.",
+      "source_question_id": 6032,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les temps d’intervention sont-ils mesurés ?",
+      "answer": "Temps d’intervention notés sur fiches puis consolidés sous Excel ; certaines interventions courtes ne sont pas enregistrées.",
+      "source_question_id": 6033,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les causes d’arrêts sont-elles analysées ?",
+      "answer": "Analyse mensuelle des arrêts du centre pilote ; pas de codification homogène pour l’ensemble des équipements.",
+      "source_question_id": 6034,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Une GMAO ou outil équivalent est-il utilisé ?",
+      "answer": "Pas de GMAO. Un tableau Excel répertorie les interventions et quelques échéances préventives, sans alertes automatiques.",
+      "source_question_id": 6035,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Les stocks sont-ils suivis numériquement avec un niveau de fiabilité acceptable ?",
+      "answer": "Stocks suivis dans l’ERP, fiabilité estimée à 95 % ; les écarts viennent surtout des consommations et rebuts saisis tardivement.",
+      "source_question_id": 6036,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les inventaires sont-ils digitalisés ?",
+      "answer": "Comptages sur papier puis saisie dans l’ERP ; pas de terminaux de scan pour les inventaires tournants.",
+      "source_question_id": 6037,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les litiges fournisseurs sont-ils suivis avec des données ?",
+      "answer": "Litiges enregistrés dans un fichier qualité avec fournisseur et motif ; les montants, délais de résolution et liens avec les achats ne sont pas systématiques.",
+      "source_question_id": 6038,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les données article, fournisseur et délai sont-elles propres et à jour ?",
+      "answer": "Références actives globalement renseignées ; doublons et délais anciens subsistent, sans revue régulière de l’ensemble du référentiel.",
+      "source_question_id": 6039,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Le taux de transformation des devis est-il mesuré ?",
+      "answer": "Taux de transformation calculé trimestriellement à 36 % via extraction ERP et Excel ; motifs de perte et suivi par marché incomplets.",
+      "source_question_id": 6040,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les relances clients sont-elles planifiées ou automatisées ?",
+      "answer": "Les relances sont planifiées dans le CRM à sept et vingt et un jours. Le commercial traite la majorité des échéances, mais les motifs de perte sont encore irrégulièrement renseignés.",
+      "source_question_id": 6041,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Un CRM ou outil équivalent est-il utilisé ?",
+      "answer": "Un CRM commun est utilisé depuis six mois par le responsable commercial et l’assistante. Les nouvelles opportunités sont saisies ; une partie des anciens échanges reste dans les messageries et fichiers Excel.",
+      "source_question_id": 6042,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Le registre RGPD des traitements existe-t-il ?",
+      "answer": "Un registre des traitements couvre RH et clients ; la mise à jour des prestataires et durées de conservation reste incomplète.",
+      "source_question_id": 6043,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Les données personnelles sont-elles protégées avec des règles connues ?",
+      "answer": "Accès limités aux dossiers RH et consignes générales de confidentialité ; formation et contrôle régulier des pratiques insuffisants.",
+      "source_question_id": 6044,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "La gestion des consentements, accès et durées de conservation est-elle maîtrisée ?",
+      "answer": "Droits d’accès gérés au cas par cas ; durées de conservation et bases de traitement ne sont pas revues dans une procédure commune.",
+      "source_question_id": 6045,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Une plateforme ou trajectoire de mise en conformité facture électronique est-elle identifiée ?",
+      "answer": "Le prestataire comptable et l’éditeur ERP ont été consultés ; solution cible et trajectoire à confirmer, sans dossier projet complet.",
+      "source_question_id": 6046,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Des projets d’amélioration continue sont-ils menés régulièrement ?",
+      "answer": "Plan d’amélioration qualité et atelier revu mensuellement ; gains et pérennisation des solutions ne sont pas toujours mesurés.",
+      "source_question_id": 6047,
+      "axis": "Digitalisation",
+      "score": 4
+    },
+    {
+      "question": "Les irritants terrain sont-ils collectés et priorisés ?",
+      "answer": "Irritants remontés aux réunions d’équipe, mais registre commun et priorisation explicite des sujets numériques absents.",
+      "source_question_id": 6048,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Une veille technologique ou Industrie du Futur existe-t-elle ?",
+      "answer": "Veille occasionnelle par salons et échanges UIMM ; aucun responsable, calendrier ou livrable régulier de veille.",
+      "source_question_id": 6049,
+      "axis": "Digitalisation",
+      "score": 2
+    },
+    {
+      "question": "Les projets numériques sont-ils reliés au lean, à la qualité ou à la performance industrielle ?",
+      "answer": "Les évolutions ERP visent les délais et la qualité des données ; objectifs de gains et indicateurs avant/après pas encore formalisés pour chaque projet.",
+      "source_question_id": 6050,
+      "axis": "Digitalisation",
+      "score": 3
+    },
+    {
+      "question": "Le dirigeant peut-il s'absenter plus d'une journée sans téléphone ?",
+      "answer": "Oui, pendant deux à trois jours. La responsable administrative et le responsable production disposent de délégations écrites. Les urgences sont traitées selon une matrice de décision ; seuls les engagements exceptionnels sont reportés au retour de la dirigeante.",
+      "source_question_id": 1027,
+      "axis": "Stratégie",
+      "score": 4
+    },
+    {
+      "question": "Il y a-t-il un système de validation des offres ? Qui les fait / les valide ?",
+      "answer": "Oui. Le chargé de chiffrage prépare les coûts dans l’ERP, le responsable production vérifie les délais et la faisabilité, puis le responsable commercial valide les offres standard jusqu’à 30 000 €. La dirigeante valide au-delà, en cas de marge insuffisante ou de conditions contractuelles inhabituelles. Les validations sont archivées dans le dossier d’offre.",
+      "source_question_id": 3018,
+      "axis": "Marketing",
+      "score": 4
+    },
+    {
+      "axis": "Stratégie",
+      "question": "L'entreprise a-t-elle une stratégie clairement définie ?",
+      "score": 4,
+      "answer": "Oui, une feuille de route 2027–2029 existe. Elle décrit les priorités mais certains responsables, jalons et budgets restent à préciser."
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Les objectifs stratégiques sont-ils partagés avec les équipes ?",
+      "score": 3,
+      "answer": "La feuille de route est partagée au comité de direction ; les salariés ont reçu une présentation générale sans déclinaison complète par équipe."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "L'entreprise utilise-t-elle des outils numériques pour suivre son activité ?",
+      "score": 4,
+      "answer": "La direction a défini trois priorités numériques : fiabiliser la charge/capacité, connecter le suivi commercial et réduire les doubles saisies. Feuille de route écrite et budget 2026 de 90 000 € ; gains par projet à préciser."
+    },
+    {
+      "axis": "Digitalisation",
+      "question": "Les données sont-elles centralisées et exploitables ?",
+      "score": 2,
+      "answer": "Oui. ERP, fichiers Excel commerciaux et fichiers atelier coexistent sans modèle de données partagé ; plusieurs rapprochements sont manuels."
+    },
+    {
+      "axis": "RSE",
+      "question": "L'entreprise a-t-elle identifié ses enjeux RSE prioritaires ?",
+      "score": 3,
+      "answer": "Un premier plan RSE priorise l’énergie, les déchets et la transmission des compétences. Une référente qualité coordonne les actions ; certains objectifs et indicateurs extra-financiers restent à définir."
+    }
+  ],
+  "profile_responses": [
+    {
+      "question": "Historique",
+      "answer": "Créée en 2010, Précision Montelac est une SAS spécialisée dans l’usinage de précision et l’assemblage de sous-ensembles métalliques en petites et moyennes séries. L’entreprise a intégré un atelier d’assemblage en 2017 et installé un ERP en 2021. Elle compte 46 salariés sur un site de 2 600 m².",
+      "source_question_id": 1,
+      "section": "Informations Générales"
+    },
+    {
+      "question": "Parcours",
+      "answer": "La dirigeante, Juliette Caron, ingénieure en mécanique, possède 20 ans d’expérience industrielle. Après des fonctions de responsable de production, elle a repris la direction en 2019. Elle s’appuie sur un responsable production, une responsable qualité, un responsable commercial et une responsable administrative et RH.",
+      "source_question_id": 2,
+      "section": "Informations Générales"
+    },
+    {
+      "question": "Chiffres",
+      "answer": "Exercice clos 2025 : CA 7 200 000 €, contre 6 800 000 € en 2024 (+5,88 %). EBE 864 000 € (12 % du CA), DAP 264 000 €, REX 600 000 €, résultat net 420 000 €, CAF simplifiée 684 000 €. Trésorerie de clôture 510 000 €, dette financière restante 1 100 000 €, annuités 220 000 €. Effectif : 46 salariés. Prévision de CA 2026 : 7 600 000 €. Objectif de CA 2029 : 9 000 000 €.",
+      "source_question_id": 3,
+      "section": "Informations Générales"
+    },
+    {
+      "question": "La stratégie sur 3 ans est-elle écrite ?",
+      "answer": "Oui. Une feuille de route 2027–2029 fixe un CA cible de 9 M€, une diversification hors aéronautique et une amélioration de la livraison à l’heure. Les objectifs sont écrits ; les actions ne sont pas toutes chiffrées ni attribuées.",
+      "source_question_id": 4,
+      "section": "Stratégie Management"
+    },
+    {
+      "question": "Positionnement de l’entreprise sur le marché et par rapport à la concurrence ?",
+      "answer": "PME régionale spécialisée dans les pièces techniques en séries de 20 à 500 unités. Positionnement prix intermédiaire et qualité élevée. Marchés : aéronautique 40 %, équipements industriels 40 %, énergie 20 %. Premier client : 22 % du CA.",
+      "source_question_id": 5,
+      "section": "Stratégie Management"
+    },
+    {
+      "question": "Comment vous différenciez vous de la concurrence ?",
+      "answer": "Accompagnement technique dès le devis, traçabilité matière, usinage et assemblage sur un même site, flexibilité sur les petites séries et interlocuteur technique unique.",
+      "source_question_id": 6,
+      "section": "Stratégie Management"
+    },
+    {
+      "question": "Avez-vous un ERP ?",
+      "answer": "Oui, un ERP est utilisé depuis 2021.",
+      "source_question_id": 7,
+      "section": "Performance Industrielle"
+    },
+    {
+      "question": "Si oui, comment l’utilisez-vous (pour quelles activités) ?",
+      "answer": "L’ERP couvre devis, commandes, achats, stocks, ordres de fabrication, livraisons et facturation. La planification fine, les temps atelier et certains tableaux de bord restent partiellement sous Excel.",
+      "source_question_id": 8,
+      "section": "Performance Industrielle"
+    },
+    {
+      "question": "Quels sont vos indicateurs clés ?",
+      "answer": "Livraison à l’heure 94 % (cible 97 %), TRS du centre pilote 74 % (cible 80 %), coût de non-qualité interne 2,4 % du CA (cible 1,5 %), retours clients 0,5 % des lignes livrées (cible 0,3 %), couverture de stock 65 jours (cible 50), transformation des devis 36 % (cible 42 %), absentéisme 3,6 % et turnover annuel 7 %.",
+      "source_question_id": 9,
+      "section": "Performance Industrielle"
+    },
+    {
+      "question": "Avez-vous des fiches de postes ?",
+      "answer": "Oui, 38 fiches sur 46 sont à jour. Les fonctions administratives et les emplois récemment créés doivent être révisés.",
+      "source_question_id": 10,
+      "section": "RH"
+    },
+    {
+      "question": "Organigramme fonctionnel ?",
+      "answer": "Oui. La direction supervise production, qualité, commerce et administration/RH. Le responsable production encadre méthodes, maintenance et chefs d’équipe. Un relais commercial supplémentaire serait nécessaire pour la diversification.",
+      "source_question_id": 11,
+      "section": "RH"
+    },
+    {
+      "question": "Revue des indicateurs RH : taux d’absentéisme, turn over, taux d’accidents, etc.",
+      "answer": "Absentéisme 3,6 %, turnover annuel 7 %, un accident avec arrêt sur les douze derniers mois. Revue mensuelle des effectifs et de l’absentéisme, revue trimestrielle du turnover et de la sécurité. L’engagement et les effets des formations ne sont pas encore mesurés régulièrement.",
+      "source_question_id": 12,
+      "section": "RH"
+    },
+    {
+      "question": "Avez-vous des difficultés de recrutement ?",
+      "answer": "Difficultés pour recruter les régleurs CN et techniciens méthodes. Deux postes ouverts, délai moyen de recrutement de 75 jours. Partenariats écoles et tutorat en place.",
+      "source_question_id": 13,
+      "section": "RH"
+    },
+    {
+      "question": "Ventilation du CA par activité / Poids de chaque activité dans le CA",
+      "answer": "CA 2025 : usinage de précision 4 320 000 € (60 %) ; assemblage 2 160 000 € (30 %) ; maintenance et outillage 720 000 € (10 %). Total : 7 200 000 €.",
+      "source_question_id": 14,
+      "section": "Commercial & Marketing"
+    },
+    {
+      "question": "Structuration des devis : Comment établissez-vous vos devis ?",
+      "answer": "Les devis sont établis dans l’ERP à partir des matières, de la sous-traitance, des temps de préparation et d’usinage et des taux horaires de l’exercice précédent. Les affaires supérieures à 25 000 € font l’objet d’une double validation. Les écarts entre temps prévus et réels ne sont pas systématiquement réinjectés.",
+      "source_question_id": 15,
+      "section": "Commercial & Marketing"
+    },
+    {
+      "question": "Quelle est votre organisation commerciale ? Qui assure et comment faites-vous la prospection commerciale ?",
+      "answer": "Un responsable commercial et une assistante gèrent les 58 clients actifs. La dirigeante intervient sur les comptes stratégiques. Un CRM suit les opportunités depuis six mois ; la prospection cible les équipements industriels et l’énergie, mais son rythme reste irrégulier.",
+      "source_question_id": 16,
+      "section": "Commercial & Marketing"
+    },
+    {
+      "question": "Êtes-vous engagé dans une démarche RSE ?",
+      "answer": "Un premier plan RSE priorise l’énergie, les déchets et la transmission des compétences. Une référente qualité coordonne les actions ; certains objectifs et indicateurs extra-financiers restent à définir.",
+      "source_question_id": 20,
+      "section": "RSE"
+    },
+    {
+      "question": "Avez-vous une démarche de qualité de vie au travail en place ?",
+      "answer": "Actions d’ergonomie, tutorat et aménagements d’horaires en place. Les besoins sont recueillis aux entretiens et au CSE ; pas d’enquête de bien-être collectif ni d’évaluation systématique des effets des actions.",
+      "source_question_id": 21,
+      "section": "RSE"
+    },
+    {
+      "question": "Avez-vous un suivi de vos consommations d’énergie ? Si oui, à quelle fréquence ?",
+      "answer": "Suivi mensuel des factures et des kWh. Consommation électrique 2025 : 600 MWh, soit 83,3 kWh par tranche de 1 000 € de CA. Éclairage LED et détection des fuites d’air déployés. Le sous-comptage par machine reste à installer.",
+      "source_question_id": 22,
+      "section": "RSE"
+    },
+    {
+      "question": "Faites-vous le tri des déchets ?",
+      "answer": "Tri des métaux, cartons, déchets courants et déchets dangereux, avec prestataires spécialisés pour huiles et fluides. Bordereaux archivés et quantités revues trimestriellement ; coûts non consolidés chaque mois.",
+      "source_question_id": 23,
+      "section": "RSE"
+    }
+  ],
+  "question_updates": [
+    {
+      "axis": "Stratégie",
+      "question": "Connaissez-vous le positionnement de l'entreprise/marché/concurrence ?",
+      "aliases": [
+        "Connaissez-vous le positionnement de l'entreprise par rapport au marché et à la concurrence ?"
+      ],
+      "category": "Général"
+    },
+    {
+      "axis": "Stratégie",
+      "question": "Le dirigeant peut-il s'absenter plus d'une journée sans téléphone ?",
+      "aliases": [],
+      "category": "Général"
+    },
+    {
+      "axis": "Marketing",
+      "question": "Il y a-t-il un système de validation des offres ? Qui les fait / les valide ?",
+      "aliases": [],
+      "category": "Offres commerciales"
+    }
+  ]
+}
