@@ -150,10 +150,19 @@ jobs:
             touch "$migration_marker"
           fi
 
+          comments_marker="$HOME/.uimm_precision_montelac_comments_v1_installed"
+          if [ ! -f "$comments_marker" ]; then
+            docker compose --env-file .env.production \
+              -f compose.production.yml exec -T backend \
+              python -m app.scripts.add_precision_montelac_comments --company-id 102 --apply
+            touch "$comments_marker"
+          fi
+
           echo "Deployment and database check succeeded."
           REMOTE
 
       - name: Remove temporary SSH key
         if: always()
         run: rm -f ~/.ssh/deploy_key
+
 
