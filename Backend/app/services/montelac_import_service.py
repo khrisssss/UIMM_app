@@ -146,9 +146,17 @@ def refresh_current_scores(db, affected):
 
 def install_montelac(db):
     """Caller owns transaction. Repeated calls preserve the existing named company."""
+    return install_answered_company(db, load_montelac(), include_comments=False)
+
+
+def install_answered_company(db, case, *, include_comments=True):
+    """Install one explicit answer set; never overwrite an existing company.
+
+    Caller owns the transaction. New datasets may omit question updates entirely.
+    Comments are required and saved alongside every answer when requested.
+    """
     if db.bind.dialect.name == 'postgresql':
         db.execute(text('SELECT pg_advisory_xact_lock(728462901)'))
-    case = load_montelac()
     axes = one_index(db.query(Axis).filter_by(is_active=True).all(), lambda a: normalize(a.name))
     for name in case['axes']:
         if normalize(name) not in axes:
@@ -187,7 +195,10 @@ def install_montelac(db):
             level = levels.get(value)
             if level is None or not response['answer'].strip():
                 raise ValueError(f'Invalid answer or score for question {q.id}')
-            planned.append((axis, q, level, response['answer']))
+            comment = response.get('comment') if include_comments else None
+            if include_comments and not (comment or '').strip():
+                raise ValueError(f'Missing comment for question {q.id}')
+            planned.append((axis, q, level, response['answer'], comment))
     profile_plan = []
     for q, section in (db.query(CompanyProfileQuestion, CompanyProfileSection)
                        .join(CompanyProfileSection).filter(CompanyProfileQuestion.is_active.is_(True),
@@ -196,16 +207,19 @@ def install_montelac(db):
         if response is None:
             unmapped.append({'section': section.name, 'question_id': q.id, 'question': q.question_text})
             continue
-        profile_plan.append((q, response['answer']))
+        comment = response.get('comment') if include_comments else None
+        if include_comments and not (comment or '').strip():
+            raise ValueError(f'Missing comment for profile question {q.id}')
+        profile_plan.append((q, response['answer'], comment))
     if unmapped:
         raise ValueError('No specific answer for live questions: ' + json.dumps(unmapped, ensure_ascii=False))
     company = Company(**case['company'])
     db.add(company); db.flush()
-    for axis, q, level, answer in planned:
+    for axis, q, level, answer, comment in planned:
         db.add(Answer(company_id=company.id, question_id=q.id, score_code=level.code,
-                      score_value=level.score_value, answer_text=answer, comment=None))
-    for q, answer in profile_plan:
-        db.add(CompanyProfileAnswer(company_id=company.id, question_id=q.id, answer_text=answer))
+                      score_value=level.score_value, answer_text=answer, comment=comment))
+    for q, answer, comment in profile_plan:
+        db.add(CompanyProfileAnswer(company_id=company.id, question_id=q.id, answer_text=answer, comment=comment))
     for name in case['axes']:
         axis = axes[normalize(name)]
         db.add(CompanyAxis(company_id=company.id, axis_id=axis.id, is_selected=True,
@@ -220,4 +234,7 @@ def install_montelac(db):
     db.flush()
     summary.update(created=True, company_id=company.id, axis_answers=len(planned),
                    profile_answers=len(profile_plan), scores=scores)
+    if include_comments:
+        summary.update(axis_comments=len(planned), profile_comments=len(profile_plan))
     return summary
+

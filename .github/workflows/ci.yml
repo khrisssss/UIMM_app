@@ -158,11 +158,20 @@ jobs:
             touch "$comments_marker"
           fi
 
+          solerive_marker="$HOME/.uimm_mecanique_solerive_v1_installed"
+          if [ ! -f "$solerive_marker" ]; then
+            docker compose --env-file .env.production \
+              -f compose.production.yml exec -T backend \
+              python -m app.scripts.install_mecanique_solerive --apply
+            touch "$solerive_marker"
+          fi
+
           echo "Deployment and database check succeeded."
           REMOTE
 
       - name: Remove temporary SSH key
         if: always()
         run: rm -f ~/.ssh/deploy_key
+
 
 
