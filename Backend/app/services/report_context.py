@@ -49,6 +49,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -58,7 +59,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
         .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
-        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True)
+        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -77,7 +78,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
             CompanyProfileSection,
             CompanyProfileQuestion.section_id == CompanyProfileSection.id,
         )
-        .filter(CompanyProfileAnswer.company_id == company_id)
+        .filter(CompanyProfileAnswer.company_id == company_id, CompanyProfileQuestion.is_active.is_(True), CompanyProfileSection.is_active.is_(True))
         .order_by(
             CompanyProfileSection.order_index,
             CompanyProfileQuestion.order_index,
@@ -89,7 +90,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
         db.query(Answer, Question, Axis)
         .join(Question, Answer.question_id == Question.id)
         .join(Axis, Question.axis_id == Axis.id)
-        .filter(Answer.company_id == company_id)
+        .filter(Answer.company_id == company_id, Axis.is_active.is_(True), Question.is_active.is_(True))
         .order_by(
             Axis.order_index,
             Question.category_id,

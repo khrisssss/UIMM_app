@@ -46,7 +46,8 @@ def get_company_scores(
 
     return (
         db.query(Score)
-        .filter(Score.company_id == company_id)
+        .join(Axis, Score.axis_id == Axis.id)
+        .filter(Score.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Score.axis_id)
         .all()
     )
@@ -68,7 +69,8 @@ def calculate_company_scores(
         raise HTTPException(status_code=404, detail="Company not found")
 
     # Remove old scores first, so the radar only reflects the current selected axes.
-    db.query(Score).filter(Score.company_id == company_id).delete()
+    active_axis_ids = db.query(Axis.id).filter(Axis.is_active.is_(True))
+    db.query(Score).filter(Score.company_id == company_id, Score.axis_id.in_(active_axis_ids)).delete(synchronize_session=False)
     db.commit()
 
     selected_company_axes = (
@@ -77,6 +79,7 @@ def calculate_company_scores(
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -182,7 +185,8 @@ def get_archive_average_scores(
 
     current_scores = (
         db.query(Score)
-        .filter(Score.company_id == company_id)
+        .join(Axis, Score.axis_id == Axis.id)
+        .filter(Score.company_id == company_id, Axis.is_active.is_(True))
         .all()
     )
 
@@ -202,6 +206,7 @@ def get_archive_average_scores(
         .join(Axis, Score.axis_id == Axis.id)
         .filter(
             Company.is_archived == True,
+            Axis.is_active.is_(True),
             Score.axis_id.in_(current_axis_ids),
             Score.score_percentage.isnot(None),
         )

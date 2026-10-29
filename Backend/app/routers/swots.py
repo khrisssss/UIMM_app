@@ -5,7 +5,6 @@ from app.database import get_db
 from app.models.company import Company
 from app.models.axis import Axis
 from app.models.swot import SWOT
-from app.models.financial_year import FinancialYear
 from app.schemas.swot import SWOTCreate, SWOTRead, SWOTUpdate 
 
 #from app.services.swot_ai_service import generate_swot_draft
@@ -17,6 +16,7 @@ from app.dependencies.auth import require_consultant_or_admin
 from app.services.azure_openai_service import generate_json_response
 from app.services.swot_ai_service import generate_swot_with_ai
 from app.services.swot_ai_payload import make_swot_ai_payload
+from app.services.swot_generation_service import normalize_ai_swot
 router = APIRouter(
     prefix="/companies",
     tags=["SWOT"]
@@ -139,12 +139,7 @@ def preview_swot_ai_payload(
     context = build_swot_context(db, company_id)
     if context is None:
         raise HTTPException(status_code=404, detail="Company not found")
-    financial_years = (
-        db.query(FinancialYear)
-        .filter(FinancialYear.company_id == company_id)
-        .order_by(FinancialYear.year, FinancialYear.kind)
-        .all()
-    )
+    financial_years = ()
     return make_swot_ai_payload(context, financial_years)
 
 
@@ -159,14 +154,10 @@ def generate_swot(
     if not swot_context:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    financial_years = (
-        db.query(FinancialYear)
-        .filter(FinancialYear.company_id == company_id)
-        .order_by(FinancialYear.year, FinancialYear.kind)
-        .all()
-    )
+    financial_years = ()
     ai_payload = make_swot_ai_payload(swot_context, financial_years)
-    ai_result = generate_swot_with_ai(ai_payload) #the prompt 
+    ai_result = normalize_ai_swot(generate_swot_with_ai(ai_payload))
+    generation_source = "public_sources_ai" if ai_payload["evidence_basis"]["mode"] == "public_sources_only" else "azure_openai"
 
     strengths = ai_result.get("strengths", [])
     weaknesses = ai_result.get("weaknesses", [])
@@ -190,7 +181,7 @@ def generate_swot(
             weaknesses=weaknesses,
             opportunities=opportunities,
             threats=threats,
-            generation_source="azure_openai",
+            generation_source=generation_source,
             generated_by_ai=True,
             ai_model=os.getenv("AZURE_OPENAI_MODEL", "azure-model"),
             status="draft",
@@ -206,7 +197,7 @@ def generate_swot(
     existing_swot.weaknesses = weaknesses
     existing_swot.opportunities = opportunities
     existing_swot.threats = threats
-    existing_swot.generation_source = "azure_openai"
+    existing_swot.generation_source = generation_source
     existing_swot.generated_by_ai = True
     existing_swot.ai_model = os.getenv("AZURE_OPENAI_MODEL", "azure-model")
     existing_swot.status = "draft"

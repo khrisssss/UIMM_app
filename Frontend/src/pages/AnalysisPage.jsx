@@ -168,10 +168,12 @@ function AnalysisPage() {
       const axesResponse = await api.get("/axes/");
       setAxes(axesResponse.data);
 
-      await api.post(`/companies/${companyId}/calculate-scores`);
+      if (companyResponse.data.general_state !== "unassessed") {
+        await api.post(`/companies/${companyId}/calculate-scores`);
+      }
 
       const scoresResponse = await api.get(`/companies/${companyId}/scores`);
-      setScores(scoresResponse.data);
+      setScores(scoresResponse.data.filter((item) => Number(item.answered_questions || 0) > 0));
 
       try {
         const archiveAverageResponse = await api.get(
@@ -413,6 +415,9 @@ function AnalysisPage() {
           <button className="primary-button" onClick={openReport}>Continuer vers le rapport</button>
         </div>
 
+        {company?.is_synthetic && (
+          <p className="page-message" role="note">Cas d’étude fictif : réponses et scores générés à partir d’un scénario pédagogique.</p>
+        )}
         {message && <div className="toast-message" role="status">{message}</div>}
 
         <section className="analysis-top-grid">
@@ -531,10 +536,13 @@ function AnalysisPage() {
               onClick={generateSwot}
               disabled={isGenerating || isSaving}
             >
-              {isGenerating ? "Génération en cours…" : "Générer le SWOT"}
+              {isGenerating ? "Génération en cours…" : company?.general_state === "unassessed" ? "Générer la pré-analyse SWOT" : "Générer le SWOT"}
             </button>
           </div>
 
+          {(company?.general_state === "unassessed" || swot?.generation_source === "public_sources_ai") && (
+            <p role="note">Pré-analyse documentaire à partir des sources publiques du profil. Les réponses internes ne sont pas complétées et aucun score de maturité n’est déduit. Les constats restent à valider.</p>
+          )}
           <div className="swot-grid">
             <div className="swot-center" aria-hidden="true">
               <span>S</span><span>W</span><span>O</span><span>T</span>
@@ -632,6 +640,9 @@ function AnalysisPage() {
             </div>
 
             <div className="ml-prediction-main-result">
+              {mlPrediction.is_demo && (
+                <p role="status">Modèle de démonstration sur données fictives : résultat pédagogique, non validé sur des entreprises réelles.</p>
+              )}
               <p className="ml-prediction-label">État prédit</p>
 
               <h3
@@ -807,3 +818,4 @@ function AnalysisPage() {
 }
 
 export default AnalysisPage;
+

@@ -29,12 +29,6 @@ function AxisQuestionnairePage() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && axis?.name?.trim().toLowerCase() === "finance" && questions.length === 0) {
-      window.location.replace(`/companies/${companyId}/finance`);
-    }
-  }, [isLoading, axis, questions.length, companyId]);
-
-  useEffect(() => {
     if (!message) return;
 
     const timer = setTimeout(() => {
@@ -270,10 +264,6 @@ function AxisQuestionnairePage() {
     window.location.href = `/companies/${companyId}/analysis`;
   }
 
-  if (!isLoading && axis?.name?.trim().toLowerCase() === "finance" && questions.length === 0) {
-    return null;
-  }
-
   if (isLoading) {
     return (
       <div className="app-page">
@@ -293,9 +283,6 @@ function AxisQuestionnairePage() {
 
       <main className="questionnaire-page-content">
         <div className="questionnaire-top-actions">
-          {axis?.name?.trim().toLowerCase() === "finance" && (
-            <button className="secondary-button" onClick={() => window.location.href = `/companies/${companyId}/finance`}>Données financières et prévisions</button>
-          )}
           <button className="primary-button" onClick={openAnalysis}>Voir le radar / SWOT</button>
         </div>
 
@@ -358,7 +345,7 @@ function AxisQuestionnairePage() {
                         </span>
                       </div>
 
-                      <p className="question-text">{question.question_text}</p>
+                      <p className="question-text" style={{ whiteSpace: "pre-line" }}>{question.question_text}</p>
 
                       <div className="question-answer-grid">
                         <div className="form-group">

@@ -146,6 +146,7 @@ function CompaniesPage() {
   }
 
   function getStateLabel(state) {
+    if (state === "unassessed") return "Non évalué";
     if (state === "green") return "Bon";
     if (state === "red") return "Attention";
     return "À suivre";
@@ -220,6 +221,7 @@ function CompaniesPage() {
   // state-green / state-orange / state-red
   function getGeneralStateClass(company) {
     const state = company.general_state || "orange";
+    if (state === "unassessed") return "state-unassessed";
 
     if (state === "green") {
       return "state-green";

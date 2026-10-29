@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.dependencies.auth import require_consultant_or_admin
+from app.dependencies.auth import require_admin, require_consultant_or_admin
 from app.models.user import User
 from app.services.company_state_ml_service import (
     load_metrics,
@@ -16,12 +16,13 @@ router = APIRouter(tags=["ML"])
 
 @router.post("/ml/train-company-state-model")
 def train_company_state_prediction_model(
+    use_demo: bool = False,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_consultant_or_admin),
+    current_user: User = Depends(require_admin),
 ):
     """Train the company-state prediction model using eligible saved company data and return training metrics."""
     try:
-        metrics = train_company_state_model(db)
+        metrics = train_company_state_model(db, use_demo=use_demo)
         return {
             "message": "Company state prediction model trained successfully.",
             "metrics": metrics,
@@ -32,10 +33,11 @@ def train_company_state_prediction_model(
 
 @router.get("/ml/model-metrics")
 def get_company_state_model_metrics(
+    use_demo: bool = False,
     current_user: User = Depends(require_consultant_or_admin),
 ):
     """Read the saved model evaluation metrics. Returns 404 if no trained model metrics are available."""
-    metrics = load_metrics()
+    metrics = load_metrics(use_demo=use_demo)
 
     if metrics is None:
         raise HTTPException(

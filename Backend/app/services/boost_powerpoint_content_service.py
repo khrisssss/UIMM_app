@@ -9,6 +9,7 @@ from app.models.company import Company
 from app.models.company_axis import CompanyAxis
 from app.models.company_profile_answer import CompanyProfileAnswer
 from app.models.company_profile_question import CompanyProfileQuestion
+from app.models.company_profile_section import CompanyProfileSection
 from app.models.reports import Report
 from app.models.score import Score
 from app.models.swot import SWOT
@@ -83,7 +84,7 @@ def get_axis_scores(db, company_id):
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
         .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
-        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True)
+        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -109,7 +110,7 @@ def get_selected_report_axes(db, company_id, scores):
     rows = (
         db.query(Axis)
         .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
-        .filter(CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True)
+        .filter(CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -158,7 +159,7 @@ def get_axis_comments(db, company_id):
     rows = (
         db.query(CompanyAxis, Axis)
         .join(Axis, CompanyAxis.axis_id == Axis.id)
-        .filter(CompanyAxis.company_id == company_id)
+        .filter(CompanyAxis.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -178,7 +179,8 @@ def get_profile_answers(db, company_id):
             CompanyProfileQuestion,
             CompanyProfileAnswer.question_id == CompanyProfileQuestion.id,
         )
-        .filter(CompanyProfileAnswer.company_id == company_id)
+        .join(CompanyProfileSection, CompanyProfileQuestion.section_id == CompanyProfileSection.id)
+        .filter(CompanyProfileAnswer.company_id == company_id, CompanyProfileQuestion.is_active.is_(True), CompanyProfileSection.is_active.is_(True))
         .order_by(CompanyProfileQuestion.order_index)
         .all()
     )
@@ -222,7 +224,7 @@ def get_axis_answers_summary(db, company_id): #Builds an answer summary per axis
         db.query(Answer, Question, Axis)
         .join(Question, Answer.question_id == Question.id)
         .join(Axis, Question.axis_id == Axis.id)
-        .filter(Answer.company_id == company_id)
+        .filter(Answer.company_id == company_id, Axis.is_active.is_(True), Question.is_active.is_(True))
         .all()
     )
 

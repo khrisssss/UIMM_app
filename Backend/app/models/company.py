@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Date
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Date, false
 from sqlalchemy.sql import func
 
 from app.database import Base
@@ -10,6 +10,7 @@ class Company(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     name = Column(String, nullable=False)
+    is_synthetic = Column(Boolean, nullable=False, default=False, server_default=false())
 
     contact_name = Column(String, nullable=True)
     contact_email = Column(String, nullable=True)

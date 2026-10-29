@@ -36,6 +36,7 @@ def build_swot_context(db, company_id: int):
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -44,7 +45,7 @@ def build_swot_context(db, company_id: int):
     scores = (
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
-        .filter(Score.company_id == company_id)
+        .filter(Score.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -53,7 +54,7 @@ def build_swot_context(db, company_id: int):
         db.query(Answer, Question, Axis)
         .join(Question, Answer.question_id == Question.id)
         .join(Axis, Question.axis_id == Axis.id)
-        .filter(Answer.company_id == company_id)
+        .filter(Answer.company_id == company_id, Axis.is_active.is_(True), Question.is_active.is_(True))
         .order_by(Axis.order_index, Question.order_index)
         .all()
     )
@@ -72,7 +73,7 @@ def build_swot_context(db, company_id: int):
             CompanyProfileSection,
             CompanyProfileQuestion.section_id == CompanyProfileSection.id,
         )
-        .filter(CompanyProfileAnswer.company_id == company_id)
+        .filter(CompanyProfileAnswer.company_id == company_id, CompanyProfileQuestion.is_active.is_(True), CompanyProfileSection.is_active.is_(True))
         .order_by(
             CompanyProfileSection.order_index,
             CompanyProfileQuestion.order_index,
