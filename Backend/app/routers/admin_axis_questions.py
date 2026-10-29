@@ -94,10 +94,11 @@ def get_admin_axis_questions(
     db: Session = Depends(get_db),
     current_user=Depends(require_admin),
 ):
-    """List diagnostic questions for administration, using the supplied filters."""
+    """Administrateur | List diagnostic questions for administration, using the supplied filters."""
     query = (
         db.query(Question)
         .join(Axis, Question.axis_id == Axis.id)
+        .filter(Axis.is_active.is_(True))
     )
 
     if axis_id is not None:
@@ -122,10 +123,10 @@ def create_axis_question(
     db: Session = Depends(get_db),
     current_user=Depends(require_admin),
 ):
-    """Create a diagnostic question with its scoring and company-size settings."""
+    """Administrateur | Create a diagnostic question with its scoring and company-size settings."""
     axis = db.query(Axis).filter(Axis.id == question.axis_id).first()
 
-    if not axis:
+    if not axis or not axis.is_active:
         raise HTTPException(status_code=404, detail="Axis not found")
 
     validate_category_for_axis(
@@ -171,7 +172,7 @@ def update_axis_question(
     db: Session = Depends(get_db),
     current_user=Depends(require_admin),
 ):
-    """Edit a diagnostic question using the supplied fields."""
+    """Administrateur | Edit a diagnostic question using the supplied fields."""
     db_question = db.query(Question).filter(Question.id == question_id).first()
 
     if not db_question:
@@ -184,7 +185,7 @@ def update_axis_question(
 
     axis = db.query(Axis).filter(Axis.id == new_axis_id).first()
 
-    if not axis:
+    if not axis or not axis.is_active:
         raise HTTPException(status_code=404, detail="Axis not found")
 
     validate_category_for_axis(
@@ -305,7 +306,7 @@ def reorder_axis_questions(
 
     axis = db.query(Axis).filter(Axis.id == axis_id).first()
 
-    if not axis:
+    if not axis or not axis.is_active:
         raise HTTPException(status_code=404, detail="Axis not found")
 
     query = db.query(Question).filter(Question.axis_id == axis_id)

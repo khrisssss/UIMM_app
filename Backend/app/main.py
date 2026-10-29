@@ -1,14 +1,15 @@
 from fastapi import FastAPI, Depends #main router
 from app.routers import companies,axes,answers, scores, swots, reports, scoring, auth, users, company_profile, company_axes, admin_axis_questions
-from app.routers import axis_question_categories, ml #analysis , company_profile
+from app.routers import axis_question_categories
 
-from app.database import Base, engine, get_db
+from app.database import Base, engine, get_db, SessionLocal
 
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.models.company import Company
+from app.models.financial_year import FinancialYear
 from app.models.axis import Axis
 from app.models.question import Question
 from app.models.scoring_scale import ScoringScale
@@ -48,6 +49,19 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
+# Add the independent portfolio selection to databases created before this field existed.
+with engine.begin() as connection:
+    connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS is_synthetic BOOLEAN NOT NULL DEFAULT FALSE"))
+    connection.execute(text("UPDATE companies SET is_synthetic = TRUE WHERE is_synthetic = FALSE AND (name LIKE 'DEMO ML - %' OR name LIKE 'DEMO — %')"))
+    connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))
+    connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS axis_analysis TEXT"))
+    connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS presentation_content TEXT"))
+
+# Retire Finance in existing installations without deleting historical records.
+from app.services.diagnostic_scope_service import retire_finance
+with SessionLocal.begin() as scope_db:
+    retire_finance(scope_db)
+
 @app.get("/")
 def read_root():
     """Check that the API is running; returns a welcome message."""
@@ -75,4 +89,5 @@ app.include_router(company_profile.router)
 app.include_router(company_axes.router)
 app.include_router(admin_axis_questions.router)
 app.include_router(axis_question_categories.router)
-app.include_router(ml.router)
+
+

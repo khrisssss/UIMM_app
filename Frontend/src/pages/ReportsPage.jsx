@@ -1,3 +1,4 @@
+import { displayLabel } from "../utils/french";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -7,11 +8,26 @@ import "../App.css";
 import "../styles/forms.css";
 import "../styles/reports.css";
 
+const SWOT_CATEGORIES = [
+  ["strengths", "Forces"],
+  ["weaknesses", "Faiblesses"],
+  ["opportunities", "Opportunités"],
+  ["threats", "Menaces"],
+];
+
+function readAxisAnalysis(value) {
+  try {
+    const parsed = typeof value === "string" ? JSON.parse(value || "{}") : value;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
 function ReportsPage() {
   const { companyId } = useParams();
 
   const [company, setCompany] = useState(null);
-  const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
 
   const [message, setMessage] = useState("");
@@ -22,19 +38,42 @@ function ReportsPage() {
     return error?.response?.data?.detail || fallbackMessage;
   }
 
+  async function loadReportRestitution(report) {
+    const response = await api.get(
+      `/companies/${companyId}/reports/${report.id}/restitution`
+    );
+    const analysis = {};
+    response.data.forEach((axis) => {
+      analysis[axis.axis_name] = Object.fromEntries(
+        SWOT_CATEGORIES.map(([key]) => [key, axis[key] || []])
+      );
+    });
+    return { ...report, axis_analysis: JSON.stringify(analysis) };
+  }
+
+  function updateAxisFinding(axisName, category, value) {
+    setSelectedReport((previous) => {
+      const analysis = readAxisAnalysis(previous.axis_analysis);
+      analysis[axisName] = {
+        ...analysis[axisName],
+        [category]: value.split("\n"),
+      };
+      return { ...previous, axis_analysis: JSON.stringify(analysis) };
+    });
+  }
+
   async function loadReportsData() {
     try {
       const companyResponse = await api.get(`/companies/${companyId}`);
       setCompany(companyResponse.data);
 
       const reportsResponse = await api.get(`/companies/${companyId}/reports`);
-      setReports(reportsResponse.data);
 
       if (reportsResponse.data.length > 0) {
-        setSelectedReport(reportsResponse.data[0]);
+        setSelectedReport(await loadReportRestitution(reportsResponse.data[0]));
       }
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load reports."));
+      setMessage(getErrorMessage(error, "Impossible de charger les rapports."));
       console.error(error);
     }
   }
@@ -70,7 +109,7 @@ function ReportsPage() {
 
   async function generateReportDraft() {
     const confirmed = window.confirm(
-      "Generate a new AI report draft? This will replace the current draft report if one already exists."
+      "Générer un nouveau brouillon de rapport avec l’IA ? Le brouillon actuel sera remplacé s’il existe déjà."
     );
 
     if (!confirmed) return;
@@ -83,14 +122,14 @@ function ReportsPage() {
       );
 
       setSelectedReport(response.data);
-      setMessage("AI report draft generated.");
+      setMessage("Brouillon du rapport généré avec l’IA.");
 
       await loadReportsData();
     } catch (error) {
       setMessage(
         getErrorMessage(
           error,
-          "Failed to generate report. Check that company details, answers, scores, and SWOT exist."
+          "Impossible de générer le rapport. Vérifiez que la fiche de l’entreprise, les réponses, les scores et le SWOT sont renseignés."
         )
       );
       console.error(error);
@@ -110,7 +149,7 @@ function ReportsPage() {
   
   async function saveReportEdits(status = "draft") {
     if (!selectedReport) {
-      setMessage("No report selected.");
+      setMessage("Aucun rapport sélectionné.");
       return;
     }
 
@@ -124,6 +163,7 @@ function ReportsPage() {
           executive_summary: selectedReport.executive_summary,
           diagnostic_summary: selectedReport.diagnostic_summary,
           swot_summary: selectedReport.swot_summary,
+          axis_analysis: selectedReport.axis_analysis,
           recommendations: selectedReport.recommendations,
           conclusion: selectedReport.conclusion,
           status: status,
@@ -133,14 +173,14 @@ function ReportsPage() {
       setSelectedReport(response.data);
 
       if (status === "validated") {
-        setMessage("Report saved and validated.");
+        setMessage("Rapport enregistré et validé.");
       } else {
-        setMessage("Report saved as draft.");
+        setMessage("Rapport enregistré comme brouillon.");
       }
 
       await loadReportsData();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to save report."));
+      setMessage(getErrorMessage(error, "Impossible de enregistrer le rapport."));
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -149,17 +189,17 @@ function ReportsPage() {
 
   async function generatePowerPoint() {
     if (!selectedReport) {
-      setMessage("No report selected.");
+      setMessage("Aucun rapport sélectionné.");
       return;
     }
 
     if (selectedReport.status !== "validated") {
-      setMessage("Save and validate the report before generating PowerPoint.");
+      setMessage("Enregistrez et validez le rapport avant de générer le PowerPoint.");
       return;
     }
 
     try {
-      setMessage("Generating PowerPoint...");
+      setMessage("Génération du PowerPoint en cours…");
 
       const response = await api.post(
         `/companies/${companyId}/reports/${selectedReport.id}/generate-powerpoint`,
@@ -184,15 +224,11 @@ function ReportsPage() {
 
       window.URL.revokeObjectURL(blobUrl);
 
-      setMessage("PowerPoint generated.");
+      setMessage("PowerPoint généré.");
     } catch (error) {
       console.error("PowerPoint error:", error.response?.data || error);
-      setMessage("Failed to generate PowerPoint.");
+      setMessage("Impossible de générer le PowerPoint.");
     }
-  }
-
-  function selectReport(report) {
-    setSelectedReport(report);
   }
 
   function goBack() {
@@ -202,102 +238,63 @@ function ReportsPage() {
   return (
     <div className="app-page">
       <AppHeader
-        title="Diagnostic report"
-        subtitle="Generate, edit, and validate the company report."
+        title="Rapport de diagnostic"
+        subtitle="Générez, modifiez et validez le rapport de l’entreprise."
       />
 
       <main className="reports-page-content">
         {message && <div className="toast-message">{message}</div>}
 
         <section className="reports-top-actions">
-          <button className="secondary-button" onClick={goBack}>
-            Back to company
-          </button>
+          <button className="secondary-button" onClick={goBack}>Profil</button>
 
           <button
             className="primary-button"
             onClick={generateReportDraft}
             disabled={isGenerating}
           >
-            {isGenerating ? "Generating..." : "Generate AI report"}
+            {isGenerating ? "Génération en cours…" : "Générer le rapport avec l’IA"}
           </button>
         </section>
 
         {company && (
           <section className="reports-company-card">
             <div>
-              <p className="eyebrow">Company</p>
+              <p className="eyebrow">Entreprise</p>
               <h2>{company.name}</h2>
-              <p>
-                Status: <strong>{company.status}</strong>
+              <p>Statut :<strong>{company.status}</strong>
               </p>
             </div>
 
             <div className="report-status-pill">
-              {selectedReport ? selectedReport.status : "No report yet"}
+              {selectedReport ? displayLabel(selectedReport.status) : "Aucun rapport pour le moment"}
             </div>
           </section>
         )}
 
-        <section className="reports-layout">
-          <aside className="reports-list-card">
-            <div className="section-title-row">
-              <div>
-                <p className="eyebrow">Reports</p>
-                <h2>History</h2>
-              </div>
-            </div>
-
-            {reports.length === 0 ? (
-              <div className="empty-card compact">
-                <p>No report generated yet.</p>
-              </div>
-            ) : (
-              <div className="reports-list">
-                {reports.map((report) => (
-                  <button
-                    key={report.id}
-                    type="button"
-                    className={
-                      selectedReport?.id === report.id
-                        ? "report-list-item active"
-                        : "report-list-item"
-                    }
-                    onClick={() => selectReport(report)}
-                  >
-                    <strong>{report.title}</strong>
-                    <span>{report.status}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </aside>
+        <section className="report-editor-layout">
 
           <section className="report-editor-card">
             {selectedReport === null ? (
               <div className="empty-card">
-                <h3>No report selected</h3>
-                <p>
-                  Click “Generate AI report” to create the first editable report
-                  draft.
-                </p>
+                <h3>Aucun rapport sélectionné</h3>
+                <p>Cliquez sur « Générer le rapport avec l’IA » pour créer le premier brouillon modifiable.</p>
               </div>
             ) : (
               <>
                 <div className="report-editor-header">
                   <div>
-                    <p className="eyebrow">Editable report</p>
-                    <h2>{selectedReport.title || "Untitled report"}</h2>
-                    <p>
-                      Source: <strong>{selectedReport.generation_source}</strong>
-                      {" "}— Status: <strong>{selectedReport.status}</strong>
+                    <p className="eyebrow">Rapport modifiable</p>
+                    <h2>{selectedReport.title || "Rapport sans titre"}</h2>
+                    <p>Source :<strong>{displayLabel(selectedReport.generation_source)}</strong>
+                      {" "}— Statut : <strong>{displayLabel(selectedReport.status)}</strong>
                     </p>
                   </div>
                 </div>
 
                 <div className="report-form">
                   <div className="form-group">
-                    <label>Title</label>
+                    <label>Titre</label>
                     <input
                       value={selectedReport.title || ""}
                       onChange={(event) =>
@@ -321,7 +318,7 @@ function ReportsPage() {
                   </div>
 
                   <div className="form-group">
-                    <label>Summary</label>
+                    <label>Synthèse</label>
                     <textarea
                       rows="5"
                       value={selectedReport.diagnostic_summary || ""}
@@ -335,20 +332,41 @@ function ReportsPage() {
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>SWOT summary</label>
-                    <textarea
-                      rows="5"
-                      value={selectedReport.swot_summary || ""}
-                      onInput={autoResizeTextarea}
-                      onChange={(event) =>
-                        updateReportField("swot_summary", event.target.value)
-                      }
-                    />
-                  </div>
+                  <section className="report-restitution" aria-labelledby="restitution-title">
+                    <h3 id="restitution-title">Restitution</h3>
+                    {Object.entries(readAxisAnalysis(selectedReport.axis_analysis)).length === 0 ? (
+                      <p>Aucune analyse par axe disponible. Générez le rapport avec l’IA pour la compléter.</p>
+                    ) : (
+                      Object.entries(readAxisAnalysis(selectedReport.axis_analysis)).map(([axisName, findings]) => (
+                        <section className="report-axis-card" key={axisName}>
+                          <h4>{axisName}</h4>
+                          <div className="report-axis-swot">
+                            {SWOT_CATEGORIES.map(([category, label]) => (
+                              <div className="form-group" key={category}>
+                                <label>
+                                  {label}
+                                  <textarea
+                                    rows="4"
+                                    value={Array.isArray(findings[category])
+                                      ? findings[category].join("\n")
+                                      : findings[category] || ""}
+                                    placeholder="Aucun élément renseigné."
+                                    onInput={autoResizeTextarea}
+                                    onChange={(event) =>
+                                      updateAxisFinding(axisName, category, event.target.value)
+                                    }
+                                  />
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </section>
+                      ))
+                    )}
+                  </section>
 
                   <div className="form-group">
-                    <label>Recommendations</label>
+                    <label>Préconisations</label>
                     <textarea
                       rows="5"
                       value={selectedReport.recommendations || ""}
@@ -374,28 +392,18 @@ function ReportsPage() {
 
                 <div className="report-save-actions">
                   <button
-                    className="secondary-button"
-                    onClick={() => saveReportEdits("draft")}
-                    disabled={isSaving}
-                  >
-                    {isSaving ? "Saving..." : "Save draft"}
-                  </button>
-
-                  <button
                     className="primary-button"
                     onClick={() => saveReportEdits("validated")}
                     disabled={isSaving}
                   >
-                    {isSaving ? "Saving..." : "Save and validate"}
+                    {isSaving ? "Enregistrement en cours…" : "Enregistrer et valider"}
                   </button>
                     {selectedReport.status === "validated" && (
                       <button
                         className="primary-button"
                         onClick={generatePowerPoint}
                         disabled={isSaving}
-                      >
-                        Generate PowerPoint
-                      </button>
+                      >Générer le PowerPoint</button>
                     )}
                 
                 </div>

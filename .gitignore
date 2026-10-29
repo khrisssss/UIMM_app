@@ -44,3 +44,5 @@ Thumbs.db
 Backend/app/seed_admin.py
 Backend/app/seed_docker.py
 docker-compose.yml
+
+docs

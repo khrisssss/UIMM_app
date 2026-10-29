@@ -57,7 +57,7 @@ function AdminAxisQuestionsPage() {
         setSelectedAxisId(String(sortedAxes[0].id));
       }
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load axes."));
+      setMessage(getErrorMessage(error, "Impossible de charger les axes."));
       console.error(error);
     }
   }
@@ -74,7 +74,7 @@ function AdminAxisQuestionsPage() {
         response.data.slice().sort((a, b) => a.order_index - b.order_index)
       );
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load categories."));
+      setMessage(getErrorMessage(error, "Impossible de charger les catégories."));
       console.error(error);
     }
   }
@@ -89,7 +89,7 @@ function AdminAxisQuestionsPage() {
         response.data.slice().sort((a, b) => a.order_index - b.order_index)
       );
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load questions."));
+      setMessage(getErrorMessage(error, "Impossible de charger les questions."));
       console.error(error);
     }
   }
@@ -167,7 +167,7 @@ function AdminAxisQuestionsPage() {
       groups.push({
         type: "active-without-category",
         category_id: null,
-        category_name: categories.length === 0 ? "Questions" : "Other questions",
+        category_name: categories.length === 0 ? "Questions" : "Autres questions",
         is_active: true,
         category: null,
         questions: activeQuestionsWithoutCategory,
@@ -226,7 +226,7 @@ function AdminAxisQuestionsPage() {
       groups.push({
         type: "inactive-questions",
         category_id: "inactive-questions",
-        category_name: "Deactivated questions",
+        category_name: "Questions désactivées",
         is_active: false,
         category: null,
         questions: inactiveQuestionsOutsideInactiveCategories,
@@ -336,12 +336,12 @@ function AdminAxisQuestionsPage() {
     event.preventDefault();
 
     if (!selectedAxisId) {
-      setMessage("Please choose an axis first.");
+      setMessage("Veuillez d’abord sélectionner un axe.");
       return;
     }
 
     if (!newQuestion.question_text.trim()) {
-      setMessage("Question text is required.");
+      setMessage("Le texte de la question est obligatoire.");
       return;
     }
 
@@ -358,11 +358,11 @@ function AdminAxisQuestionsPage() {
         target_more_than_50: newQuestion.target_more_than_50,
       });
 
-      setMessage("Question created.");
+      setMessage("Question créée.");
       closeCreateQuestionModal();
       await loadQuestions(selectedAxisId);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to create question."));
+      setMessage(getErrorMessage(error, "Impossible de créer la question."));
       console.error(error);
     }
   }
@@ -371,7 +371,7 @@ function AdminAxisQuestionsPage() {
     event.preventDefault();
 
     if (!editingQuestion.question_text.trim()) {
-      setMessage("Question text is required.");
+      setMessage("Le texte de la question est obligatoire.");
       return;
     }
 
@@ -388,28 +388,28 @@ function AdminAxisQuestionsPage() {
         target_more_than_50: editingQuestion.target_more_than_50,
       });
 
-      setMessage("Question updated.");
+      setMessage("Question mise à jour.");
       closeEditQuestionModal();
       await loadQuestions(selectedAxisId);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update question."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour la question."));
       console.error(error);
     }
   }
 
   // async function deleteQuestion(questionId) {
   //  const confirmed = window.confirm(
-  //    "Are you sure you want to deactivate this question?"
+  //    "Voulez-vous désactiver cette question ?"
   //  );
 
   //  if (!confirmed) return;
 
   //  try {
   //    await api.delete(`/admin/axis-questions/${questionId}`);
-  //    setMessage("Question deactivated.");
+  //    setMessage("Question désactivée.");
   //    await loadQuestions(selectedAxisId);
   //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Failed to deactivate question."));
+  //    setMessage(getErrorMessage(error, "Impossible de désactiver la question."));
   //    console.error(error);
   //  }
   //}
@@ -420,16 +420,16 @@ function AdminAxisQuestionsPage() {
   //      is_active: true,
   //    });
 
-  //    setMessage("Question activated.");
+  //    setMessage("Question activée.");
   //    await loadQuestions(selectedAxisId);
   //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Failed to activate question."));
+  //    setMessage(getErrorMessage(error, "Impossible de activer la question."));
   //    console.error(error);
   //  }
   // }
   async function deactivateQuestion(questionId) {
     const confirmed = window.confirm(
-      "Are you sure you want to deactivate this question?"
+      "Voulez-vous désactiver cette question ?"
     );
 
     if (!confirmed) return false;
@@ -437,12 +437,12 @@ function AdminAxisQuestionsPage() {
     try {
       await api.delete(`/admin/axis-questions/${questionId}`);
 
-      setMessage("Question deactivated.");
+      setMessage("Question désactivée.");
       await loadQuestions(selectedAxisId);
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to deactivate question."));
+      setMessage(getErrorMessage(error, "Impossible de désactiver la question."));
       console.error(error);
 
       return false;
@@ -455,12 +455,12 @@ function AdminAxisQuestionsPage() {
         is_active: true,
       });
 
-      setMessage("Question activated.");
+      setMessage("Question activée.");
       await loadQuestions(selectedAxisId);
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to activate question."));
+      setMessage(getErrorMessage(error, "Impossible de activer la question."));
       console.error(error);
 
       return false;
@@ -469,7 +469,7 @@ function AdminAxisQuestionsPage() {
 
   async function hardDeleteQuestion(questionId) {
     const confirmed = window.confirm(
-      "Are you sure you want to permanently delete this question? All answers for this question will also be deleted."
+      "Voulez-vous supprimer définitivement cette question ? Toutes ses réponses seront également supprimées."
     );
 
     if (!confirmed) return false;
@@ -477,12 +477,12 @@ function AdminAxisQuestionsPage() {
     try {
       await api.delete(`/admin/axis-questions/${questionId}/hard-delete`);
 
-      setMessage("Question permanently deleted.");
+      setMessage("Question supprimée définitivement.");
       await loadQuestions(selectedAxisId);
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to permanently delete question."));
+      setMessage(getErrorMessage(error, "Impossible de supprimer définitivement la question."));
       console.error(error);
 
       return false;
@@ -492,12 +492,12 @@ function AdminAxisQuestionsPage() {
     event.preventDefault();
 
     if (!selectedAxisId) {
-      setMessage("Please choose an axis first.");
+      setMessage("Veuillez d’abord sélectionner un axe.");
       return;
     }
 
     if (!newCategory.name.trim()) {
-      setMessage("Category name is required.");
+      setMessage("Le nom de la catégorie est obligatoire.");
       return;
     }
 
@@ -511,11 +511,11 @@ function AdminAxisQuestionsPage() {
         is_active: newCategory.is_active,
       });
 
-      setMessage("Category created.");
+      setMessage("Catégorie créée.");
       closeCreateCategoryModal();
       await loadCategories(selectedAxisId);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to create category."));
+      setMessage(getErrorMessage(error, "Impossible de créer la catégorie."));
       console.error(error);
     }
   }
@@ -524,7 +524,7 @@ function AdminAxisQuestionsPage() {
     event.preventDefault();
 
     if (!editingCategory.name.trim()) {
-      setMessage("Category name is required.");
+      setMessage("Le nom de la catégorie est obligatoire.");
       return;
     }
 
@@ -541,37 +541,37 @@ function AdminAxisQuestionsPage() {
         }
       );
 
-      setMessage("Category updated.");
+      setMessage("Catégorie mise à jour.");
       closeEditCategoryModal();
       await loadCategories(selectedAxisId);
       await loadQuestions(selectedAxisId);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update category."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour la catégorie."));
       console.error(error);
     }
   }
 
 //  async function deleteCategory(categoryId) {
 //    const confirmed = window.confirm(
-//      "Are you sure you want to deactivate this category? All questions inside it will also be deactivated."
+//      "Voulez-vous désactiver cette catégorie ? Toutes ses questions seront également désactivées."
 //    );
 
 //    if (!confirmed) return;
 
 //    try {
 //      await api.delete(`/admin/axis-question-categories/${categoryId}`);
-//      setMessage("Category and questions deactivated.");
+//      setMessage("Catégorie et questions désactivées.");
 //      await loadCategories(selectedAxisId);
 //      await loadQuestions(selectedAxisId);
 //    } catch (error) {
-//      setMessage(getErrorMessage(error, "Failed to deactivate category."));
+//      setMessage(getErrorMessage(error, "Impossible de désactiver la catégorie."));
 //      console.error(error);
 //    }
 //  }
 
   //async function hardDeleteQuestion(questionId) {
   //  const confirmed = window.confirm(
-  //    "Are you sure you want to permanently delete this question? All answers for this question will also be deleted."
+  //    "Voulez-vous supprimer définitivement cette question ? Toutes ses réponses seront également supprimées."
   //  );
 
   //  if (!confirmed) return;
@@ -579,17 +579,17 @@ function AdminAxisQuestionsPage() {
   //  try {
   //    await api.delete(`/admin/axis-questions/${questionId}/hard-delete`);
 
-  //    setMessage("Question permanently deleted.");
+  //    setMessage("Question supprimée définitivement.");
   //    await loadQuestions(selectedAxisId);
   //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Failed to permanently delete question."));
+  //    setMessage(getErrorMessage(error, "Impossible de supprimer définitivement la question."));
   //    console.error(error);
   //  }
   //}
 
   //async function hardDeleteCategory(categoryId) {
   //  const confirmed = window.confirm(
-  //    "Are you sure you want to permanently delete this category? All questions and answers inside it will also be deleted."
+  //    "Voulez-vous supprimer définitivement cette catégorie ? Toutes ses questions et réponses seront également supprimées."
   //  );
 
   //  if (!confirmed) return;
@@ -599,11 +599,11 @@ function AdminAxisQuestionsPage() {
   //      `/admin/axis-question-categories/${categoryId}/hard-delete`
   //    );
 
-  //    setMessage("Category, questions, and answers permanently deleted.");
+  //    setMessage("Catégorie, questions et réponses supprimées définitivement.");
   //    await loadCategories(selectedAxisId);
   //    await loadQuestions(selectedAxisId);
   //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Failed to permanently delete category."));
+  //    setMessage(getErrorMessage(error, "Impossible de supprimer définitivement la catégorie."));
   //    console.error(error);
   //  }
   //}
@@ -626,18 +626,18 @@ function AdminAxisQuestionsPage() {
   //      )
   //    );
 
-  //    setMessage("Category and questions activated.");
+  //    setMessage("Catégorie et questions activées.");
   //    await loadCategories(selectedAxisId);
   //    await loadQuestions(selectedAxisId);
   //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Failed to activate category."));
+  //    setMessage(getErrorMessage(error, "Impossible de activer la catégorie."));
   //    console.error(error);
   //  }
   //}
 
   async function deactivateCategory(categoryId) {
     const confirmed = window.confirm(
-      "Are you sure you want to deactivate this category? All questions inside it will also be deactivated."
+      "Voulez-vous désactiver cette catégorie ? Toutes ses questions seront également désactivées."
     );
 
     if (!confirmed) return false;
@@ -645,13 +645,13 @@ function AdminAxisQuestionsPage() {
     try {
       await api.delete(`/admin/axis-question-categories/${categoryId}`);
 
-      setMessage("Category and questions deactivated.");
+      setMessage("Catégorie et questions désactivées.");
       await loadCategories(selectedAxisId);
       await loadQuestions(selectedAxisId);
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to deactivate category."));
+      setMessage(getErrorMessage(error, "Impossible de désactiver la catégorie."));
       console.error(error);
 
       return false;
@@ -676,13 +676,13 @@ function AdminAxisQuestionsPage() {
         )
       );
 
-      setMessage("Category and questions activated.");
+      setMessage("Catégorie et questions activées.");
       await loadCategories(selectedAxisId);
       await loadQuestions(selectedAxisId);
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to activate category."));
+      setMessage(getErrorMessage(error, "Impossible de activer la catégorie."));
       console.error(error);
 
       return false;
@@ -691,7 +691,7 @@ function AdminAxisQuestionsPage() {
 
   async function hardDeleteCategory(categoryId) {
     const confirmed = window.confirm(
-      "Are you sure you want to permanently delete this category? All questions and answers inside it will also be deleted."
+      "Voulez-vous supprimer définitivement cette catégorie ? Toutes ses questions et réponses seront également supprimées."
     );
 
     if (!confirmed) return false;
@@ -701,13 +701,13 @@ function AdminAxisQuestionsPage() {
         `/admin/axis-question-categories/${categoryId}/hard-delete`
       );
 
-      setMessage("Category, questions, and answers permanently deleted.");
+      setMessage("Catégorie, questions et réponses supprimées définitivement.");
       await loadCategories(selectedAxisId);
       await loadQuestions(selectedAxisId);
 
       return true;
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to permanently delete category."));
+      setMessage(getErrorMessage(error, "Impossible de supprimer définitivement la catégorie."));
       console.error(error);
 
       return false;
@@ -742,11 +742,11 @@ function AdminAxisQuestionsPage() {
         }
       );
 
-      setMessage("Categories reordered.");
+      setMessage("Ordre des catégories mis à jour.");
       await loadCategories(selectedAxisId);
       await loadQuestions(selectedAxisId);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to reorder categories."));
+      setMessage(getErrorMessage(error, "Impossible de réorganiser les catégories."));
       console.error(error);
     }
   }
@@ -786,11 +786,11 @@ function AdminAxisQuestionsPage() {
         ordered_question_ids: orderedQuestionIds,
       });
 
-      setMessage("Questions reordered.");
+      setMessage("Ordre des questions mis à jour.");
       await loadQuestions(selectedAxisId);
     } catch (error) {
       console.error("Question reorder error:", error.response?.data || error);
-      setMessage(getErrorMessage(error, "Failed to reorder questions."));
+      setMessage(getErrorMessage(error, "Impossible de réorganiser les questions."));
     }
   }
 
@@ -803,45 +803,39 @@ function AdminAxisQuestionsPage() {
   return (
     <div className="app-page">
       <AppHeader
-        title="Admin — Axis questions"
-        subtitle="Manage questions, categories, order, and company size targeting."
+        title="Administration — Questions par axe"
+        subtitle="Gérez les questions, les catégories, leur ordre et leur affichage selon la taille de l’entreprise."
       />
 
       <main className="admin-axis-questions-page-content">
         {message && <div className="toast-message">{message}</div>}
 
         <section className="axis-question-top-bar">
-          <button className="secondary-button" onClick={goBackToDashboard}>
-            Back to dashboard
-          </button>
+          <button className="secondary-button" onClick={goBackToDashboard}>Retour au tableau de bord</button>
 
           <div className="axis-question-actions">
             <button
               className="secondary-button"
               onClick={openCreateCategoryModal}
-            >
-              + Create category
-            </button>
+            >+ Créer une catégorie</button>
 
-            <button className="primary-button" onClick={openCreateQuestionModal}>
-              + Create question
-            </button>
+            <button className="primary-button" onClick={openCreateQuestionModal}>+ Créer une question</button>
           </div>
         </section>
 
         <section className="axis-question-control-card">
           <div>
-            <h2>{selectedAxis?.name || "Choose an axis"}</h2>
-            <p>Select an axis to manage its categories and questions.</p>
+            <h2>{selectedAxis?.name || "Choisir un axe"}</h2>
+            <p>Sélectionnez un axe pour gérer ses catégories et ses questions.</p>
           </div>
 
           <div className="form-group axis-select-box">
-            <label>Axis</label>
+            <label>Axe</label>
             <select
               value={selectedAxisId}
               onChange={(event) => setSelectedAxisId(event.target.value)}
             >
-              <option value="">Choose an axis</option>
+              <option value="">Choisir un axe</option>
 
               {axes.map((axis) => (
                 <option key={axis.id} value={axis.id}>
@@ -855,8 +849,8 @@ function AdminAxisQuestionsPage() {
         <section className="questions-panel full-width">          
           {groupedQuestions.length === 0 ? (
             <div className="empty-card">
-              <h3>No questions</h3>
-              <p>Create the first question for this axis.</p>
+              <h3>Aucune question</h3>
+              <p>Créez la première question pour cet axe.</p>
             </div>
           ) : (
             <div className="question-category-box-list">
@@ -877,16 +871,16 @@ function AdminAxisQuestionsPage() {
                           <h3>{group.category_name}</h3>
 
                           {category?.parent_category_name && (
-                            <p>Parent: {category.parent_category_name}</p>
+                            <p>Catégorie parente : {category.parent_category_name}</p>
                         )}
 
                         {!category && (
                           <p>
                             {group.type === "inactive-questions"
-                              ? "Questions deactivated individually."
+                              ? "Questions désactivées individuellement."
                               : categories.length === 0
-                              ? "Questions for this axis."
-                              : "Other questions for this axis."}
+                              ? "Questions de cet axe."
+                              : "Autres questions de cet axe."}
                           </p>
                         )}
                       </div>
@@ -912,9 +906,7 @@ function AdminAxisQuestionsPage() {
                               <button
                                 className="small-secondary-button"
                                 onClick={() => openEditCategoryModal(category)}
-                              >
-                                Edit category
-                              </button>
+                              >Modifier la catégorie</button>
                                     
                             </>
                           ) : (
@@ -922,9 +914,7 @@ function AdminAxisQuestionsPage() {
                               <button
                                 className="small-secondary-button"
                                 onClick={() => openEditCategoryModal(category)}
-                              >
-                                Edit category
-                              </button>
+                              >Modifier la catégorie</button>
                               
                             </>
                           )}
@@ -935,7 +925,7 @@ function AdminAxisQuestionsPage() {
                     <div className="question-list-inside-category">
                       {group.questions.length === 0 ? (
                         <div className="empty-card compact">
-                          <p>No questions in this category.</p>
+                          <p>Aucune question dans cette catégorie.</p>
                         </div>
                       ) : (
                         group.questions
@@ -1015,9 +1005,7 @@ function AdminAxisQuestionsPage() {
                                 <button
                                   className="secondary-button"
                                   onClick={() => openEditQuestionModal(question)}
-                                >
-                                  Edit
-                                </button>                     
+                                >Modifier</button>                     
                               </div>
                             </article>
                           ))
@@ -1036,8 +1024,8 @@ function AdminAxisQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Create question</h2>
-                <p>Add a diagnostic question to the selected axis.</p>
+                <h2>Créer une question</h2>
+                <p>Ajoutez une question de diagnostic à l’axe sélectionné.</p>
               </div>
 
               <button
@@ -1050,26 +1038,26 @@ function AdminAxisQuestionsPage() {
 
             <form className="company-create-form" onSubmit={createQuestion}>
               <div className="form-group">
-                <label>Question text</label>
+                <label>Texte de la question</label>
                 <textarea
                   rows="4"
                   value={newQuestion.question_text}
                   onChange={(event) =>
                     updateNewQuestion("question_text", event.target.value)
                   }
-                  placeholder="Write the diagnostic question..."
+                  placeholder="Saisissez la question de diagnostic…"
                 />
               </div>
 
               <div className="form-group">
-                <label>Category</label>
+                <label>Catégorie</label>
                 <select
                   value={newQuestion.category_id}
                   onChange={(event) =>
                     updateNewQuestion("category_id", event.target.value)
                   }
                 >
-                  <option value="">Without category</option>
+                  <option value="">Sans catégorie</option>
 
                   {categories
                     .filter((category) => category.is_active)
@@ -1082,7 +1070,7 @@ function AdminAxisQuestionsPage() {
               </div>
 
               <div className="question-target-box">
-                <p>Show this question for company size:</p>
+                <p>Afficher cette question pour les tailles d’entreprise suivantes :</p>
 
                 <label>
                   <input
@@ -1135,7 +1123,7 @@ function AdminAxisQuestionsPage() {
                     updateNewQuestion("is_active", event.target.checked)
                   }
                 />
-                <span>Active question</span>
+                <span>Question active</span>
               </label>
 
               <div className="modal-actions">
@@ -1143,13 +1131,9 @@ function AdminAxisQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeCreateQuestionModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Create question
-                </button>
+                <button type="submit" className="primary-button">Créer une question</button>
               </div>
             </form>
           </div>
@@ -1161,8 +1145,8 @@ function AdminAxisQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Edit question</h2>
-                <p>Update this diagnostic question.</p>
+                <h2>Modifier la question</h2>
+                <p>Modifiez cette question de diagnostic.</p>
               </div>
 
               <div className="modal-header-actions">
@@ -1177,9 +1161,7 @@ function AdminAxisQuestionsPage() {
                         closeEditQuestionModal();
                       }
                     }}
-                  >
-                    Deactivate
-                  </button>
+                  >Désactiver</button>
                 ) : (
                   <button
                     type="button"
@@ -1191,9 +1173,7 @@ function AdminAxisQuestionsPage() {
                         closeEditQuestionModal();
                       }
                     }}
-                  >
-                    Activate
-                  </button>
+                  >Activer</button>
                 )}
 
                 <button
@@ -1206,9 +1186,7 @@ function AdminAxisQuestionsPage() {
                       closeEditQuestionModal();
                     }
                   }}
-                >
-                  Delete
-                </button>
+                >Supprimer</button>
 
                 <button
                   type="button"
@@ -1225,7 +1203,7 @@ function AdminAxisQuestionsPage() {
               onSubmit={saveEditingQuestion}
             >
               <div className="form-group">
-                <label>Question text</label>
+                <label>Texte de la question</label>
                 <textarea
                   rows="4"
                   value={editingQuestion.question_text}
@@ -1236,14 +1214,14 @@ function AdminAxisQuestionsPage() {
               </div>
 
               <div className="form-group">
-                <label>Category</label>
+                <label>Catégorie</label>
                 <select
                   value={editingQuestion.category_id}
                   onChange={(event) =>
                     updateEditingQuestion("category_id", event.target.value)
                   }
                 >
-                  <option value="">Without category</option>
+                  <option value="">Sans catégorie</option>
 
                   {categories
                     .filter((category) => category.is_active)
@@ -1256,7 +1234,7 @@ function AdminAxisQuestionsPage() {
               </div>
 
               <div className="question-target-box">
-                <p>Show this question for company size:</p>
+                <p>Afficher cette question pour les tailles d’entreprise suivantes :</p>
 
                 <label>
                   <input
@@ -1309,7 +1287,7 @@ function AdminAxisQuestionsPage() {
                     updateEditingQuestion("is_active", event.target.checked)
                   }
                 />
-                <span>Active question</span>
+                <span>Question active</span>
               </label>
 
               <div className="modal-actions">
@@ -1317,13 +1295,9 @@ function AdminAxisQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeEditQuestionModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Save changes
-                </button>
+                <button type="submit" className="primary-button">Enregistrer les modifications</button>
               </div>
             </form>
           </div>
@@ -1335,8 +1309,8 @@ function AdminAxisQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Create category</h2>
-                <p>Add a category for the selected axis.</p>
+                <h2>Créer une catégorie</h2>
+                <p>Ajoutez une catégorie à l’axe sélectionné.</p>
               </div>
 
               <button
@@ -1349,19 +1323,19 @@ function AdminAxisQuestionsPage() {
 
             <form className="company-create-form" onSubmit={createCategory}>
               <div className="form-group">
-                <label>Category name</label>
+                <label>Nom de la catégorie</label>
                 <input
                   type="text"
                   value={newCategory.name}
                   onChange={(event) =>
                     updateNewCategory("name", event.target.value)
                   }
-                  placeholder="Example: Gouvernance"
+                  placeholder="Exemple : Gouvernance"
                 />
               </div>
 
               <div className="form-group">
-                <label>Parent category</label>
+                <label>Catégorie parente</label>
                 <select
                   value={newCategory.parent_category_id}
                   onChange={(event) =>
@@ -1371,7 +1345,7 @@ function AdminAxisQuestionsPage() {
                     )
                   }
                 >
-                  <option value="">No parent</option>
+                  <option value="">Aucune catégorie parente</option>
 
                   {getParentCategories()
                     .filter((category) => category.is_active)
@@ -1391,7 +1365,7 @@ function AdminAxisQuestionsPage() {
                     updateNewCategory("is_active", event.target.checked)
                   }
                 />
-                <span>Active category</span>
+                <span>Catégorie active</span>
               </label>
 
               <div className="modal-actions">
@@ -1399,13 +1373,9 @@ function AdminAxisQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeCreateCategoryModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Create category
-                </button>
+                <button type="submit" className="primary-button">Créer une catégorie</button>
               </div>
             </form>
           </div>
@@ -1417,8 +1387,8 @@ function AdminAxisQuestionsPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Edit category</h2>
-                <p>Update this category.</p>
+                <h2>Modifier la catégorie</h2>
+                <p>Modifiez cette catégorie.</p>
               </div>
 
               <div className="modal-header-actions">
@@ -1433,9 +1403,7 @@ function AdminAxisQuestionsPage() {
                         closeEditCategoryModal();
                       }
                     }}
-                  >
-                    Deactivate
-                  </button>
+                  >Désactiver</button>
                 ) : (
                   <button
                     type="button"
@@ -1447,9 +1415,7 @@ function AdminAxisQuestionsPage() {
                         closeEditCategoryModal();
                       }
                     }}
-                  >
-                    Activate
-                  </button>
+                  >Activer</button>
                 )}
 
                 <button
@@ -1462,9 +1428,7 @@ function AdminAxisQuestionsPage() {
                       closeEditCategoryModal();
                     }
                   }}
-                >
-                  Delete
-                </button>
+                >Supprimer</button>
 
                 <button
                   type="button"
@@ -1478,7 +1442,7 @@ function AdminAxisQuestionsPage() {
 
             <form className="company-create-form" onSubmit={saveEditingCategory}>
               <div className="form-group">
-                <label>Category name</label>
+                <label>Nom de la catégorie</label>
                 <input
                   type="text"
                   value={editingCategory.name}
@@ -1489,7 +1453,7 @@ function AdminAxisQuestionsPage() {
               </div>
 
               <div className="form-group">
-                <label>Parent category</label>
+                <label>Catégorie parente</label>
                 <select
                   value={editingCategory.parent_category_id}
                   onChange={(event) =>
@@ -1499,7 +1463,7 @@ function AdminAxisQuestionsPage() {
                     )
                   }
                 >
-                  <option value="">No parent</option>
+                  <option value="">Aucune catégorie parente</option>
 
                   {getParentCategories()
                     .filter(
@@ -1523,7 +1487,7 @@ function AdminAxisQuestionsPage() {
                     updateEditingCategory("is_active", event.target.checked)
                   }
                 />
-                <span>Active category</span>
+                <span>Catégorie active</span>
               </label>
 
               <div className="modal-actions">
@@ -1531,13 +1495,9 @@ function AdminAxisQuestionsPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeEditCategoryModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Save changes
-                </button>
+                <button type="submit" className="primary-button">Enregistrer les modifications</button>
               </div>
             </form>
           </div>

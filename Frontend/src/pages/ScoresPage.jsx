@@ -31,7 +31,7 @@ function ScoresPage() {
       const scoresResponse = await api.get(`/companies/${companyId}/scores`);
       setScores(scoresResponse.data);
     } catch (error) {
-      setMessage("Failed to load scores");
+      setMessage("Impossible de charger les scores.");
       console.error(error);
     }
   }
@@ -44,7 +44,7 @@ function ScoresPage() {
     const axis = axes.find((item) => item.id === axisId);
 
     if (!axis) {
-      return `Axis ${axisId}`;
+      return `Axe ${axisId}`;
     }
 
     return axis.name;
@@ -63,11 +63,11 @@ function ScoresPage() {
     <div>
       <h1>Scores</h1>
       <AppHeader
-        title="Scores and radar"
-        subtitle="Review axis scores before generating the SWOT."
+        title="Scores et radar"
+        subtitle="Vérifiez les scores par axe avant de générer le SWOT."
       />
 
-      <button onClick={goBack}>Back to company</button>
+      <button onClick={goBack}>Retour à l’entreprise</button>
 
       {message && <p>{message}</p>}
 
@@ -75,7 +75,7 @@ function ScoresPage() {
         <div>
           <h2>{company.name}</h2>
           <p>
-            <strong>Status:</strong> {company.status}
+            <strong>Statut :</strong> {company.status}
           </p>
         </div>
       )}
@@ -83,10 +83,10 @@ function ScoresPage() {
       <hr />
 
       {scores.length === 0 ? (
-        <p>No scores calculated yet.</p>
+        <p>Aucun score calculé pour le moment.</p>
       ) : (
         <>
-          <h3>Radar chart</h3>
+          <h3>Graphique radar</h3>
 
           <div style={{ width: "100%", height: 400 }}>
             <ResponsiveContainer>
@@ -105,17 +105,17 @@ function ScoresPage() {
             </ResponsiveContainer>
           </div>
 
-          <h3>Score details</h3>
+          <h3>Détail des scores</h3>
 
           <table border="1" cellPadding="8">
             <thead>
               <tr>
-                <th>Axis</th>
+                <th>Axe</th>
                 <th>Total</th>
-                <th>Max</th>
-                <th>Percentage</th>
-                <th>Answered</th>
-                <th>Total questions</th>
+                <th>Maximum</th>
+                <th>Pourcentage</th>
+                <th>Réponses</th>
+                <th>Nombre total de questions</th>
               </tr>
             </thead>
 

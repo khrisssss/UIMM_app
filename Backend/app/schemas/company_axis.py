@@ -7,6 +7,7 @@ class CompanyAxisUpdate(BaseModel):
     is_selected: Optional[bool] = None
     #for_mission_complementaire: Optional[bool] = None
     diagnostic_comment: Optional[str] = None
+    show_in_portfolio: Optional[bool] = None
 
 class CompanyAxisRead(BaseModel):
     id: int
@@ -20,6 +21,7 @@ class CompanyAxisRead(BaseModel):
     created_at: datetime
     updated_at: datetime
     diagnostic_comment: Optional[str] = None
+    show_in_portfolio: bool
     class Config:
         from_attributes = True
 
@@ -38,3 +40,4 @@ class CompanyAxisUpdate(BaseModel):
     is_selected: Optional[bool] = None
    # for_mission_complementaire: Optional[bool] = None
     diagnostic_comment: Optional[str] = None
+    show_in_portfolio: Optional[bool] = None

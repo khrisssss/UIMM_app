@@ -46,14 +46,6 @@
   text-transform: uppercase;
 }
 
-.reports-layout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
-  align-items: start;
-}
-
-.reports-list-card,
 .report-editor-card {
   background: #ffffff;
   border: 1px solid #d9e2e8;
@@ -74,47 +66,6 @@
   margin: 0;
   color: #0f172a;
   font-size: 22px;
-}
-
-.reports-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.report-list-item {
-  width: 100%;
-  border: 1px solid #d9e2e8;
-  border-radius: 14px;
-  background: #f8fafc;
-  padding: 14px;
-  cursor: pointer;
-  text-align: left;
-}
-
-.report-list-item:hover {
-  background: #eff6ff;
-}
-
-.report-list-item.active {
-  border-color: #2563eb;
-  background: #eff6ff;
-}
-
-.report-list-item strong {
-  display: block;
-  color: #0f172a;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.report-list-item span {
-  display: block;
-  margin-top: 6px;
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
 }
 
 .report-editor-header {
@@ -204,10 +155,6 @@
 }
 
 @media (max-width: 1100px) {
-  .reports-layout {
-    grid-template-columns: 1fr;
-  }
-
   .reports-company-card {
     flex-direction: column;
     align-items: flex-start;
@@ -224,4 +171,26 @@
     flex-direction: column;
     align-items: stretch;
   }
+}
+.report-restitution {
+  border: 1px solid #d9e2e8;
+  border-radius: 14px;
+  padding: 20px;
+  background: #f8fafc;
+}
+.report-restitution h3 { margin: 0 0 18px; color: #0f172a; }
+.report-axis-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  background: #ffffff;
+}
+.report-axis-card h4 { margin: 0 0 16px; color: #1e3a8a; font-size: 18px; }
+.report-axis-swot { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.report-axis-swot label { display: block; }
+.report-axis-swot textarea { margin-top: 8px; box-sizing: border-box; }
+@media (max-width: 760px) {
+  .report-axis-swot { grid-template-columns: 1fr; }
+  .report-restitution, .report-axis-card { padding: 14px; }
 }

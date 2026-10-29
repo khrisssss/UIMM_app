@@ -1161,3 +1161,8 @@
 
  
 }
+/* Public company profiles have not yet received a diagnostic assessment. */
+.state-unassessed { background: #94a3b8; color: #0f172a; }
+.state-unassessed .portfolio-state-color-dot,
+.state-unassessed .state-color-dot,
+.state-unassessed .state-dot { background: #64748b; }

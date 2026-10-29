@@ -74,9 +74,10 @@ class CompanyProfileAnswerCreate(CompanyProfileAnswerBase):
     pass
 
 
-class CompanyProfileAnswerUpdate(BaseModel):
-    answer_text: Optional[str] = None
-    comment: Optional[str] = None
+# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# class CompanyProfileAnswerUpdate(BaseModel):
+#     answer_text: Optional[str] = None
+#     comment: Optional[str] = None
 
 
 class CompanyProfileAnswerRead(CompanyProfileAnswerBase):
