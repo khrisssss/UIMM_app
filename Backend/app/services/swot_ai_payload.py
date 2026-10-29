@@ -33,7 +33,6 @@ def make_swot_ai_payload(context, financial_years):
                 "comment": redact_text(item.get("comment"), company),
                 "score_value": item["score_value"],
                 "max_score": item["max_score"],
-                "suggested_swot_type": item["suggested_swot_type"],
             }
             for item in context.get("diagnostic_answers", [])
         ],
@@ -46,7 +45,10 @@ def make_swot_ai_payload(context, financial_years):
         "company_profile": [ # Your answers to the company profile questions. example “Quelle est l’activité de l’entreprise ?” → “Fabrication de pièces métalliques.”
             {"section": redact_text(item.get("section"), company),
              "question": redact_text(item.get("question"), company),
-             "answer": redact_text(item.get("answer"), company)}
+             "answer": redact_text(item.get("answer"), company),
+             "comment": redact_text(item.get("comment"), company),
+             }
+            
             for item in context.get("company_profile", [])
         ],
         "financial_years": [ # The financial numbers you saved example 2025, actual: revenue €2,400,000. 2026, forecast: revenue €2,600,000.
