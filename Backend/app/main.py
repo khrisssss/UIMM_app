@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends #main router
 from app.routers import companies,axes,answers, scores, swots, reports, scoring, auth, users, company_profile, company_axes, admin_axis_questions
-from app.routers import axis_question_categories, ml #analysis , company_profile
+from app.routers import axis_question_categories
 
 from app.database import Base, engine, get_db, SessionLocal
 
@@ -89,5 +89,5 @@ app.include_router(company_profile.router)
 app.include_router(company_axes.router)
 app.include_router(admin_axis_questions.router)
 app.include_router(axis_question_categories.router)
-app.include_router(ml.router)
+
 

@@ -1,4 +1,3 @@
-import { displayLabel } from "../utils/french";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -69,12 +68,6 @@ function AnalysisPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showScoreDetailsModal, setShowScoreDetailsModal] = useState(false);
-
-  // for the ml 
-  const [mlPrediction, setMlPrediction] = useState(null);
-  const [isPredictingState, setIsPredictingState] = useState(false);
-  const [isApplyingPrediction, setIsApplyingPrediction] = useState(false);
-  const [showMlPredictionModal, setShowMlPredictionModal] = useState(false);
 
   const fillSwotForm = useCallback((swotData) => {
     if (!swotData) {
@@ -160,7 +153,6 @@ function AnalysisPage() {
   const loadAnalysisData = useCallback(async () => {
     try {
       setIsLoading(true);
-      setMlPrediction(null);
 
       const companyResponse = await api.get(`/companies/${companyId}`);
       setCompany(companyResponse.data);
@@ -287,41 +279,6 @@ function AnalysisPage() {
       ...previousForm,
       [field]: value,
     }));
-  }
-
-  async function predictGeneralState() {
-    try {
-      setIsPredictingState(true);
-      setMessage("Prédiction de l’état de l’entreprise en cours…");
-
-      const response = await api.post(`/companies/${companyId}/predict-state`);
-
-      setMlPrediction(response.data);
-      setShowMlPredictionModal(true);
-      setMessage("");
-    } catch (error) {
-      console.error("ML prediction error:", error.response?.data || error);
-      setMessage(getErrorMessage(error, "Impossible de prédire l’état de l’entreprise."));
-    } finally {
-      setIsPredictingState(false);
-    }
-  }
-
-  async function applyMlPredictionToCompanyState() {
-    if (!mlPrediction || isPredictingState || isApplyingPrediction) return;
-
-    try {
-      setIsApplyingPrediction(true);
-      const response = await api.patch(`/companies/${companyId}`, {
-        general_state: mlPrediction.predicted_state,
-      });
-      setCompany(response.data);
-      setMessage("Prédiction appliquée à l’état de l’entreprise.");
-    } catch (error) {
-      setMessage(getErrorMessage(error, "Impossible de appliquer la prédiction."));
-    } finally {
-      setIsApplyingPrediction(false);
-    }
   }
 
   async function generateSwot() {
@@ -510,14 +467,6 @@ function AnalysisPage() {
                   >
                     Voir le détail du calcul
                   </button>
-
-                  <button
-                    className="primary-button"
-                    onClick={predictGeneralState}
-                    disabled={isPredictingState}
-                  >
-                    {isPredictingState ? "Prédiction en cours…" : "Prédire l’état"}
-                  </button>
                 </div>
               </>
             )}
@@ -621,80 +570,6 @@ function AnalysisPage() {
           </div>
         </section>
       </main>
-      {showMlPredictionModal && mlPrediction && (
-        <div className="modal-overlay">
-          <div className="ml-prediction-modal">
-            <div className="modal-header">
-              <div>
-                <h2>Prédiction de l’état de l’entreprise</h2>
-                <p>À partir des scores du diagnostic et de la taille de l’entreprise.</p>
-              </div>
-
-              <button
-                type="button"
-                className="modal-close-button"
-                onClick={() => setShowMlPredictionModal(false)}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="ml-prediction-main-result">
-              {mlPrediction.is_demo && (
-                <p role="status">Modèle de démonstration sur données fictives : résultat pédagogique, non validé sur des entreprises réelles.</p>
-              )}
-              <p className="ml-prediction-label">État prédit</p>
-
-              <h3
-                className={
-                  mlPrediction.predicted_state === "green"
-                    ? "prediction-green"
-                    : mlPrediction.predicted_state === "red"
-                    ? "prediction-red"
-                    : "prediction-orange"
-                }
-              >
-                {displayLabel(mlPrediction.predicted_state)}
-              </h3>
-
-              <p className="ml-confidence">
-                Indice de confiance : {Math.round(mlPrediction.confidence * 100)}%
-              </p>
-            </div>
-
-            <div className="ml-probability-list">
-              {Object.entries(mlPrediction.probabilities || {}).map(
-                ([state, value]) => (
-                  <div key={state} className="ml-probability-row">
-                    <span>{displayLabel(state)}</span>
-                    <strong>{Math.round(value.probability * 100)}%</strong>
-                  </div>
-                )
-              )}
-            </div>
-
-            <p className="ml-warning-text">Cette prédiction aide à la décision. Le consultant reste responsable de la validation de l’état final de l’entreprise.</p>
-
-            <div className="modal-actions">
-              <button
-                className="secondary-button"
-                onClick={() => setShowMlPredictionModal(false)}
-              >Fermer</button>
-
-              <button
-                className="primary-button"
-                onClick={applyMlPredictionToCompanyState}
-                disabled={isApplyingPrediction}
-              >
-                {isApplyingPrediction
-                  ? "Application en cours…"
-                  : "Appliquer la prédiction à l’état de l’entreprise"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {showScoreDetailsModal && (
         <div className="modal-overlay">
           <div
@@ -818,4 +693,5 @@ function AnalysisPage() {
 }
 
 export default AnalysisPage;
+
 
