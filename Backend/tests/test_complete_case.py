@@ -14,7 +14,6 @@ from app.models.question import Question
 from app.models.score import Score
 from app.services.complete_case_service import create_complete_case, load_case
 from app.services.questionnaire_import_service import import_questionnaire
-from app.services.company_state_ml_service import is_demo_company, training_dataset
 from app.services.swot_context import build_swot_context
 from app.services.swot_ai_payload import make_swot_ai_payload
 
@@ -35,7 +34,7 @@ def test_full_case_answers_scores_and_swot_evidence(configured_db):
     result = create_complete_case(db, apply=True); db.commit()
     company = db.query(Company).one()
     assert result['created'] and company.name == 'Atelier Métal Garonne'
-    assert company.is_synthetic and is_demo_company(company)
+    assert company.is_synthetic
     assert '[CAS_FICTIF]' in company.general_comment
     assert not company.is_archived and company.has_rse
     assert db.query(CompanyAxis).filter_by(company_id=company.id, is_selected=True).count() == 6
@@ -60,7 +59,7 @@ def test_full_case_answers_scores_and_swot_evidence(configured_db):
     assert db.query(Company).count() == 1 and db.query(Answer).count() == before
 
 
-def test_synthetic_provenance_survives_rename_and_is_excluded_from_real_training(configured_db):
+def test_synthetic_provenance_survives_rename(configured_db):
     db = configured_db
     import_questionnaire(db, apply=True, activate=True)
     create_complete_case(db, apply=True); db.commit()
@@ -69,9 +68,8 @@ def test_synthetic_provenance_survives_rename_and_is_excluded_from_real_training
     company.general_comment = 'Edited notes'
     company.is_archived = True
     db.flush()
-    assert is_demo_company(company)
-    assert training_dataset(db).empty
-    assert len(training_dataset(db, use_demo=True)) == 1
+    db.refresh(company)
+    assert company.is_synthetic  # Still flagged as fictional after a rename.
 
 
 def test_existing_same_name_company_is_preserved(configured_db):

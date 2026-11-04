@@ -15,7 +15,6 @@ from app.models.score import Score
 from app.models.swot import SWOT
 from app.models.reports import Report
 from app.services.diagnostic_scope_service import retire_finance
-from app.services.company_state_ml_service import AXIS_FEATURES, FEATURE_COLUMNS, artifact_path, get_company_feature_row, training_dataset
 from app.services.questionnaire_import_service import load_bank
 from app.services.report_context import build_report_context
 from app.services.swot_context import build_swot_context
@@ -74,15 +73,6 @@ def test_contexts_and_powerpoint_omit_retired_axis_and_profile(configured_db, hi
     scores = get_axis_scores(db, company.id)
     assert len(scores) == len(get_selected_report_axes(db, company.id, scores)) == 6
     assert len(get_profile_answers(db, company.id)) == 1
-
-
-def test_ml_uses_six_axis_features_and_separate_artifacts(configured_db, historical_company):
-    retire_finance(configured_db); configured_db.commit()
-    assert len(AXIS_FEATURES) == 6 and len(FEATURE_COLUMNS) == 9
-    assert 'finance_score' not in get_company_feature_row(configured_db, historical_company.id)
-    assert 'finance_score' not in training_dataset(configured_db).columns
-    assert 'six_axes' in str(artifact_path()) and 'six_axes' in str(artifact_path(True))
-    assert all(r.get('Section') != 'Finances' for r in load_bank())
 
 
 def test_company_selection_radar_and_recalculation_exclude_finance(configured_db, historical_company):

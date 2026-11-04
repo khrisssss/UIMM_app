@@ -32,7 +32,6 @@ services:
       AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY:?Required}
     volumes:
       - ./Backend/generated_reports:/app/generated_reports
-      - ./Backend/ml_artifacts:/app/ml_artifacts
 
   frontend:
     build:

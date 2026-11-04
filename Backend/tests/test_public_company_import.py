@@ -10,7 +10,6 @@ from app.models.company_axis import CompanyAxis
 from app.models.company_profile_answer import CompanyProfileAnswer
 from app.models.score import Score
 from app.services.public_company_import_service import import_public_companies, load_public_companies, normalize
-from app.services.company_state_ml_service import training_dataset
 
 
 def test_public_catalog_has_twenty_distinct_sourced_company_profiles():
@@ -38,11 +37,6 @@ def test_public_import_creates_profiles_and_six_axes_without_assessments(configu
     assert db.query(Answer).count() == db.query(Score).count() == 0
     assert all(c.general_state == 'unassessed' and not c.is_archived and c.company_size is None for c in db.query(Company))
     assert all('Sources consultées' in a.answer_text and 'https://' in a.answer_text for a in db.query(CompanyProfileAnswer))
-    assert training_dataset(db).empty
-    for company in db.query(Company):
-        company.is_archived = True
-    db.flush()
-    assert training_dataset(db).empty  # No validated labels, answers or scores.
     repeated = import_public_companies(db, apply=True)
     assert repeated['companies_added'] == 0 and repeated['companies_kept'] == 20
     assert db.query(CompanyProfileAnswer).count() == 20

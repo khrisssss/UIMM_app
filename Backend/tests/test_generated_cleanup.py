@@ -16,7 +16,6 @@ from app.models.reports import Report
 from app.models.financial_year import FinancialYear
 from app.services.questionnaire_import_service import import_questionnaire
 from app.services.public_company_import_service import import_public_companies, PROFILE_QUESTION
-from app.services.ml_demo_data_service import seed_demo_data
 from app.services.complete_case_service import create_complete_case
 from app.services.generated_data_cleanup_service import cleanup_generated_data
 
@@ -24,7 +23,8 @@ from app.services.generated_data_cleanup_service import cleanup_generated_data
 def populate(db):
     import_questionnaire(db, apply=True, activate=True)
     import_public_companies(db, apply=True)
-    seed_demo_data(db, apply=True, per_class=4)
+    # Legacy demo companies recognised by their name prefix only.
+    db.add_all([Company(name='DEMO ML - legacy 1'), Company(name='DEMO ML - legacy 2')])
     create_complete_case(db, apply=True)
     real = Company(name='Original customer', general_comment='Original consultant notes', general_state='green')
     same_name = Company(name='COMAT', general_comment='Original customer, not imported by the tool')
@@ -40,9 +40,9 @@ def populate(db):
 def test_preview_does_not_remove_or_write_backup(configured_db, tmp_path):
     real_id, _ = populate(configured_db)
     result = cleanup_generated_data(configured_db, backup_directory=tmp_path)
-    assert result['company_count'] == 33
+    assert result['company_count'] == 23
     assert result['public_research_questions'] == 1
-    assert configured_db.query(Company).count() == 35
+    assert configured_db.query(Company).count() == 25
     assert configured_db.get(Company, real_id).general_comment == 'Original consultant notes'
     assert not list(tmp_path.iterdir())
 
@@ -51,7 +51,7 @@ def test_cleanup_removes_generated_data_and_question_preserves_real_companies(co
     db = configured_db
     real_id, original_comat_id = populate(db)
     result = cleanup_generated_data(db, apply=True, backup_directory=tmp_path); db.commit()
-    assert result['deleted_companies'] == 33 and result['deleted_profile_questions'] == 1
+    assert result['deleted_companies'] == 23 and result['deleted_profile_questions'] == 1
     assert db.query(Company).count() == 2
     assert db.get(Company, real_id) and db.get(Company, original_comat_id)
     assert db.query(CompanyProfileQuestion).filter_by(question_text=PROFILE_QUESTION).count() == 0
@@ -60,7 +60,7 @@ def test_cleanup_removes_generated_data_and_question_preserves_real_companies(co
     assert db.query(Report).one().title == 'Original report'
     assert db.query(CompanyProfileQuestion).count() == 20  # Ordinary questionnaires survive.
     backup = json.loads(Path(result['backup']).read_text())
-    assert len(backup['tables']['companies']) == 33
+    assert len(backup['tables']['companies']) == 23
     assert backup['tables']['company_profile_questions'][0]['question_text'] == PROFILE_QUESTION
     assert Path(result['backup']).stat().st_mode & 0o777 == 0o600
     repeated = cleanup_generated_data(db, apply=True, backup_directory=tmp_path)
@@ -74,7 +74,7 @@ def test_backup_failure_prevents_deletion(configured_db, tmp_path):
     with pytest.raises(FileExistsError):
         cleanup_generated_data(configured_db, apply=True, backup_directory=not_a_directory)
     configured_db.rollback()
-    assert configured_db.query(Company).count() == 35
+    assert configured_db.query(Company).count() == 25
 
 
 def test_cleanup_module_registers_models_without_api_credentials():

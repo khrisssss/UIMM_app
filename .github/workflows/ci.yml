@@ -35,7 +35,7 @@ jobs:
         run: python -m compileall -q app
 
       - name: Run backend tests
-        run: python -m pytest tests/ -q --cov=app.services.company_state_ml_service --cov=app.services.questionnaire_import_service --cov=app.services.ml_demo_data_service --cov=app.monitoring --cov-report=term-missing --cov-report=xml --junitxml=test-results.xml
+        run: python -m pytest tests/ -q --cov=app.services.questionnaire_import_service --cov=app.monitoring --cov-report=term-missing --cov-report=xml --junitxml=test-results.xml
 
   frontend-build:
     name: Frontend build
