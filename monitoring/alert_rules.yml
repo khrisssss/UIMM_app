@@ -1,0 +1,37 @@
+groups:
+  - name: uimm_alerts
+    rules:
+      - alert: UimmApiDown
+        expr: up{job="uimm_backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "UIMM API is unreachable for more than 1 minute"
+
+      - alert: UimmHighErrorRate
+        expr: |
+          sum(rate(uimm_http_requests_total{status=~"5.."}[5m]))
+            / sum(rate(uimm_http_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than 5% of API requests fail with a 5xx error"
+
+      - alert: UimmAiCallsFailing
+        expr: sum(increase(uimm_ai_calls_total{outcome=~"error|invalid_json"}[15m])) >= 3
+        labels:
+          severity: warning
+        annotations:
+          summary: "3 or more Azure OpenAI calls failed or returned invalid JSON in 15 minutes"
+
+      - alert: UimmAiSlow
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(uimm_ai_call_duration_seconds_bucket[15m]))) > 30
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "95% of Azure OpenAI calls take longer than 30 seconds"

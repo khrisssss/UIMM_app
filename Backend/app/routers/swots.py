@@ -1,3 +1,6 @@
+import logging
+
+from app.monitoring import AI_DRAFT_REVIEWS, log_event
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 import os
@@ -238,6 +241,9 @@ def update_swot(
             detail="SWOT not found"
         )
 
+    original_content = (swot.strengths, swot.weaknesses, swot.opportunities, swot.threats)
+    was_validated = swot.status == "validated"
+
     if swot_data.strengths is not None:
         swot.strengths = swot_data.strengths
 
@@ -252,6 +258,14 @@ def update_swot(
 
     if swot_data.status is not None:
         swot.status = swot_data.status
+
+    # Feedback loop: how often consultants accept AI drafts as-is vs edit them
+    if swot.generated_by_ai and swot.status == "validated" and not was_validated:
+        new_content = (swot.strengths, swot.weaknesses, swot.opportunities, swot.threats)
+        result = "accepted_as_is" if new_content == original_content else "edited"
+        AI_DRAFT_REVIEWS.labels("swot", result).inc()
+        log_event(logging.INFO, "ai_draft_reviewed", feature="swot", result=result,
+                  swot_id=swot.id, company_id=company_id)
 
     db.commit()
     db.refresh(swot)

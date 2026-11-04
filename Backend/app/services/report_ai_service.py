@@ -166,6 +166,7 @@ Write one short professional closing paragraph.
     ai_result = generate_json_response(
         system_prompt=system_prompt,
         user_payload=make_report_ai_payload(report_context, financial_years),
+        feature="report",
     )
 
     raw_axes = ai_result.get("axis_analysis")

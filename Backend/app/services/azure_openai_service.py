@@ -1,8 +1,12 @@
 import json
+import logging
 import os
+import time
 
 from dotenv import load_dotenv
 from openai import OpenAI
+
+from app.monitoring import AI_CALLS, AI_DURATION, AI_TOKENS, log_event
 
 load_dotenv()
 
@@ -22,46 +26,56 @@ def get_azure_client():
     )
 
 
-def generate_json_response(system_prompt: str, user_payload: dict) -> dict:
+def generate_json_response(system_prompt: str, user_payload: dict, feature: str = "unknown") -> dict:
     model = os.getenv("AZURE_OPENAI_MODEL")
-
     if not model:
         raise ValueError("AZURE_OPENAI_MODEL is missing in .env")
 
     client = get_azure_client()
+    start = time.perf_counter()
+    try:
+        response = client.responses.create(
+            model=model,
+            input=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)},
+            ],
+        )
+    except Exception as error:
+        duration = time.perf_counter() - start
+        AI_CALLS.labels(feature, "error").inc()
+        AI_DURATION.labels(feature).observe(duration)
+        log_event(logging.ERROR, "ai_call_failed", feature=feature, model=model,
+                  error_type=type(error).__name__, duration_ms=round(duration * 1000))
+        raise
 
-    response = client.responses.create(
-        model=model,
-        input=[
-            {
-                "role": "system",
-                "content": system_prompt,
-            },
-            {
-                "role": "user",
-                "content": json.dumps(user_payload, ensure_ascii=False),
-            },
-        ],
-    )
+    duration = time.perf_counter() - start
+    AI_DURATION.labels(feature).observe(duration)
+    usage = getattr(response, "usage", None)
+    if usage is not None:
+        AI_TOKENS.labels(feature, "input").inc(usage.input_tokens or 0)
+        AI_TOKENS.labels(feature, "output").inc(usage.output_tokens or 0)
 
     output_text = response.output_text.strip()
-
     if output_text.startswith("```json"):
         output_text = output_text.replace("```json", "", 1).strip()
-
     if output_text.startswith("```"):
         output_text = output_text.replace("```", "", 1).strip()
-
     if output_text.endswith("```"):
         output_text = output_text[:-3].strip()
 
     try:
-        return json.loads(output_text)
+        result = json.loads(output_text)
+        outcome = "success"
     except json.JSONDecodeError:
-        return {
-            "raw_output": response.output_text,
-            "strengths": [],
-            "weaknesses": [],
-            "opportunities": [],
-            "threats": [],
-        }
+        result = {"raw_output": response.output_text, "strengths": [], "weaknesses": [],
+                  "opportunities": [], "threats": []}
+        outcome = "invalid_json"
+
+    AI_CALLS.labels(feature, outcome).inc()
+    log_event(logging.INFO if outcome == "success" else logging.WARNING, "ai_call",
+              feature=feature, model=model, outcome=outcome,
+              duration_ms=round(duration * 1000),
+              input_tokens=getattr(usage, "input_tokens", None),
+              output_tokens=getattr(usage, "output_tokens", None))
+    return result

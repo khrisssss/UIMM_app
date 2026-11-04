@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends #main router
+from app.monitoring import setup_logging, monitoring_middleware, metrics_endpoint
 from app.routers import companies,axes,answers, scores, swots, reports, scoring, auth, users, company_profile, company_axes, admin_axis_questions
 from app.routers import axis_question_categories
 
@@ -30,6 +31,8 @@ from fastapi.middleware.cors import CORSMiddleware #fpor the CORS issue when run
 
 
 
+setup_logging()  # JSON logs for every module
+
 app = FastAPI(
     title="UIMM API"
 )
@@ -46,6 +49,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Monitoring: log + count every request, expose metrics for Prometheus
+app.middleware("http")(monitoring_middleware)
+app.add_api_route("/metrics", metrics_endpoint, include_in_schema=False)
 
 Base.metadata.create_all(bind=engine)
 

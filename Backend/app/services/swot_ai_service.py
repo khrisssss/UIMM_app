@@ -74,6 +74,7 @@ Aucun Markdown, aucune autre clé et aucun texte autour du JSON.
     return generate_json_response(
         system_prompt=system_prompt,
         user_payload=swot_context,
+        feature="swot",
     )
 
 
@@ -115,6 +116,7 @@ Aucun Markdown, aucune autre clé et aucun texte autour du JSON.
     return generate_json_response(
         system_prompt=system_prompt,
         user_payload=swot_context,
+        feature="swot",
     )
 
 #def normalize_swot_section(value):
