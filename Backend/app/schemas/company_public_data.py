@@ -25,3 +25,18 @@ class CompanyPublicDataRead(BaseModel):
     sector_active_companies: Optional[int] = None
     sources: str
     collected_at: datetime
+
+
+class CompanySearchResult(BaseModel):
+    """One company found by the live search of the company creation form."""
+    siren: str
+    legal_name: Optional[str] = None
+    naf_code: Optional[str] = None
+    headcount_code: Optional[str] = None
+    headcount_label: Optional[str] = None
+    suggested_company_size: Optional[str] = None  # one of the app's sizes: "<10", "11-50", ">50"
+    head_office_address: Optional[str] = None
+    postal_code: Optional[str] = None
+    city: Optional[str] = None
+    creation_date: Optional[date] = None
+    is_active: Optional[bool] = None

@@ -298,3 +298,42 @@ def test_bigdata_reads_the_diffusion_status_when_present(tmp_path):
     connection = extract_bigdata.open_sirene(path)
 
     assert extract_bigdata.lookup_companies(connection, ["552032534"])["552032534"]["diffusion_status"] == "P"
+
+
+# ---------- Live search used by the company creation form ----------
+
+def test_search_maps_headcount_to_the_app_sizes():
+    from app.routers.public_data import suggested_company_size
+
+    assert [suggested_company_size(code) for code in ["00", "03", "11", "12", "21", "53", "NN", None]] == \
+        ["<10", "<10", "11-50", "11-50", ">50", ">50", None, None]
+
+
+def test_search_by_siren_keeps_the_exact_company(monkeypatch):
+    from app.routers import public_data
+
+    other = extract_api.parse_api_result(dict(API_RESULT, siren="552081317", nom_raison_sociale="OTHER"))
+    monkeypatch.setattr(public_data, "search_companies", lambda session, query: [other, extract_api.parse_api_result(API_RESULT)])
+
+    results = public_data.search_public_companies(q="552 032 534", current_user=None)
+
+    assert [r.siren for r in results] == ["552032534"]
+    found = results[0]
+    assert found.legal_name == "DANONE" and found.suggested_company_size == ">50"
+    assert found.head_office_address.startswith("17 BOULEVARD HAUSSMANN") and found.is_active is True
+
+
+def test_search_reports_an_unavailable_service(monkeypatch):
+    from app.routers import public_data
+
+    def down(session, query):
+        raise requests.ConnectionError("down")
+
+    monkeypatch.setattr(public_data, "search_companies", down)
+    with pytest.raises(HTTPException) as error:
+        public_data.search_public_companies(q="danone", current_user=None)
+    assert error.value.status_code == 502
+
+    with pytest.raises(HTTPException) as error:
+        public_data.search_public_companies(q="123456789", current_user=None)  # wrong checksum
+    assert error.value.status_code == 422

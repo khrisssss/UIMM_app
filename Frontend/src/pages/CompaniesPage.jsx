@@ -58,6 +58,7 @@ function CompaniesPage() {
 
   const [newCompany, setNewCompany] = useState({
     name: "",
+    siren: "",
     address: "",
     contact_name: "",
     contact_email: "",
@@ -65,6 +66,10 @@ function CompaniesPage() {
     company_size: "",
     status: "Prospect",
 });
+  const [registrySearch, setRegistrySearch] = useState("");
+  const [registryResults, setRegistryResults] = useState([]);
+  const [registryMessage, setRegistryMessage] = useState("");
+  const [isSearchingRegistry, setIsSearchingRegistry] = useState(false);
 
   
 
@@ -138,6 +143,40 @@ function CompaniesPage() {
     return error?.response?.data?.detail || fallbackMessage;
   }
 
+  async function searchRegistry() {
+    const query = registrySearch.trim();
+    if (query.length < 3) {
+      setRegistryMessage("Saisissez un SIREN ou au moins 3 lettres du nom.");
+      return;
+    }
+    try {
+      setIsSearchingRegistry(true);
+      setRegistryMessage("");
+      const response = await api.get("/public-data/search", { params: { q: query } });
+      setRegistryResults(response.data);
+      if (response.data.length === 0) {
+        setRegistryMessage("Aucune entreprise trouvée.");
+      }
+    } catch (error) {
+      setRegistryResults([]);
+      setRegistryMessage(getErrorMessage(error, "La recherche a échoué."));
+    } finally {
+      setIsSearchingRegistry(false);
+    }
+  }
+
+  function applyRegistryResult(result) {
+    setNewCompany((previousCompany) => ({
+      ...previousCompany,
+      name: result.legal_name || previousCompany.name,
+      siren: result.siren,
+      address: result.head_office_address || previousCompany.address,
+      company_size: result.suggested_company_size || previousCompany.company_size,
+    }));
+    setRegistryResults([]);
+    setRegistryMessage(`Informations de ${result.legal_name || result.siren} reprises. Vérifiez-les avant de créer la société.`);
+  }
+
   function updateNewCompany(field, value) {
     setNewCompany((previousCompany) => ({
       ...previousCompany,
@@ -163,6 +202,7 @@ function CompaniesPage() {
     try {
       await api.post("/companies/", {
         name: newCompany.name,
+        siren: newCompany.siren.replace(/\s/g, "") || null,
         address: newCompany.address || null,
         contact_name: newCompany.contact_name || null,
         contact_email: newCompany.contact_email || null,
@@ -175,6 +215,7 @@ function CompaniesPage() {
 
       setNewCompany({
         name: "",
+        siren: "",
         address: "",
         contact_name: "",
         contact_email: "",
@@ -183,6 +224,9 @@ function CompaniesPage() {
         status: "Prospect",
       });
 
+      setRegistrySearch("");
+      setRegistryResults([]);
+      setRegistryMessage("");
       setShowCreateModal(false);
       loadCompanies();
     } catch (error) {
@@ -809,6 +853,63 @@ function CompaniesPage() {
             </div>
 
             <form onSubmit={createCompany} className="company-create-form">
+              <div className="registry-search">
+                <label>Rechercher dans le registre officiel (SIRENE)</label>
+                <div className="registry-search-row">
+                  <input
+                    value={registrySearch}
+                    onChange={(event) => setRegistrySearch(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                        searchRegistry();
+                      }
+                    }}
+                    placeholder="SIREN ou nom de l’entreprise"
+                  />
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={searchRegistry}
+                    disabled={isSearchingRegistry}
+                  >
+                    {isSearchingRegistry ? "Recherche…" : "Rechercher"}
+                  </button>
+                </div>
+
+                {registryResults.length > 0 && (
+                  <ul className="registry-results">
+                    {registryResults.map((result) => (
+                      <li key={result.siren}>
+                        <button type="button" onClick={() => applyRegistryResult(result)}>
+                          <strong>{result.legal_name || "Nom non diffusé"}</strong>
+                          <span>
+                            SIREN {result.siren}
+                            {result.city && ` · ${result.city}`}
+                            {result.naf_code && ` · NAF ${result.naf_code}`}
+                            {result.headcount_label && ` · ${result.headcount_label}`}
+                            {result.is_active === false && " · cessée"}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {registryMessage && <p className="registry-message">{registryMessage}</p>}
+              </div>
+
+              <div className="form-group">
+                <label>SIREN</label>
+                <input
+                  value={newCompany.siren}
+                  onChange={(event) => updateNewCompany("siren", event.target.value)}
+                  inputMode="numeric"
+                  maxLength={11}
+                  placeholder="9 chiffres (rempli par la recherche)"
+                />
+              </div>
+
               <div className="form-grid-two">
                 <div className="form-group">
                   <label>Nom de la société</label>

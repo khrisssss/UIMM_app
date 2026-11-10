@@ -15,9 +15,9 @@ from app.pipeline import config
 logger = logging.getLogger("pipeline.api")
 
 
-def build_session() -> requests.Session:
+def build_session(retries_total: int = 3) -> requests.Session:
     session = requests.Session()
-    retries = Retry(total=3, backoff_factor=1.0, status_forcelist=[429, 500, 502, 503, 504],
+    retries = Retry(total=retries_total, backoff_factor=1.0, status_forcelist=[429, 500, 502, 503, 504],
                     allowed_methods=["GET"], respect_retry_after_header=True)
     session.mount("https://", HTTPAdapter(max_retries=retries))
     session.headers.update({"User-Agent": config.USER_AGENT, "Accept": "application/json"})
@@ -41,6 +41,14 @@ def parse_api_result(result: dict) -> dict:
         "postal_code": head_office.get("code_postal"),
         "city": head_office.get("libelle_commune"),
     }
+
+
+def search_companies(session: requests.Session, query: str, limit: int = 8) -> list[dict]:
+    """Full-text search (name or SIREN), used live by the company creation form."""
+    response = session.get(config.API_URL, params={"q": query, "per_page": limit},
+                           timeout=config.HTTP_TIMEOUT_SECONDS)
+    response.raise_for_status()
+    return [parse_api_result(result) for result in response.json().get("results", [])[:limit]]
 
 
 def fetch_company(session: requests.Session, siren: str) -> dict | None:
