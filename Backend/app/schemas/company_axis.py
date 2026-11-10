@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -20,8 +20,7 @@ class CompanyAxisRead(BaseModel):
     updated_at: datetime
     diagnostic_comment: Optional[str] = None
     show_in_portfolio: bool
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DiagnosticAxisOverview(BaseModel):

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends #main router
 from app.monitoring import setup_logging, monitoring_middleware, metrics_endpoint
 from app.routers import companies,axes,answers, scores, swots, reports, scoring, auth, users, company_profile, company_axes, admin_axis_questions
-from app.routers import axis_question_categories
+from app.routers import axis_question_categories, public_data
 
 from app.database import Base, engine, get_db, SessionLocal
 
@@ -47,6 +47,10 @@ with engine.begin() as connection:
     connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))
     connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS axis_analysis TEXT"))
     connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS presentation_content TEXT"))
+    # Public-data pipeline: SIREN link on companies, and indexes used by its SQL extraction.
+    connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS siren VARCHAR(9)"))
+    connection.execute(text("CREATE INDEX IF NOT EXISTS ix_companies_siren ON companies (siren)"))
+    connection.execute(text("CREATE INDEX IF NOT EXISTS ix_scores_company_id ON scores (company_id)"))
 
 # Retire Finance in existing installations without deleting historical records.
 from app.services.diagnostic_scope_service import retire_finance
@@ -79,5 +83,6 @@ app.include_router(company_profile.router)
 app.include_router(company_axes.router)
 app.include_router(admin_axis_questions.router)
 app.include_router(axis_question_categories.router)
+app.include_router(public_data.router)
 
 

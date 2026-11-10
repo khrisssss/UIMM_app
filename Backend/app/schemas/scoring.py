@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
@@ -11,8 +11,7 @@ class ScoringLevelRead(BaseModel):
     description: Optional[str] = None
     order_index: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScoringScaleRead(BaseModel):
@@ -24,8 +23,7 @@ class ScoringScaleRead(BaseModel):
     is_active: bool
     levels: list[ScoringLevelRead] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScoringScaleUpdate(BaseModel):

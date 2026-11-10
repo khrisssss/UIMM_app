@@ -12,6 +12,7 @@ function CompanyDetailsPage() {
   const [company, setCompany] = useState(null);
   const [companyForm, setCompanyForm] = useState({
     name: "",
+    siren: "",
     contact_name: "",
     contact_email: "",
     contact_phone: "",
@@ -34,9 +35,19 @@ function CompanyDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingCompany, setIsSavingCompany] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [publicData, setPublicData] = useState(null);
 
   function getErrorMessage(error, fallbackMessage) {
     return error?.response?.data?.detail || fallbackMessage;
+  }
+
+  async function loadPublicData() {
+    try {
+      const response = await api.get(`/companies/${companyId}/public-data`);
+      setPublicData(response.data);
+    } catch {
+      setPublicData(null); // no SIREN yet, or the pipeline has not collected this company
+    }
   }
 
   async function loadCompanyDetails() {
@@ -50,6 +61,7 @@ function CompanyDetailsPage() {
 
       setCompanyForm({
         name: companyData.name || "",
+        siren: companyData.siren || "",
         contact_name: companyData.contact_name || "",
         contact_email: companyData.contact_email || "",
         contact_phone: companyData.contact_phone || "",
@@ -63,6 +75,8 @@ function CompanyDetailsPage() {
           companyData.specific_regulatory_constraints || "",
         general_comment: companyData.general_comment || "",
       });
+
+      await loadPublicData();
 
       const questionsResponse = await api.get("/company-profile-questions");
       setProfileQuestions(questionsResponse.data);
@@ -162,11 +176,18 @@ function CompanyDetailsPage() {
       return;
     }
 
+    const siren = companyForm.siren.replace(/\s/g, "");
+    if (siren && !/^\d{9}$/.test(siren)) {
+      setMessage("Le SIREN doit contenir exactement 9 chiffres.");
+      return;
+    }
+
     try {
       setIsSavingCompany(true);
 
       const payload = {
         name: companyForm.name.trim(),
+        siren: siren || null,
         contact_name: companyForm.contact_name || null,
         contact_email: companyForm.contact_email || null,
         contact_phone: companyForm.contact_phone || null,
@@ -184,9 +205,15 @@ function CompanyDetailsPage() {
       const response = await api.patch(`/companies/${companyId}`, payload);
 
       setCompany(response.data);
+      await loadPublicData();
       setMessage("Informations de l’entreprise enregistrées.");
     } catch (error) {
-      setMessage(getErrorMessage(error, "Impossible de enregistrer les informations de l’entreprise."));
+      const detail = error?.response?.data?.detail;
+      setMessage(
+        Array.isArray(detail)
+          ? detail.map((item) => item.msg).join(" ")
+          : getErrorMessage(error, "Impossible de enregistrer les informations de l’entreprise.")
+      );
       console.error(error);
     } finally {
       setIsSavingCompany(false);
@@ -315,6 +342,42 @@ function CompanyDetailsPage() {
                   }
                 />
               </div>
+
+              <div className="form-group">
+                <label>SIREN</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={11}
+                  placeholder="9 chiffres, ex. 552 032 534"
+                  value={companyForm.siren}
+                  onChange={(event) =>
+                    updateCompanyForm("siren", event.target.value)
+                  }
+                />
+              </div>
+
+              {publicData && (
+                <div className="public-data-panel">
+                  <p className="public-data-title">Données publiques (SIRENE)</p>
+                  <dl>
+                    {publicData.legal_name && (<><dt>Raison sociale</dt><dd>{publicData.legal_name}</dd></>)}
+                    {publicData.naf_code && (<><dt>Code NAF</dt><dd>{publicData.naf_code}</dd></>)}
+                    {publicData.headcount_label && (<><dt>Effectif</dt><dd>{publicData.headcount_label}</dd></>)}
+                    {publicData.company_category && (<><dt>Catégorie</dt><dd>{publicData.company_category}</dd></>)}
+                    {publicData.creation_date && (<><dt>Création</dt><dd>{new Date(publicData.creation_date).toLocaleDateString("fr-FR")}</dd></>)}
+                    {publicData.head_office_address && (<><dt>Siège</dt><dd>{publicData.head_office_address}</dd></>)}
+                    {publicData.sector_active_companies != null && (
+                      <><dt>Secteur</dt><dd>{publicData.sector_active_companies.toLocaleString("fr-FR")} entreprises actives en France avec ce code NAF</dd></>
+                    )}
+                    {publicData.website_description && (<><dt>Site web</dt><dd>{publicData.website_description}</dd></>)}
+                  </dl>
+                  <p className="public-data-source">
+                    Sources : {publicData.sources} · collecté le {new Date(publicData.collected_at).toLocaleDateString("fr-FR")}
+                    {publicData.is_active === false && " · entreprise cessée"}
+                  </p>
+                </div>
+              )}
 
               <div className="form-grid-two">
                 <div className="form-group">

@@ -10,6 +10,7 @@ class Company(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     name = Column(String, nullable=False)
+    siren = Column(String(9), nullable=True, index=True)  # official company identifier, links to public data
     is_synthetic = Column(Boolean, nullable=False, default=False, server_default=false())
 
     contact_name = Column(String, nullable=True)

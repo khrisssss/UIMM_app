@@ -13,6 +13,7 @@ The consultant interviews the company, records the answers on six axes, and the 
 | Area | What the user can do |
 |---|---|
 | Companies | Create, edit, archive and restore the companies being diagnosed |
+| Public data | Enter a company's SIREN and see its official public data (activity code, headcount, head office, sector size) collected by the data pipeline |
 | Company profile | Fill in a profile questionnaire (activity, size, context) |
 | Diagnostic | Answer the questionnaire on six axes: Stratégie, Performance, Marketing, RH, Digitalisation, RSE |
 | Scores | Calculate a maturity score per axis and compare it with the average of archived diagnostics |
@@ -36,6 +37,7 @@ flowchart LR
     P[Prometheus] -- scrapes /metrics --> B
     G[Grafana] --> P
     GH[GitHub Actions] -- tests, build, SSH deploy --> VPS[OVH VPS<br/>Docker Compose]
+    PL[Data pipeline<br/>file, SQL, REST API,<br/>scraping, SIRENE big data] -- import --> DB
 ```
 
 | Layer | Technology |
@@ -45,6 +47,7 @@ flowchart LR
 | Database | PostgreSQL 16 |
 | AI | Azure OpenAI (Responses API) |
 | Authentication | JWT (python-jose), Argon2 password hashing (pwdlib) |
+| Data pipeline | requests, BeautifulSoup, DuckDB (Parquet) |
 | Monitoring | JSON logs, Prometheus, Grafana |
 | CI/CD | GitHub Actions, Docker, Docker Compose, OVH VPS |
 
@@ -60,6 +63,7 @@ Backend/
     services/            business logic: scoring, AI payloads, Azure OpenAI, PowerPoint
     dependencies/        authentication and role checks
     monitoring.py        JSON logging and Prometheus metrics
+    pipeline/            public-data pipeline: 5 sources -> clean dataset -> PostgreSQL
     setup_database.py    one-time setup: axes, scoring scales, first admin
   tests/                 pytest test suite
 Frontend/
@@ -131,6 +135,19 @@ npm run dev
 Open http://localhost:5173 and log in with the admin account. From the dashboard, the admin then creates the diagnostic questions (**Questions par axe**), the profile questions (**Profil de l’entreprise**) and the consultant accounts (**Utilisateurs**).
 
 > The backend only accepts requests from `http://localhost:5173` (CORS). If Vite starts on another port because 5173 is busy, stop the other process first.
+
+---
+
+## Public-data pipeline
+
+`Backend/app/pipeline/` collects official data about the companies from five sources — a CSV file, the UIMM Boost database (SQL), the government *API Recherche d'entreprises*, the companies' homepages (scraping) and the INSEE SIRENE stock (29 million rows, queried with DuckDB) — cleans and merges it, and imports it into the `company_public_data` table.
+
+```bash
+cd Backend
+python -m app.pipeline.run --input app/pipeline/companies_example.csv
+```
+
+See [`Backend/app/pipeline/README.md`](Backend/app/pipeline/README.md) for the sources, cleaning rules, SQL, data model (Merise) and RGPD choices.
 
 ---
 
