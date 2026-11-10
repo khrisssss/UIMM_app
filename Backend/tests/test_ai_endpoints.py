@@ -22,7 +22,7 @@ from app.models.axis import Axis
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
 from app.models.question import Question
-from app.models.reports import Report  # noqa: F401  (needed so the table is created)
+from app.models.reports import Report
 from app.models.score import Score
 from app.models.swot import SWOT
 from app.models.user import User
@@ -233,3 +233,32 @@ def test_email_and_phone_in_a_comment_never_reach_the_ai(client, configured_db, 
 
     assert "marie@abc.fr" not in ai_calls[0]
     assert "06 12 34 56 78" not in ai_calls[0]
+
+
+# ---------- Failures: when the AI breaks, nothing is saved ----------
+
+def broken_ai(monkeypatch, mode):
+    """Make the fake AI fail: 'down' = Azure unreachable, 'bad_json' = text that is not JSON."""
+    def create(model, input):
+        if mode == "down":
+            raise ConnectionError("Azure OpenAI unreachable")
+        usage = SimpleNamespace(input_tokens=100, output_tokens=5)
+        return SimpleNamespace(output_text="Désolé, je ne peux pas répondre.", usage=usage)
+
+    fake_client = SimpleNamespace(responses=SimpleNamespace(create=create))
+    monkeypatch.setattr(azure_service, "get_azure_client", lambda: fake_client)
+    monkeypatch.setenv("AZURE_OPENAI_MODEL", "gpt-test")
+
+
+@pytest.mark.parametrize("mode", ["down", "bad_json"])
+def test_ai_failure_gives_502_and_saves_nothing(client, configured_db, company, monkeypatch, mode):
+    broken_ai(monkeypatch, mode)
+    headers = make_user(configured_db, "consultant")
+
+    for url in (f"/companies/{company.id}/generate-swot", f"/companies/{company.id}/generate-report-draft"):
+        response = client.post(url, headers=headers)
+        assert response.status_code == 502  # 502 = an outside service failed
+        assert "IA a échoué" in response.json()["detail"]  # a message the user can read
+
+    assert configured_db.query(SWOT).count() == 0  # no empty SWOT saved
+    assert configured_db.query(Report).count() == 0  # no empty report saved

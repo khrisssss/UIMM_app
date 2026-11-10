@@ -23,6 +23,8 @@ router = APIRouter(
     tags=["SWOT"]
 )
 
+AI_FAILED_MESSAGE = "La génération par l'IA a échoué. Veuillez réessayer dans quelques instants."  # shown to the user
+
 @router.post("/{company_id}/swot", response_model=SWOTRead)
 def create_or_update_swot(
     company_id: int,
@@ -141,7 +143,15 @@ def generate_swot(
         raise HTTPException(status_code=404, detail="Company not found")
 
     ai_payload = make_swot_ai_payload(swot_context)
-    ai_result = normalize_ai_swot(generate_swot_with_ai(ai_payload))
+    try:  # the AI is an outside service: it can be down, slow or answer badly
+        raw_result = generate_swot_with_ai(ai_payload)  # ask Azure OpenAI for the SWOT
+        if "raw_output" in raw_result:  # the AI did not answer with valid JSON
+            raise ValueError("The AI answer is not valid JSON")
+        ai_result = normalize_ai_swot(raw_result)  # check the shape: 4 lists of text
+    except Exception as error:  # any problem: nothing is saved, the user gets a clear message
+        log_event(logging.WARNING, "ai_generation_failed", feature="swot",
+                  company_id=company_id, error_type=type(error).__name__)
+        raise HTTPException(status_code=502, detail=AI_FAILED_MESSAGE)
     generation_source = "public_sources_ai" if ai_payload["evidence_basis"]["mode"] == "public_sources_only" else "azure_openai"
 
     strengths = ai_result.get("strengths", [])

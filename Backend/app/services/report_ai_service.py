@@ -169,6 +169,9 @@ Write one short professional closing paragraph.
         feature="report",
     )
 
+    if "raw_output" in ai_result:  # the AI did not answer with valid JSON: stop, save nothing
+        raise ValueError("The AI answer is not valid JSON")
+
     raw_axes = ai_result.get("axis_analysis")
     axis_names = {
         item["axis_name"] for item in report_context.get("selected_axes", [])

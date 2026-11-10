@@ -1,3 +1,4 @@
+import logging
 import os
 
 from fastapi import APIRouter, HTTPException, Depends
@@ -12,6 +13,8 @@ from app.services.boost_powerpoint_content_service import build_boost_powerpoint
 from app.services.report_context import build_report_context
 from app.services.report_ai_service import generate_report_draft
 from app.dependencies.auth import require_consultant_or_admin
+from app.monitoring import log_event
+from app.routers.swots import AI_FAILED_MESSAGE
 
 from fastapi.responses import FileResponse
 from app.services.powerpoint_report_service import generate_report_powerpoint
@@ -54,7 +57,12 @@ def create_report_draft(
     if report_context is None:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    generated_report = generate_report_draft(report_context)
+    try:  # the AI is an outside service: it can be down, slow or answer badly
+        generated_report = generate_report_draft(report_context)
+    except Exception as error:  # nothing is saved, the user gets a clear message
+        log_event(logging.WARNING, "ai_generation_failed", feature="report",
+                  company_id=company_id, error_type=type(error).__name__)
+        raise HTTPException(status_code=502, detail=AI_FAILED_MESSAGE)
     # Restore the name locally after the anonymized AI request returns.
     generated_report["title"] = f"Rapport de diagnostic — {company.name}"
 
