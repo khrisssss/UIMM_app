@@ -17,8 +17,8 @@ def redact_text(value, company):
         identifier = str(company.get(field) or "").strip()
         if identifier:
             label = re.sub(re.escape(identifier), "[masqué]", label, flags=re.I)
-    label = re.sub(r"\\b[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}\\b", "[email masqué]", label)
-    label = re.sub(r"(?<!\\w)(?:\\+\\d{1,3}[ .-]?)?(?:\\d[ .-]?){9,12}(?!\\w)", "[téléphone masqué]", label)
+    label = re.sub(r"\b[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}\b", "[email masqué]", label)
+    label = re.sub(r"(?<!\w)(?:\+\d{1,3}[ .-]?)?(?:\d[ .-]?){9,12}(?!\w)", "[téléphone masqué]", label)
     return label[:2000]
     # label = str(value or ""): converts the value into text; missing values become ""
  # it will loop The for field ... loop looks for the company’s saved name, contact name, email, phone and address inside that text. then it will masque

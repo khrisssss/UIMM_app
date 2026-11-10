@@ -209,3 +209,27 @@ def test_unknown_company_gives_404_and_no_ai_call(client, configured_db, ai_call
     assert client.post("/companies/999/generate-swot", headers=headers).status_code == 404
     assert client.post("/companies/999/generate-report-draft", headers=headers).status_code == 404
     assert ai_calls == []
+
+
+# ---------- Privacy: personal details are hidden before the AI call ----------
+
+def test_redact_text_hides_name_email_and_phone():
+    from app.services.report_ai_payload import redact_text
+    text = "Appeler Marie au 06 12 34 56 78 ou +33 6 12 34 56 78, mail marie@abc.fr, chez ABC Industrie (120 salariés)"
+    cleaned = redact_text(text, {"name": "ABC Industrie"})
+    assert "ABC Industrie" not in cleaned and "[masqué]" in cleaned
+    assert "marie@abc.fr" not in cleaned and "[email masqué]" in cleaned
+    assert "06 12 34 56 78" not in cleaned and cleaned.count("[téléphone masqué]") == 2
+    assert "120 salariés" in cleaned  # useful numbers are kept
+
+
+def test_email_and_phone_in_a_comment_never_reach_the_ai(client, configured_db, company, ai_calls):
+    answer = configured_db.query(Answer).filter_by(company_id=company.id).first()
+    answer.comment = "Contact : marie@abc.fr, 06 12 34 56 78"  # personal details typed by a consultant
+    configured_db.commit()
+    headers = make_user(configured_db, "consultant")
+
+    assert client.post(f"/companies/{company.id}/generate-swot", headers=headers).status_code == 200
+
+    assert "marie@abc.fr" not in ai_calls[0]
+    assert "06 12 34 56 78" not in ai_calls[0]
