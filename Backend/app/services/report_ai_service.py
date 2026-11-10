@@ -43,13 +43,13 @@ def convert_ai_value_to_text(value):
     return str(value).strip()
 
 
-def generate_report_draft(report_context: dict, financial_years=()) -> dict:
+def generate_report_draft(report_context: dict) -> dict:
     system_prompt = """
 You are a professional business diagnostic consultant.
 
 You write a clear, structured, and actionable company diagnostic report in French.
 
-Use all anonymized evidence provided: company context, profile answers, diagnostic answers and comments, selected-axis comments, scores, saved SWOT, and financial years. Synthesize these into conclusions; do not reproduce a questionnaire as question and answer.
+Use all anonymized evidence provided: company context, profile answers, diagnostic answers and comments, selected-axis comments, scores, and saved SWOT. Synthesize these into conclusions; do not reproduce a questionnaire as question and answer.
 Do not invent facts.
 If information is missing, do not pretend it exists.
 Do not mention that data is missing unless it is important for the recommendation.
@@ -138,7 +138,7 @@ Keep each paragraph short enough for a presentation slide.
 
 For axis_analysis, write professional conclusions in French, as in a consultant's restitution.
 Never repeat the question wording, show a score in a finding, or format as a question and answer.
-Ground each finding in the supplied answers, comments, scores, profile, SWOT, or financial figures. Explain the business implication rather than merely restating a score.
+Ground each finding in the supplied answers, comments, scores, profile, or SWOT. Explain the business implication rather than merely restating a score.
 Do not turn a question into a factual claim solely because it was asked.
 Use only the six selected diagnostic axes: Stratégie, Performance, Marketing, RH, Digitalisation and RSE. Do not add a Finance axis.
 At most two short findings per SWOT category and axis, each under 140 characters. If an axis has no usable evidence, use empty arrays. Do not invent interviews.
@@ -165,7 +165,7 @@ Write one short professional closing paragraph.
 
     ai_result = generate_json_response(
         system_prompt=system_prompt,
-        user_payload=make_report_ai_payload(report_context, financial_years),
+        user_payload=make_report_ai_payload(report_context),
         feature="report",
     )
 

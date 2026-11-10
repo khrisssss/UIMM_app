@@ -16,7 +16,7 @@ def is_finance_name(value):
 def retire_finance(db):
     """Idempotent soft retirement. The caller owns the transaction.
 
-    Primary keys, answers, scores, financial years, SWOTs and saved reports remain
+    Primary keys, answers, scores, SWOTs and saved reports remain
     intact. Active screens use the six remaining axes and profile sections.
     """
     finance_axes = select(Axis.id).where(func.lower(func.trim(Axis.name)).in_(['finance', 'finances']))

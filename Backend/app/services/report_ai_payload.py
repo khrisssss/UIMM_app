@@ -2,13 +2,6 @@
 
 import re
 
-FINANCIAL_FIELDS = (
-    "revenue", "ebitda", "operating_result", "net_result", "depreciation",
-    "cash_flow", "equity", "gross_debt", "gross_cash", "factoring",
-    "total_assets", "capex", "debt_repayments",
-)
-
-
 def redact_text(value, company):
     """Hide the company's name, contact name, email, phone and address
     when they appear in the text (function masks those details inside answers and comments), before sending it to the AI agent."""    
@@ -30,7 +23,7 @@ def redact_text(value, company):
     # label = str(value or ""): converts the value into text; missing values become ""
  # it will loop The for field ... loop looks for the company’s saved name, contact name, email, phone and address inside that text. then it will masque
 
-def make_report_ai_payload(report_context, financial_years):
+def make_report_ai_payload(report_context):
     """It means only diagnostic answers that have a score are included. 
     A score of 0 is included, but an answer with no score is excluded—even 
     if it contains useful text or a comment."""
@@ -81,15 +74,4 @@ def make_report_ai_payload(report_context, financial_years):
             key: [redact_text(value, company) for value in (report_context.get("swot") or {}).get(key, [])]
             for key in ("strengths", "weaknesses", "opportunities", "threats")
         },
-        "financial_years": [ # Saved financial figures for actual and forecast years. example : 2025 actual revenue: "2400000.00".
-            {
-                "year": row.year,
-                "kind": row.kind,
-                **{
-                    field: str(getattr(row, field)) if getattr(row, field) is not None else None
-                    for field in FINANCIAL_FIELDS
-                },
-            }
-            for row in financial_years
-        ],
     }

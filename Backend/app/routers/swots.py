@@ -126,8 +126,7 @@ def preview_swot_ai_payload(
     context = build_swot_context(db, company_id)
     if context is None:
         raise HTTPException(status_code=404, detail="Company not found")
-    financial_years = ()
-    return make_swot_ai_payload(context, financial_years)
+    return make_swot_ai_payload(context)
 
 
 @router.post("/{company_id}/generate-swot", response_model=SWOTRead)
@@ -141,8 +140,7 @@ def generate_swot(
     if not swot_context:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    financial_years = ()
-    ai_payload = make_swot_ai_payload(swot_context, financial_years)
+    ai_payload = make_swot_ai_payload(swot_context)
     ai_result = normalize_ai_swot(generate_swot_with_ai(ai_payload))
     generation_source = "public_sources_ai" if ai_payload["evidence_basis"]["mode"] == "public_sources_only" else "azure_openai"
 

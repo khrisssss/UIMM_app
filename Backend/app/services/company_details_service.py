@@ -15,7 +15,6 @@ from app.models.answer import Answer
 from app.models.scoring_scale import ScoringScale
 from app.models.scoring_level import ScoringLevel
 from app.models.score import Score
-from app.models.financial_year import FinancialYear
 from app.models.swot import SWOT
 from app.models.reports import Report
 
@@ -121,9 +120,6 @@ def build_company_details(db, company_id):
         "profile": profile,
         "axes": diagnostic,
         "scores": [record_details(item) for item in scores],
-        "financial_years": [record_details(item) for item in db.query(FinancialYear).filter(
-            FinancialYear.company_id == company_id
-        ).order_by(FinancialYear.year, FinancialYear.kind, FinancialYear.id).all()],
         "swots": [record_details(item) for item in db.query(SWOT).filter(
             SWOT.company_id == company_id
         ).order_by(SWOT.created_at.desc(), SWOT.id.desc()).all()],

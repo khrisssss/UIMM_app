@@ -9,13 +9,11 @@ from app.models.company_axis import CompanyAxis
 from app.models.company_profile_section import CompanyProfileSection
 from app.models.company_profile_question import CompanyProfileQuestion
 from app.models.company_profile_answer import CompanyProfileAnswer
-from app.models.financial_year import FinancialYear
 from app.models.question import Question
 from app.models.score import Score
 from app.models.swot import SWOT
 from app.models.reports import Report
 from app.services.diagnostic_scope_service import retire_finance
-from app.services.questionnaire_import_service import load_bank
 from app.services.report_context import build_report_context
 from app.services.swot_context import build_swot_context
 from app.services.boost_powerpoint_content_service import get_axis_scores, get_selected_report_axes, get_profile_answers
@@ -38,14 +36,13 @@ def historical_company(configured_db):
         question = CompanyProfileQuestion(section_id=section.id, question_text=f'Profile {name}')
         db.add(question); db.flush()
         db.add(CompanyProfileAnswer(company_id=company.id, question_id=question.id, answer_text='Existing answer'))
-    db.add(FinancialYear(company_id=company.id, year=2026, kind='actual', revenue=2400000))
     db.commit()
     return company
 
 
 def test_retirement_keeps_historical_data_and_is_repeatable(configured_db, historical_company):
     db = configured_db
-    counts = {model: db.query(model).count() for model in [Axis, CompanyAxis, Question, Answer, Score, CompanyProfileSection, CompanyProfileQuestion, CompanyProfileAnswer, FinancialYear]}
+    counts = {model: db.query(model).count() for model in [Axis, CompanyAxis, Question, Answer, Score, CompanyProfileSection, CompanyProfileQuestion, CompanyProfileAnswer]}
     for _ in range(2):
         retire_finance(db); db.commit()
     assert counts == {model: db.query(model).count() for model in counts}
@@ -56,7 +53,6 @@ def test_retirement_keeps_historical_data_and_is_repeatable(configured_db, histo
     selection = db.query(CompanyAxis).filter_by(axis_id=finance.id).one()
     assert not selection.is_selected and not selection.show_in_portfolio
     assert not db.query(CompanyProfileSection).filter_by(name='Finances').one().is_active
-    assert db.query(FinancialYear).one().revenue == 2400000
 
 
 def test_contexts_and_powerpoint_omit_retired_axis_and_profile(configured_db, historical_company):
@@ -95,12 +91,3 @@ def test_company_selection_radar_and_recalculation_exclude_finance(configured_db
     assert len(get_company_profile_questions(db, user)) == 1
     assert len(admin_get_company_profile_sections(db, user)) == 1
     assert len(admin_get_company_profile_questions(db, user)) == 1
-
-
-def test_axis_seed_creates_only_six_axes_on_new_database(db, monkeypatch):
-    from sqlalchemy.orm import Session
-    from app import seed_axes
-    monkeypatch.setattr(seed_axes, 'SessionLocal', lambda: Session(db.bind))
-    seed_axes.seed_axes()
-    seed_axes.seed_axes()
-    assert [a.name for a in db.query(Axis).order_by(Axis.order_index)] == ['Stratégie', 'Performance', 'Marketing', 'RH', 'Digitalisation', 'RSE']

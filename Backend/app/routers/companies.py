@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Depends #api router grouping route
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.company import Company #database table model
-from app.models.financial_year import FinancialYear
 
 from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
 from app.services.swot_context import build_swot_context
@@ -162,7 +161,6 @@ def hard_delete_company(
         .delete(synchronize_session=False)
     )
 
-    db.query(FinancialYear).filter(FinancialYear.company_id == company_id).delete(synchronize_session=False)
     db.delete(db_company)
     db.commit()
 
@@ -187,7 +185,7 @@ def get_all_details_of_a_company(
     """Read all company details, including unanswered/inactive questions and all axes.
     
     Includes personal information for internal viewing; never sends data to AI.
-    Financial amounts are decimal strings. Selection flags identify diagnostic axes.
+    Selection flags identify diagnostic axes.
     """
     details = build_company_details(db, company_id)
     if details is None:

@@ -1,10 +1,10 @@
 """Prepares the information to send to the AI for SWOT generation, (readact_text)hiding company and contact details."""
 
-from app.services.report_ai_payload import FINANCIAL_FIELDS, redact_text # redact text hides the name of the company before sending it to ai 
+from app.services.report_ai_payload import redact_text # redact text hides the name of the company before sending it to ai 
 
 
-def make_swot_ai_payload(context, financial_years):
-    """Prepare diagnostic and financial information for AI SWOT generation,
+def make_swot_ai_payload(context):
+    """Prepare diagnostic information for AI SWOT generation,
     masking [masqué] known company names, contact names, emails, phones and addresses
     when they appear in the text."""
     #example 
@@ -64,16 +64,5 @@ def make_swot_ai_payload(context, financial_years):
              }
             
             for item in context.get("company_profile", [])
-        ],
-        "financial_years": [ # The financial numbers you saved example 2025, actual: revenue €2,400,000. 2026, forecast: revenue €2,600,000.
-            {
-                "year": row.year,
-                "kind": row.kind,
-                **{
-                    field: str(getattr(row, field)) if getattr(row, field) is not None else None
-                    for field in FINANCIAL_FIELDS
-                },
-            }
-            for row in financial_years
         ],
     }

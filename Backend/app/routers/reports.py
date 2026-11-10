@@ -54,8 +54,7 @@ def create_report_draft(
     if report_context is None:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    financial_years = ()
-    generated_report = generate_report_draft(report_context, financial_years)
+    generated_report = generate_report_draft(report_context)
     # Restore the name locally after the anonymized AI request returns.
     generated_report["title"] = f"Rapport de diagnostic — {company.name}"
 
