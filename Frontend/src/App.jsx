@@ -154,14 +154,21 @@ function App() {
 
       {authExpiredMessage && (
         <div className="auth-expired-overlay">
-          <div className="auth-expired-modal">
-            <h2>Session expirée</h2>
+          <div
+            className="auth-expired-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="auth-expired-title"
+            aria-describedby="auth-expired-text"
+          >
+            <h2 id="auth-expired-title">Session expirée</h2>
 
-            <p>{authExpiredMessage}</p>
+            <p id="auth-expired-text">{authExpiredMessage}</p>
 
             <button
               type="button"
               className="primary-button"
+              autoFocus
               onClick={() => {
                 setAuthExpiredMessage("");
                 window.location.href = "/login";
