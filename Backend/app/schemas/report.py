@@ -6,6 +6,8 @@ class ReportUpdate(BaseModel):
     title: Optional[str] = None
     executive_summary: Optional[str] = None
     diagnostic_summary: Optional[str] = None
+    axis_analysis: Optional[str] = None
+    presentation_content: Optional[str] = None
     swot_summary: Optional[str] = None
     recommendations: Optional[str] = None
     conclusion: Optional[str] = None
@@ -18,6 +20,8 @@ class ReportRead(BaseModel):
     title: str
     executive_summary: Optional[str] = None
     diagnostic_summary: Optional[str] = None
+    axis_analysis: Optional[str] = None
+    presentation_content: Optional[str] = None
     swot_summary: Optional[str] = None
     recommendations: Optional[str] = None
     conclusion: Optional[str] = None

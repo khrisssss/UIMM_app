@@ -1,3 +1,6 @@
+import logging
+
+from app.monitoring import AI_DRAFT_REVIEWS, log_event
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 import os
@@ -7,32 +10,18 @@ from app.models.axis import Axis
 from app.models.swot import SWOT
 from app.schemas.swot import SWOTCreate, SWOTRead, SWOTUpdate 
 
-#from app.services.swot_ai_service import generate_swot_draft
 from app.services.swot_context import build_swot_context
 
 from app.models.user import User
 from app.dependencies.auth import require_consultant_or_admin
 
-from app.services.azure_openai_service import generate_json_response
 from app.services.swot_ai_service import generate_swot_with_ai
+from app.services.swot_ai_payload import make_swot_ai_payload
+from app.services.swot_generation_service import normalize_ai_swot
 router = APIRouter(
     prefix="/companies",
     tags=["SWOT"]
 )
-
-@router.get("/debug/test-azure-ai")
-def test_azure_ai(
-    current_user=Depends(require_consultant_or_admin)
-):
-    """Send a small test request to Azure AI to check that the integration responds. This calls the AI service."""
-    result = generate_json_response(
-        system_prompt="You are a helpful assistant. Return only valid JSON.",
-        user_payload={
-            "task": "Return a JSON object with message: Azure connection works."
-        },
-    )
-
-    return result
 
 @router.post("/{company_id}/swot", response_model=SWOTRead)
 def create_or_update_swot(
@@ -40,7 +29,7 @@ def create_or_update_swot(
     swot_data: SWOTCreate,
     db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
 ):
-    """Save a manually written SWOT without calling AI. Creates a record or replaces the contents for the same company and axis. Omit axis_id for a company-wide SWOT; send status validated to save it as validated."""
+    """Save MANUALLY written SWOT without calling AI. Creates a record or replaces the contents for the same company and axis. Omit axis_id for a company-wide SWOT; send status validated to save it as validated."""
     company = db.query(Company).filter(Company.id == company_id).first()
 
     if company is None:
@@ -58,16 +47,16 @@ def create_or_update_swot(
                 detail="Axis not found"
             )
 
-    existing_swot = (
+    existing_swot = ( # this part only searches the database
         db.query(SWOT)
         .filter(
             SWOT.company_id == company_id,
             SWOT.axis_id == swot_data.axis_id
         )
-        .first()
+        .first() # Find the first SWOT belonging to this company and this axis
     )
 
-    if existing_swot is None:
+    if existing_swot is None: # if none it will create a new SWOT 
         new_swot = SWOT(
             company_id=company_id,
             axis_id=swot_data.axis_id,
@@ -81,12 +70,13 @@ def create_or_update_swot(
             status=swot_data.status
         )
 
-        db.add(new_swot)
-        db.commit()
-        db.refresh(new_swot)
+        db.add(new_swot) #Add the new record to the session 
+        db.commit()   # Save the new record or the changes to PostgreSQL.
+        db.refresh(new_swot)#Reload that record’s latest values from PostgreSQL nNOT refresh the whole database new_swot 
 
         return new_swot
 
+    # if exist it will Replace a field on the existing record
     existing_swot.strengths = swot_data.strengths
     existing_swot.weaknesses = swot_data.weaknesses
     existing_swot.opportunities = swot_data.opportunities
@@ -96,10 +86,10 @@ def create_or_update_swot(
     existing_swot.ai_model = swot_data.ai_model
     existing_swot.status = swot_data.status
 
-    db.commit()
-    db.refresh(existing_swot)
+    db.commit() # Save the new record or the changes to PostgreSQL. 
+    db.refresh(existing_swot)  #Reload that record’s latest values from PostgreSQL nNOT refresh the whole database existing_swot
 
-    return existing_swot
+    return existing_swot #Send the updated SWOT back to whoever called the route. 
 
 
 @router.get("/{company_id}/swot", response_model=list[SWOTRead])
@@ -126,6 +116,20 @@ def get_swots_by_company(
     return swots
 
 
+@router.get("/{company_id}/swot-ai-payload")
+def preview_swot_ai_payload(
+    company_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_consultant_or_admin),
+):
+    """Preview the exact filtered user payload used for SWOT generation, without calling AI."""
+    context = build_swot_context(db, company_id)
+    if context is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    financial_years = ()
+    return make_swot_ai_payload(context, financial_years)
+
+
 @router.post("/{company_id}/generate-swot", response_model=SWOTRead)
 def generate_swot(
     company_id: int,
@@ -137,7 +141,10 @@ def generate_swot(
     if not swot_context:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    ai_result = generate_swot_with_ai(swot_context)
+    financial_years = ()
+    ai_payload = make_swot_ai_payload(swot_context, financial_years)
+    ai_result = normalize_ai_swot(generate_swot_with_ai(ai_payload))
+    generation_source = "public_sources_ai" if ai_payload["evidence_basis"]["mode"] == "public_sources_only" else "azure_openai"
 
     strengths = ai_result.get("strengths", [])
     weaknesses = ai_result.get("weaknesses", [])
@@ -161,7 +168,7 @@ def generate_swot(
             weaknesses=weaknesses,
             opportunities=opportunities,
             threats=threats,
-            generation_source="azure_openai",
+            generation_source=generation_source,
             generated_by_ai=True,
             ai_model=os.getenv("AZURE_OPENAI_MODEL", "azure-model"),
             status="draft",
@@ -177,7 +184,7 @@ def generate_swot(
     existing_swot.weaknesses = weaknesses
     existing_swot.opportunities = opportunities
     existing_swot.threats = threats
-    existing_swot.generation_source = "azure_openai"
+    existing_swot.generation_source = generation_source
     existing_swot.generated_by_ai = True
     existing_swot.ai_model = os.getenv("AZURE_OPENAI_MODEL", "azure-model")
     existing_swot.status = "draft"
@@ -218,6 +225,9 @@ def update_swot(
             detail="SWOT not found"
         )
 
+    original_content = (swot.strengths, swot.weaknesses, swot.opportunities, swot.threats)
+    was_validated = swot.status == "validated"
+
     if swot_data.strengths is not None:
         swot.strengths = swot_data.strengths
 
@@ -232,6 +242,14 @@ def update_swot(
 
     if swot_data.status is not None:
         swot.status = swot_data.status
+
+    # Feedback loop: how often consultants accept AI drafts as-is vs edit them
+    if swot.generated_by_ai and swot.status == "validated" and not was_validated:
+        new_content = (swot.strengths, swot.weaknesses, swot.opportunities, swot.threats)
+        result = "accepted_as_is" if new_content == original_content else "edited"
+        AI_DRAFT_REVIEWS.labels("swot", result).inc()
+        log_event(logging.INFO, "ai_draft_reviewed", feature="swot", result=result,
+                  swot_id=swot.id, company_id=company_id)
 
     db.commit()
     db.refresh(swot)

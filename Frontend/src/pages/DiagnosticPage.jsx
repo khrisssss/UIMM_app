@@ -36,10 +36,10 @@ function DiagnosticPage() {
       setDiagnosticOverview(overviewResponse.data);
 
       // Scores are calculated automatically.
-      // The user does not need a separate "Calculate scores" button.
+      // The user does not need a separate "Calculer les scores" button.
       await api.post(`/companies/${companyId}/calculate-scores`);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load diagnostic data."));
+      setMessage(getErrorMessage(error, "Impossible de charger les données du diagnostic."));
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -80,17 +80,17 @@ function DiagnosticPage() {
         is_selected: isSelected,
       });
 
-      setMessage("Axis selection updated.");
+      setMessage("Sélection des axes mise à jour.");
     } catch (error) {
       setAxesSelection(previousAxesSelection);
       setDiagnosticOverview(previousDiagnosticOverview);
-      setMessage("Failed to update axis selection.");
+      setMessage("Impossible de mettre à jour la sélection des axes.");
       console.error(error);
     }
   }
 
-  function openQuestionnaire(axisId) {
-    window.location.href = `/companies/${companyId}/diagnostic/${axisId}`;
+  function openQuestionnaire(axis) {
+    window.location.href = `/companies/${companyId}/diagnostic/${axis.axis_id}`;
   }
 
   function openAnalysis() {
@@ -123,11 +123,11 @@ function DiagnosticPage() {
 
   function getCompletionText(answeredQuestions, totalQuestions) {
     if (!totalQuestions || totalQuestions === 0) {
-      return "0% completed";
+      return "0 % complété";
     }
 
     const percentage = Math.round((answeredQuestions / totalQuestions) * 100);
-    return `${percentage}% completed`;
+    return `${percentage} % complété`;
   }
 
   function getCompletionPercentage(answeredQuestions, totalQuestions) {
@@ -143,7 +143,7 @@ function DiagnosticPage() {
       <div className="app-page">
 
         <main className="diagnostic-page-content">
-          <p>Loading...</p>
+          <p>Chargement…</p>
         </main>
       </div>
     );
@@ -159,18 +159,12 @@ function DiagnosticPage() {
 
       <main className="diagnostic-page-content">
         <div className="diagnostic-top-actions">
-          <button className="secondary-button" onClick={openCompanyDetails}>
-            Company details
-          </button>
+          <button className="secondary-button" onClick={openCompanyDetails}>Fiche de l’entreprise</button>
 
           <div className="diagnostic-action-buttons">
-            <button className="primary-button" onClick={openAnalysis}>
-              View Radar / SWOT
-            </button>
+            <button className="primary-button" onClick={openAnalysis}>Voir le radar / SWOT</button>
 
-            <button className="secondary-button" onClick={openReports}>
-              Report
-            </button>
+            <button className="secondary-button" onClick={openReports}>Rapport</button>
           </div>
         </div>
 
@@ -178,7 +172,7 @@ function DiagnosticPage() {
 
         <section className="diagnostic-layout">
           <aside className="axis-selection-panel">
-            <h2>Axis selection</h2>
+            <h2>Sélection des axes</h2>
 
             <div className="axis-selection-separator"></div>
 
@@ -211,8 +205,8 @@ function DiagnosticPage() {
           <section className="selected-axes-panel">
             {selectedAxes.length === 0 ? (
               <div className="empty-card">
-                <h3>No axis selected</h3>
-                <p>Select at least one diagnostic axis on the left.</p>
+                <h3>Aucun axe sélectionné</h3>
+                <p>Sélectionnez au moins un axe de diagnostic à gauche.</p>
               </div>
             ) : (
               <div className="selected-axis-list">
@@ -232,9 +226,7 @@ function DiagnosticPage() {
 
                         <p className="axis-question-count">
                           <strong>{axis.answered_questions}</strong> /{" "}
-                          <strong>{axis.total_questions}</strong> questions
-                          answered
-                        </p>
+                          <strong>{axis.total_questions}</strong>questions répondues</p>
 
                         <p className="axis-completion-text">
                           {getCompletionText(
@@ -254,9 +246,9 @@ function DiagnosticPage() {
                       <div className="selected-axis-action">
                         <button
                           className="primary-button questionnaire-button"
-                          onClick={() => openQuestionnaire(axis.axis_id)}
+                          onClick={() => openQuestionnaire(axis)}
                         >
-                          Go to questionnaire
+                          Ouvrir le questionnaire
                         </button>
                       </div>
                     </article>

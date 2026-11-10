@@ -1,46 +1,51 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+# from typing import Any  # Utilisé uniquement par les schémas commentés.
 
 
-class SWOTAxisScoreContext(BaseModel):
-    axis_id: int
-    axis_name: str
-    score_total: int
-    score_max: int
-    score_percentage: float
-    answered_questions: int
-    total_questions: int
+# schema not used in current routes, retained for reference.
+# class SWOTAxisScoreContext(BaseModel):
+#     axis_id: int
+#     axis_name: str
+#     score_total: int
+#     score_max: int
+#     percentage: float
+#     answered_questions: int
 
 
-class SWOTQuestionContext(BaseModel):
-    axis_id: int
-    axis_name: str
-    question_id: int
-    question_text: str
+# schema not used in current routes, retained for reference.
+# class SWOTQuestionContext(BaseModel):
+#     axis_id: int
+#     axis_name: str
+#     question_id: int
+#     question_text: str
+#
+#     score_code: Optional[str] = None
+#     score_value: Optional[int] = None
+#     score_label: Optional[str] = None
+#     score_description: Optional[str] = None
+#
+#     max_score: Optional[int] = None
+#     answer_text: Optional[str] = None
+#     comment: Optional[str] = None
+#
+#     theme: Optional[str] = None
+#     low_score_meaning: Optional[str] = None
+#     high_score_meaning: Optional[str] = None
+#     opportunity_hint: Optional[str] = None
+#     threat_hint: Optional[str] = None
 
-    score_code: Optional[str] = None
-    score_value: Optional[int] = None
-    score_label: Optional[str] = None
-    score_description: Optional[str] = None
 
-    max_score: Optional[int] = None
-    answer_text: Optional[str] = None
-    comment: Optional[str] = None
+# Schéma inutilisé dans les routes actuelles, conservé pour référence.
+# class SWOTContextRead(BaseModel):
+#     company: dict[str, Any]
+#     selected_axes: list[dict[str, Any]]
+#     axis_scores: list[dict[str, Any]]  # Ancien schéma SWOTAxisScoreContext désactivé.
+#     company_profile: list[dict[str, Any]]
+#     diagnostic_answers: list[dict[str, Any]]
+#     swot_evidence: dict[str, list[dict[str, Any]]]
 
-    theme: Optional[str] = None
-    low_score_meaning: Optional[str] = None
-    high_score_meaning: Optional[str] = None
-    opportunity_hint: Optional[str] = None
-    threat_hint: Optional[str] = None
-
-
-class SWOTContextRead(BaseModel):
-    company_id: int
-    company_name: str
-    status: str
-    axis_scores: list[SWOTAxisScoreContext]
-    questions: list[SWOTQuestionContext]
 
 class SWOTCreate(BaseModel):
     axis_id: Optional[int] = None
@@ -54,7 +59,6 @@ class SWOTCreate(BaseModel):
     generated_by_ai: bool = False
     ai_model: Optional[str] = None
     status: str = "draft"
-
 
 class SWOTRead(BaseModel):
     id: int

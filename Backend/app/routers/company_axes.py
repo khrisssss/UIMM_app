@@ -33,7 +33,7 @@ def question_matches_company_size(question: Question, company_size: str | None) 
 
 
 def ensure_company_axes_exist(company: Company, db: Session):
-    axes = db.query(Axis).order_by(Axis.order_index).all()
+    axes = db.query(Axis).filter(Axis.is_active.is_(True)).order_by(Axis.order_index).all()
 
     for axis in axes:
         existing = (
@@ -75,7 +75,8 @@ def company_axis_to_read(company_axis: CompanyAxis) -> CompanyAxisRead:
       #  for_mission_complementaire=company_axis.for_mission_complementaire,
         created_at=company_axis.created_at,
         updated_at=company_axis.updated_at,
-        diagnostic_comment=company_axis.diagnostic_comment
+        diagnostic_comment=company_axis.diagnostic_comment,
+        show_in_portfolio=company_axis.show_in_portfolio
     )
 
 
@@ -99,7 +100,7 @@ def get_company_axes_selection(
     company_axes = (
         db.query(CompanyAxis)
         .join(Axis, CompanyAxis.axis_id == Axis.id)
-        .filter(CompanyAxis.company_id == company_id)
+        .filter(CompanyAxis.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -128,9 +129,11 @@ def update_company_axis_selection(
 
     company_axis = (
         db.query(CompanyAxis)
+        .join(Axis, CompanyAxis.axis_id == Axis.id)
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.axis_id == axis_id,
+            Axis.is_active.is_(True),
         )
         .first()
     )
@@ -139,7 +142,6 @@ def update_company_axis_selection(
         raise HTTPException(status_code=404, detail="Company axis not found")
 
     update_data = axis_update.model_dump(exclude_unset=True)
-    print("COMPANY AXIS UPDATE DATA:", update_data)
     for key, value in update_data.items():
         setattr(company_axis, key, value)
 
@@ -172,6 +174,7 @@ def get_diagnostic_overview(
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -253,9 +256,11 @@ def get_company_axis_questions(
 
     company_axis = (
         db.query(CompanyAxis)
+        .join(Axis, CompanyAxis.axis_id == Axis.id)
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.axis_id == axis_id,
+            Axis.is_active.is_(True),
             CompanyAxis.is_selected == True,
         )
         .first()

@@ -1,3 +1,6 @@
+import ast
+import json
+
 from sqlalchemy.orm import Session
 
 from app.models.company import Company
@@ -15,17 +18,23 @@ from app.models.company_profile_answer import CompanyProfileAnswer
 def normalize_list_value(value):
     if value is None:
         return []
-
+    if isinstance(value, str) and value.strip().startswith(("{", "[")):
+        for loader in (json.loads, ast.literal_eval):
+            try:
+                value = loader(value)
+                break
+            except (ValueError, SyntaxError, TypeError):
+                pass
+    if isinstance(value, dict):
+        return [
+            str(axis) + " : " + str(item)
+            for axis, entries in value.items()
+            for item in (entries if isinstance(entries, list) else [entries])
+            if str(item).strip()
+        ]
     if isinstance(value, list):
-        return value
-
-    if isinstance(value, str):
-        if value.strip() == "":
-            return []
-
-        return [value]
-
-    return [str(value)]
+        return [str(item) for item in value if str(item).strip()]
+    return [str(value)] if str(value).strip() else []
 
 
 def build_report_context(company_id: int, db: Session) -> dict | None:
@@ -40,6 +49,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -48,7 +58,8 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
     scores_rows = (
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
-        .filter(Score.company_id == company_id)
+        .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
+        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -67,7 +78,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
             CompanyProfileSection,
             CompanyProfileQuestion.section_id == CompanyProfileSection.id,
         )
-        .filter(CompanyProfileAnswer.company_id == company_id)
+        .filter(CompanyProfileAnswer.company_id == company_id, CompanyProfileQuestion.is_active.is_(True), CompanyProfileSection.is_active.is_(True))
         .order_by(
             CompanyProfileSection.order_index,
             CompanyProfileQuestion.order_index,
@@ -79,7 +90,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
         db.query(Answer, Question, Axis)
         .join(Question, Answer.question_id == Question.id)
         .join(Axis, Question.axis_id == Axis.id)
-        .filter(Answer.company_id == company_id)
+        .filter(Answer.company_id == company_id, Axis.is_active.is_(True), Question.is_active.is_(True))
         .order_by(
             Axis.order_index,
             Question.category_id,
@@ -90,7 +101,7 @@ def build_report_context(company_id: int, db: Session) -> dict | None:
 
     latest_swot = (
         db.query(SWOT)
-        .filter(SWOT.company_id == company_id)
+        .filter(SWOT.company_id == company_id, SWOT.axis_id.is_(None))
         .order_by(SWOT.created_at.desc())
         .first()
     )

@@ -14,6 +14,8 @@ class Report(Base):
     title = Column(String, nullable=False)
     executive_summary = Column(Text, nullable=True)
     diagnostic_summary = Column(Text, nullable=True)
+    axis_analysis = Column(Text, nullable=True)
+    presentation_content = Column(Text, nullable=True)
     swot_summary = Column(Text, nullable=True)
     recommendations = Column(Text, nullable=True)
     conclusion = Column(Text, nullable=True)

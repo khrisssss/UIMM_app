@@ -12,7 +12,6 @@ env/
 .env.*
 .env.example
 generated_reports/
-ml_artifacts/
 
 # Database files
 # =========================
@@ -42,7 +41,6 @@ __pycache__/
 
 # Generated app files
 generated_reports/
-ml_artifacts/
 
 # Local database files
 *.db
@@ -50,4 +48,6 @@ ml_artifacts/
 *.sqlite3
 
 # Logs
-*.log
+*.log.coverage
+coverage.xml
+test-results.xml

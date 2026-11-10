@@ -15,6 +15,7 @@ import AdminAxisQuestionsPage from "./pages/AdminAxisQuestionsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminAxesPage from "./pages/AdminAxesPage";
 
+
 function App() {
   const token = localStorage.getItem("access_token");
   const user = JSON.parse(localStorage.getItem("user"));

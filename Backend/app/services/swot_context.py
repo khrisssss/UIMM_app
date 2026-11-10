@@ -20,60 +20,7 @@ def get_percentage(value):
 
 
 def classify_answer_for_swot(answer):
-    """
-    Simple professional rule:
-    - score 4 or 5 = strength evidence
-    - score 0, 1, 2 = weakness evidence
-    - score 3 = opportunity evidence
-    - very low score + risk comment = threat evidence
-    """
-
-    if answer.score_value is None:
-        return "neutral"
-
-    score_value = int(answer.score_value)
-    comment = (answer.comment or "").lower()
-
-    risk_words = [
-        "no process",
-        "pas de processus",
-        "not formalized",
-        "non formalisé",
-        "manual",
-        "manuel",
-        "excel",
-        "depends on one person",
-        "dépend d'une personne",
-        "urgent",
-        "not followed",
-        "pas suivi",
-        "not measured",
-        "pas mesuré",
-        "not shared",
-        "pas partagé",
-        "regulatory constraint",
-        "contrainte réglementaire",
-        "lack",
-        "manque",
-        "absence",
-        "risk",
-        "risque",
-    ]
-
-    has_risk_comment = any(word in comment for word in risk_words)
-
-    if score_value >= 4:
-        return "strength"
-
-    if score_value <= 2 and has_risk_comment:
-        return "threat"
-
-    if score_value <= 2:
-        return "weakness"
-
-    if score_value == 3:
-        return "opportunity"
-
+    """Leave classification to the analysis of the supplied evidence."""
     return "neutral"
 
 
@@ -89,6 +36,7 @@ def build_swot_context(db, company_id: int):
         .filter(
             CompanyAxis.company_id == company_id,
             CompanyAxis.is_selected == True,
+            Axis.is_active.is_(True),
         )
         .order_by(Axis.order_index)
         .all()
@@ -97,7 +45,7 @@ def build_swot_context(db, company_id: int):
     scores = (
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
-        .filter(Score.company_id == company_id)
+        .filter(Score.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -106,7 +54,7 @@ def build_swot_context(db, company_id: int):
         db.query(Answer, Question, Axis)
         .join(Question, Answer.question_id == Question.id)
         .join(Axis, Question.axis_id == Axis.id)
-        .filter(Answer.company_id == company_id)
+        .filter(Answer.company_id == company_id, Axis.is_active.is_(True), Question.is_active.is_(True))
         .order_by(Axis.order_index, Question.order_index)
         .all()
     )
@@ -125,7 +73,7 @@ def build_swot_context(db, company_id: int):
             CompanyProfileSection,
             CompanyProfileQuestion.section_id == CompanyProfileSection.id,
         )
-        .filter(CompanyProfileAnswer.company_id == company_id)
+        .filter(CompanyProfileAnswer.company_id == company_id, CompanyProfileQuestion.is_active.is_(True), CompanyProfileSection.is_active.is_(True))
         .order_by(
             CompanyProfileSection.order_index,
             CompanyProfileQuestion.order_index,
@@ -172,6 +120,7 @@ def build_swot_context(db, company_id: int):
             "score_value": answer.score_value,
             "max_score": question.max_score,
             "comment": answer.comment,
+            "answer_text": answer.answer_text,
             "suggested_swot_type": swot_type,
         }
 
@@ -196,6 +145,7 @@ def build_swot_context(db, company_id: int):
                 "section": profile_section.name,
                 "question": profile_question.question_text,
                 "answer": profile_answer.answer_text,
+                "comment": profile_answer.comment,
             }
         )
 
@@ -203,6 +153,10 @@ def build_swot_context(db, company_id: int):
         "company": {
             "id": company.id,
             "name": company.name,
+            "contact_name": company.contact_name,
+            "contact_email": company.contact_email,
+            "contact_phone": company.contact_phone,
+            "address": company.address,
             "company_size": company.company_size,
             "status": company.status,
             "has_rse": company.has_rse,

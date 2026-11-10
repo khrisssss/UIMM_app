@@ -1,0 +1,177 @@
+name: UIMM Boost CI
+
+on:
+  push:
+    branches:
+      - feature/finance-axis-years
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-tests:
+    name: Backend tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Backend
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-test.txt
+
+      - name: Check Python syntax
+        run: python -m compileall -q app
+
+      - name: Run backend tests
+        run: python -m pytest tests/ -q --cov=app.services.questionnaire_import_service --cov=app.monitoring --cov-report=term-missing --cov-report=xml --junitxml=test-results.xml
+
+  frontend-build:
+    name: Frontend build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Frontend
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: /api
+
+  deploy:
+    name: Deploy to OVH
+    needs: [backend-tests, frontend-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/finance-axis-years'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    concurrency:
+      group: uimm-ovh-production
+      cancel-in-progress: false
+
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+
+    steps:
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r'> ~/.ssh/deploy_key
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null
+
+      - name: Build deploy and check application
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o ConnectTimeout=20 \
+            "$VPS_USER@$VPS_HOST" \
+            "bash -s -- '$GITHUB_SHA'" <<'REMOTE'
+          set -euo pipefail
+          deploy_sha="$1"
+          cd ~/UIMM_app
+
+          test "$(git branch --show-current)" = "feature/finance-axis-years"
+          git diff --quiet
+          git diff --cached --quiet
+          git fetch origin feature/finance-axis-years
+
+          latest_sha="$(git rev-parse origin/feature/finance-axis-years)"
+          if [ "$latest_sha" != "$deploy_sha" ]; then
+            echo "A newer commit exists; skipping this deployment."
+            exit 0
+          fi
+
+          git merge --ff-only "$deploy_sha"
+          test "$(git rev-parse HEAD)" = "$deploy_sha"
+
+          docker compose --env-file .env.production \
+            -f compose.production.yml config --quiet
+
+          docker compose --env-file .env.production \
+            -f compose.production.yml build backend frontend
+
+          docker compose --env-file .env.production \
+            -f compose.production.yml up -d --no-build \
+            --wait --wait-timeout 120
+
+          curl --fail --silent --show-error \
+            --retry 12 --retry-delay 5 \
+            --retry-connrefused --retry-all-errors \
+            --max-time 10 \
+            http://127.0.0.1:8080/api/db-test
+
+          echo
+          # Run this requested installation once, including on a retried deploy.
+          # A later intentional deletion must not recreate the company on deploy.
+          migration_marker="$HOME/.uimm_precision_montelac_v1_installed"
+          if [ ! -f "$migration_marker" ]; then
+            docker compose --env-file .env.production \
+              -f compose.production.yml exec -T backend \
+              python -m app.scripts.install_precision_montelac --apply
+            touch "$migration_marker"
+          fi
+
+          comments_marker="$HOME/.uimm_precision_montelac_comments_v1_installed"
+          if [ ! -f "$comments_marker" ]; then
+            docker compose --env-file .env.production \
+              -f compose.production.yml exec -T backend \
+              python -m app.scripts.add_precision_montelac_comments --company-id 102 --apply
+            touch "$comments_marker"
+          fi
+
+          solerive_marker="$HOME/.uimm_mecanique_solerive_v1_installed"
+          if [ ! -f "$solerive_marker" ]; then
+            docker compose --env-file .env.production \
+              -f compose.production.yml exec -T backend \
+              python -m app.scripts.install_mecanique_solerive --apply
+            touch "$solerive_marker"
+          fi
+
+          echo "Deployment and database check succeeded."
+          REMOTE
+
+      - name: Remove temporary SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
+
+
+

@@ -1,9 +1,15 @@
+import ast
+import json
+from sqlalchemy import func
+
 from app.models.answer import Answer
+from app.models.question import Question
 from app.models.axis import Axis
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
 from app.models.company_profile_answer import CompanyProfileAnswer
 from app.models.company_profile_question import CompanyProfileQuestion
+from app.models.company_profile_section import CompanyProfileSection
 from app.models.reports import Report
 from app.models.score import Score
 from app.models.swot import SWOT
@@ -16,21 +22,49 @@ def clean_text(value):
     return str(value).strip()
 
 
-def split_lines(value):
-    text = clean_text(value)
+def parse_swot_value(value):
+    if isinstance(value, str):
+        text = value.strip()
+        if text.startswith(("{", "[")):
+            for loader in (json.loads, ast.literal_eval):
+                try:
+                    return loader(text)
+                except (ValueError, SyntaxError, TypeError):
+                    pass
+    return value
 
+
+def split_lines(value):
+    value = parse_swot_value(value)
+    if isinstance(value, dict):
+        return [
+            axis + " : " + item
+            for axis, values in value.items()
+            for item in split_lines(values)
+        ]
+    if isinstance(value, (list, tuple)):
+        return [item for value_item in value for item in split_lines(value_item)]
+    text = clean_text(value)
     if not text:
         return []
+    return [
+        line.strip().lstrip("-•").strip()
+        for line in text.replace("•", "\n").splitlines()
+        if line.strip().lstrip("-•").strip()
+    ]
 
-    lines = []
 
-    for line in text.replace("•", "\n").split("\n"):
-        cleaned_line = line.strip(" -•\t")
-
-        if cleaned_line:
-            lines.append(cleaned_line)
-
-    return lines
+def axis_swot_items(value, axis_name):
+    parsed = parse_swot_value(value)
+    if isinstance(parsed, dict):
+        return split_lines(next(
+            (items for name, items in parsed.items() if name.casefold() == axis_name.casefold()),
+            [],
+        ))
+    return [
+        item for item in split_lines(parsed)
+        if item.casefold().startswith(axis_name.casefold() + " :")
+    ]
 
 
 def limit_items(items, maximum=6):
@@ -49,7 +83,8 @@ def get_axis_scores(db, company_id):
     rows = (
         db.query(Score, Axis)
         .join(Axis, Score.axis_id == Axis.id)
-        .filter(Score.company_id == company_id)
+        .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
+        .filter(Score.company_id == company_id, CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -70,11 +105,61 @@ def get_axis_scores(db, company_id):
     return scores
 
 
+def get_selected_report_axes(db, company_id, scores):
+    """SWOT coverage follows selected axes, independently of score availability."""
+    rows = (
+        db.query(Axis)
+        .join(CompanyAxis, CompanyAxis.axis_id == Axis.id)
+        .filter(CompanyAxis.company_id == company_id, CompanyAxis.is_selected == True, Axis.is_active.is_(True))
+        .order_by(Axis.order_index)
+        .all()
+    )
+    scores_by_id = {item["axis_id"]: item for item in scores}
+    return [
+        {
+            "axis_id": axis.id,
+            "axis_name": axis.name,
+            "score_percentage": scores_by_id.get(axis.id, {}).get("score_percentage"),
+        }
+        for axis in rows
+    ]
+
+
+def regroup_axis_swot(swot_by_axis):
+    """The letter pages are another view of the same axis findings."""
+    grouped = {key: [] for key in ("strengths", "weaknesses", "opportunities", "threats")}
+    for axis in swot_by_axis:
+        name = axis["axis_name"]
+        for category in grouped:
+            for item in axis.get(category, []):
+                text = clean_text(item)
+                if text:
+                    # Older saved findings may already carry their axis prefix.
+                    if text.casefold().startswith(name.casefold() + " :"):
+                        text = text.split(":", 1)[1].strip()
+                    grouped[category].append(name + " : " + text)
+    return grouped
+
+
+def get_archive_averages(db, scores):
+    axis_ids = [item["axis_id"] for item in scores]
+    if not axis_ids:
+        return {}
+    rows = (
+        db.query(Score.axis_id, func.avg(Score.score_percentage))
+        .join(Company, Score.company_id == Company.id)
+        .filter(Company.is_archived == True, Score.axis_id.in_(axis_ids))
+        .group_by(Score.axis_id)
+        .all()
+    )
+    return {axis_id: round(float(average), 1) for axis_id, average in rows if average is not None}
+
+
 def get_axis_comments(db, company_id):
     rows = (
         db.query(CompanyAxis, Axis)
         .join(Axis, CompanyAxis.axis_id == Axis.id)
-        .filter(CompanyAxis.company_id == company_id)
+        .filter(CompanyAxis.company_id == company_id, Axis.is_active.is_(True))
         .order_by(Axis.order_index)
         .all()
     )
@@ -94,7 +179,8 @@ def get_profile_answers(db, company_id):
             CompanyProfileQuestion,
             CompanyProfileAnswer.question_id == CompanyProfileQuestion.id,
         )
-        .filter(CompanyProfileAnswer.company_id == company_id)
+        .join(CompanyProfileSection, CompanyProfileQuestion.section_id == CompanyProfileSection.id)
+        .filter(CompanyProfileAnswer.company_id == company_id, CompanyProfileQuestion.is_active.is_(True), CompanyProfileSection.is_active.is_(True))
         .order_by(CompanyProfileQuestion.order_index)
         .all()
     )
@@ -127,23 +213,24 @@ def find_profile_answer(profile_answers, keywords):
 def get_latest_swot(db, company_id):
     return (
         db.query(SWOT)
-        .filter(SWOT.company_id == company_id)
+        .filter(SWOT.company_id == company_id, SWOT.axis_id.is_(None))
         .order_by(SWOT.created_at.desc())
         .first()
     )
 
 
-def get_axis_answers_summary(db, company_id):
+def get_axis_answers_summary(db, company_id): #Builds an answer summary per axis
     rows = (
-        db.query(Answer, Axis)
-        .join(Axis, Answer.axis_id == Axis.id)
-        .filter(Answer.company_id == company_id)
+        db.query(Answer, Question, Axis)
+        .join(Question, Answer.question_id == Question.id)
+        .join(Axis, Question.axis_id == Axis.id)
+        .filter(Answer.company_id == company_id, Axis.is_active.is_(True), Question.is_active.is_(True))
         .all()
     )
 
     answers_by_axis = {}
 
-    for answer, axis in rows:
+    for answer, question, axis in rows:
         axis_name = axis.name
 
         if axis_name not in answers_by_axis:
@@ -152,67 +239,33 @@ def get_axis_answers_summary(db, company_id):
         answer_text = clean_text(answer.answer_text)
         comment = clean_text(answer.comment)
 
-        if comment:
-            answers_by_axis[axis_name].append(comment)
-        elif answer_text:
-            answers_by_axis[axis_name].append(answer_text)
+        if comment or answer_text:
+            answers_by_axis[axis_name].append(question.question_text + ' : ' + (answer_text or comment))
 
     return answers_by_axis
 
 
-def build_swot_by_axis_from_global_swot(swot, scores, axis_comments):
+def build_swot_by_axis_from_global_swot(swot, scores, axis_comments, axis_analysis):
     swot_by_axis = []
-
-    global_strengths = split_lines(swot.strengths if swot else "")
-    global_weaknesses = split_lines(swot.weaknesses if swot else "")
-    global_opportunities = split_lines(swot.opportunities if swot else "")
-    global_threats = split_lines(swot.threats if swot else "")
-
     for score in scores:
         axis_name = score["axis_name"]
-        axis_comment = axis_comments.get(axis_name, "")
-
-        swot_by_axis.append(
-            {
-                "axis_name": axis_name,
-                "score_percentage": score["score_percentage"],
-                "comment": axis_comment,
-                "strengths": limit_items(
-                    [
-                        item
-                        for item in global_strengths
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
+        findings = next((value for name, value in axis_analysis.items()
+                         if name.casefold() == axis_name.casefold()), {})
+        if not isinstance(findings, dict):
+            findings = {}
+        swot_by_axis.append({
+            "axis_name": axis_name,
+            "score_percentage": score["score_percentage"],
+            "comment": axis_comments.get(axis_name, ""),
+            **{
+                category: (
+                    limit_items(findings[category], 5)
+                    if category in findings
+                    else limit_items(axis_swot_items(getattr(swot, category, None), axis_name), 5)
                 )
-                or limit_items([axis_comment], 3),
-                "weaknesses": limit_items(
-                    [
-                        item
-                        for item in global_weaknesses
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                ),
-                "opportunities": limit_items(
-                    [
-                        item
-                        for item in global_opportunities
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                ),
-                "threats": limit_items(
-                    [
-                        item
-                        for item in global_threats
-                        if axis_name.lower() in item.lower()
-                    ],
-                    5,
-                ),
-            }
-        )
-
+                for category in ("strengths", "weaknesses", "opportunities", "threats")
+            },
+        })
     return swot_by_axis
 
 
@@ -277,18 +330,29 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         ["signaux", "signals", "observations", "captured"],
     )
 
-    global_swot = {
-        "strengths": limit_items(split_lines(swot.strengths if swot else ""), 12),
-        "weaknesses": limit_items(split_lines(swot.weaknesses if swot else ""), 12),
-        "opportunities": limit_items(split_lines(swot.opportunities if swot else ""), 12),
-        "threats": limit_items(split_lines(swot.threats if swot else ""), 12),
-    }
+
+    try:
+        axis_analysis = json.loads(report.axis_analysis or '{}')
+    except (ValueError, TypeError):
+        axis_analysis = {}
+    if not isinstance(axis_analysis, dict):
+        axis_analysis = {}
 
     swot_by_axis = build_swot_by_axis_from_global_swot(
         swot=swot,
-        scores=scores,
+        scores=get_selected_report_axes(db, company.id, scores),
         axis_comments=axis_comments,
+        axis_analysis=axis_analysis,
     )
+
+    global_swot = regroup_axis_swot(swot_by_axis)
+
+    try:
+        presentation = json.loads(report.presentation_content or "{}")
+    except (ValueError, TypeError):
+        presentation = {}
+    if not isinstance(presentation, dict):
+        presentation = {}
 
     content = {
         "company_name": clean_text(company.name),
@@ -302,15 +366,15 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
             "Actionner la mission complémentaire si nécessaire",
         ],
         "company_presentation": {
-            "history": company_history or "Information à compléter.",
-            "activity": company_activity or "Information à compléter.",
-            "managers": company_managers or "Information à compléter.",
+            "history": clean_text(presentation.get("history")) or company_history or "Information à compléter.",
+            "activity": clean_text(presentation.get("activity")) or company_activity or "Information à compléter.",
+            "managers": clean_text(presentation.get("managers")) or company_managers or "Information à compléter.",
         },
         "company_issues": {
-            "initial_expectation": initial_expectation or "Information à compléter.",
-            "situation": company_situation or clean_text(report.executive_summary),
-            "governance": governance or "Information à compléter.",
-            "future": future_outlook or "Information à compléter.",
+            "initial_expectation": clean_text(presentation.get("initial_expectation")) or initial_expectation or "Information à compléter.",
+            "situation": clean_text(presentation.get("situation")) or company_situation or clean_text(report.executive_summary),
+            "governance": clean_text(presentation.get("governance")) or governance or "Information à compléter.",
+            "future": clean_text(presentation.get("future")) or future_outlook or "Information à compléter.",
         },
         "interviews": {
             "external": split_lines(external_interviews),
@@ -321,8 +385,10 @@ def build_boost_powerpoint_content(db, company: Company, report: Report):
         "swot_by_axis": swot_by_axis,
         "global_swot": global_swot,
         "radar_scores": scores,
+        "archive_average_scores": get_archive_averages(db, scores),
         "synthesis": {
             "diagnostic_summary": clean_text(report.diagnostic_summary),
+            "recommendations_text": clean_text(report.recommendations),
             "recommendations": split_lines(report.recommendations),
             "conclusion": clean_text(report.conclusion),
             "priority_action_levers": limit_items(

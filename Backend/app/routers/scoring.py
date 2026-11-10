@@ -175,43 +175,6 @@ def update_scoring_level(
 
     return level
 
-@router.get("/axes/{axis_id}/scoring-scales", response_model=list[ScoringScaleRead])
-def get_axis_scoring_scales(
-    axis_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin),
-):
-    scales = (
-        db.query(ScoringScale)
-        .filter(ScoringScale.axis_id == axis_id)
-        .order_by(ScoringScale.id)
-        .all()
-    )
-
-    result = []
-
-    for scale in scales:
-        levels = (
-            db.query(ScoringLevel)
-            .filter(ScoringLevel.scoring_scale_id == scale.id)
-            .order_by(ScoringLevel.order_index)
-            .all()
-        )
-
-        result.append(
-            {
-                "id": scale.id,
-                "axis_id": scale.axis_id,
-                "name": scale.name,
-                "description": scale.description,
-                "max_score": scale.max_score,
-                "is_active": scale.is_active,
-                "levels": levels,
-            }
-        )
-
-    return result
-
 @router.post("/axes/{axis_id}/scoring-scales", response_model=ScoringScaleRead)
 def create_axis_scoring_scale(
     axis_id: int,
@@ -300,39 +263,3 @@ def create_axis_scoring_scale(
         "is_active": scale.is_active,
         "levels": levels,
     }
-
-
-@router.patch("/scoring-levels/{level_id}")
-def update_scoring_level(
-    level_id: int,
-    level_data: dict,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin),
-):
-    level = db.query(ScoringLevel).filter(ScoringLevel.id == level_id).first()
-
-    if level is None:
-        raise HTTPException(status_code=404, detail="Scoring level not found")
-
-    if "code" in level_data:
-        level.code = level_data["code"]
-
-    if "label" in level_data:
-        level.label = level_data["label"]
-
-    if "score_value" in level_data:
-        level.score_value = level_data["score_value"]
-
-    if "description" in level_data:
-        level.description = level_data["description"]
-
-    if "order_index" in level_data:
-        level.order_index = level_data["order_index"]
-
-    if "is_active" in level_data:
-        level.is_active = level_data["is_active"]
-
-    db.commit()
-    db.refresh(level)
-
-    return level

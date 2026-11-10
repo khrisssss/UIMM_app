@@ -1,9 +1,11 @@
 import os
+import math
+from io import BytesIO
 import re
 import textwrap
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 
 from pptx import Presentation
@@ -18,13 +20,64 @@ from app.services.boost_powerpoint_content_service import (
 
 OUTPUT_DIR = "generated_reports"
 
-UIMM_BLUE = RGBColor(35, 71, 103)
+UIMM_BLUE = RGBColor(157, 206, 229)
 UIMM_RED = RGBColor(210, 0, 50)
-DARK_TEXT = RGBColor(20, 31, 46)
-GREY_TEXT = RGBColor(90, 105, 125)
+DARK_TEXT = RGBColor(255, 255, 255)
+GREY_TEXT = RGBColor(210, 220, 230)
 LIGHT_GREY = RGBColor(242, 245, 248)
 BORDER_GREY = RGBColor(210, 220, 230)
 WHITE = RGBColor(255, 255, 255)
+
+
+ASSETS_DIR = Path(__file__).resolve().parents[1] / "assets"
+SLIDE_WIDTH = Inches(13.333333)
+SLIDE_HEIGHT = Inches(7.5)
+SECTION_BACKGROUNDS = {
+    "Rappel des objectifs": "rappel_des_objectifs.png",
+    "Présentation & enjeux": "presentation_enjeux.png",
+    "Éléments internes & externes": "interview internes_externes.png",
+    "Restitution": "restitution.png",
+    "Analyse SWOT": "analyse_swot.png",
+    "Vision Radar": "vision_radar.png",
+}
+
+
+def add_background(slide, filename):
+    """Place supplied artwork behind editable text without stretching it."""
+    path = ASSETS_DIR / filename
+    # Accept the corrected spelling as well as the user's original filename.
+    if filename == "anaylyse_swot_w.png" and not path.exists():
+        path = ASSETS_DIR / "analyse_swot_w.png"
+    if not path.exists():
+        path = ASSETS_DIR / filename.replace(" ", "_")
+    if not path.exists():
+        raise FileNotFoundError(f"Missing PowerPoint background: {path}")
+    with Image.open(path) as image:
+        width, height = image.size
+    scale = max(SLIDE_WIDTH / width, SLIDE_HEIGHT / height)
+    picture = slide.shapes.add_picture(
+        str(path), int((SLIDE_WIDTH - width * scale) / 2),
+        int((SLIDE_HEIGHT - height * scale) / 2),
+        width=int(width * scale), height=int(height * scale),
+    )
+    picture.name = "Report background"
+    slide.shapes._spTree.remove(picture._element)
+    slide.shapes._spTree.insert(2, picture._element)
+    return picture
+
+
+def add_content_slide(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    add_background(slide, "background.png")
+    return slide
+
+
+def center_content_on_widescreen(slide):
+    # Existing content uses a 10-inch canvas. Preserve its proportions and
+    # center it on the wider background; do not stretch charts or logos.
+    for shape in slide.shapes:
+        if shape.name != "Report background":
+            shape.left += Inches((13.333333 - 10) / 2)
 
 
 def safe_filename(value):
@@ -180,38 +233,12 @@ def add_bullet_list(slide, items, left, top, width, height, font_size=13, maximu
 
 def add_section_slide(prs, title, page_number):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
-
-    background = slide.background
-    fill = background.fill
-    fill.solid()
-    fill.fore_color.rgb = UIMM_BLUE
-
-    add_textbox(
-        slide,
-        title,
-        Inches(0.75),
-        Inches(2.8),
-        Inches(7.8),
-        Inches(0.8),
-        font_size=34,
-        bold=True,
-        color=WHITE,
-    )
-
-    red_line = slide.shapes.add_shape(
-        1,
-        Inches(0.75),
-        Inches(3.75),
-        Inches(2.2),
-        Inches(0.06),
-    )
-    red_line.fill.solid()
-    red_line.fill.fore_color.rgb = UIMM_RED
-    red_line.line.color.rgb = UIMM_RED
-
-    add_footer(slide, page_number)
+    filename = SECTION_BACKGROUNDS.get(title)
+    add_background(slide, filename or "background.png")
+    if not filename:
+        add_textbox(slide, title, Inches(1), Inches(3), Inches(10), Inches(1), 32, True, WHITE)
+    slide._uses_native_widescreen = True
     return slide
-
 
 def add_simple_table(slide, title_left, title_right, left_items, right_items, top):
     add_textbox(
@@ -238,28 +265,6 @@ def add_simple_table(slide, title_left, title_right, left_items, right_items, to
         color=UIMM_BLUE,
     )
 
-    left_box = slide.shapes.add_shape(
-        1,
-        Inches(0.7),
-        top + Inches(0.42),
-        Inches(4.1),
-        Inches(2.0),
-    )
-    left_box.fill.solid()
-    left_box.fill.fore_color.rgb = LIGHT_GREY
-    left_box.line.color.rgb = BORDER_GREY
-
-    right_box = slide.shapes.add_shape(
-        1,
-        Inches(4.95),
-        top + Inches(0.42),
-        Inches(4.1),
-        Inches(2.0),
-    )
-    right_box.fill.solid()
-    right_box.fill.fore_color.rgb = LIGHT_GREY
-    right_box.line.color.rgb = BORDER_GREY
-
     add_bullet_list(
         slide,
         left_items,
@@ -285,73 +290,13 @@ def add_simple_table(slide, title_left, title_right, left_items, right_items, to
 
 def add_cover_slide(prs, content):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
-
-    background = slide.background
-    fill = background.fill
-    fill.solid()
-    fill.fore_color.rgb = UIMM_BLUE
-
-    add_textbox(
-        slide,
-        "Dossier :",
-        Inches(0.75),
-        Inches(0.8),
-        Inches(5.0),
-        Inches(0.35),
-        font_size=20,
-        bold=True,
-        color=WHITE,
-    )
-
-    add_textbox(
-        slide,
-        content["company_name"],
-        Inches(0.75),
-        Inches(1.25),
-        Inches(6.5),
-        Inches(0.6),
-        font_size=30,
-        bold=True,
-        color=WHITE,
-    )
-
-    add_textbox(
-        slide,
-        "Au service des entreprises industrielles régionales\navec le dispositif BOOST INDUSTRIES",
-        Inches(0.75),
-        Inches(2.05),
-        Inches(6.4),
-        Inches(0.9),
-        font_size=17,
-        color=WHITE,
-    )
-
-    red_block = slide.shapes.add_shape(
-        1,
-        Inches(0),
-        Inches(5.8),
-        Inches(10),
-        Inches(1.7),
-    )
-    red_block.fill.solid()
-    red_block.fill.fore_color.rgb = UIMM_RED
-    red_block.line.color.rgb = UIMM_RED
-
-    add_textbox(
-        slide,
-        "UIMM Occitanie\nLA FABRIQUE DE L’AVENIR",
-        Inches(0.75),
-        Inches(6.05),
-        Inches(5.4),
-        Inches(0.8),
-        font_size=24,
-        bold=True,
-        color=WHITE,
-    )
-
+    add_background(slide, "firstpage.png")
+    add_textbox(slide, content["company_name"], Inches(0.7), Inches(0.6), Inches(9.5), Inches(1.0), 30, True, WHITE)
+    add_textbox(slide, "Diagnostic BOOST INDUSTRIES", Inches(0.7), Inches(1.65), Inches(8), Inches(0.5), 20, False, WHITE)
+    slide._uses_native_widescreen = True
 
 def add_objectives_slide(prs, content, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, "Rappel des objectifs")
     add_logo_block(slide)
 
@@ -381,13 +326,13 @@ def add_objectives_slide(prs, content, page_number):
 
 
 def add_summary_slide(prs, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, "SOMMAIRE")
     add_logo_block(slide)
 
     items = [
         ("01", "Présentation & enjeux"),
-        ("02", "Interviews internes & externes"),
+        ("02", "Éléments internes & externes"),
         ("03", "Matrice SWOT"),
         ("04", "Vision Radar"),
         ("05", "Synthèse & préconisations"),
@@ -423,7 +368,7 @@ def add_summary_slide(prs, page_number):
 
 
 def add_company_presentation_slide(prs, content, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, "Présentation & enjeux", content["company_name"])
     add_logo_block(slide)
 
@@ -466,7 +411,7 @@ def add_company_issues_slide(prs, content, page_number):
         while lines:
             capacity = int((6.7 - top - 0.5) / line_height)
             if capacity < 3:
-                slide = prs.slides.add_slide(prs.slide_layouts[6])
+                slide = add_content_slide(prs)
                 add_title(slide, "ENJEUX" if slide_count == 0 else "ENJEUX (suite)", content["company_name"])
                 add_logo_block(slide)
                 add_footer(slide, page_number + slide_count)
@@ -497,7 +442,7 @@ def add_company_issues_slide(prs, content, page_number):
 
 
 def add_interview_slide(prs, title, items, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, title)
     add_logo_block(slide)
 
@@ -517,8 +462,8 @@ def add_interview_slide(prs, title, items, page_number):
 
 def add_axis_swot_slide(prs, axis_swot, page_number):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
-    add_title(slide, axis_swot["axis_name"], f"Score : {axis_swot['score_percentage']}%")
-    add_logo_block(slide)
+    add_background(slide, "background_swot.png")
+    add_textbox(slide, axis_swot["axis_name"], Inches(0.75), Inches(0.85), Inches(8.2), Inches(0.5), 24, True, WHITE)
 
     add_simple_table(
         slide,
@@ -538,154 +483,131 @@ def add_axis_swot_slide(prs, axis_swot, page_number):
         Inches(4.15),
     )
 
-    if axis_swot.get("comment"):
-        add_textbox(
-            slide,
-            f"Commentaire : {axis_swot['comment']}",
-            Inches(0.75),
-            Inches(6.55),
-            Inches(8.3),
-            Inches(0.35),
-            font_size=9,
-            color=GREY_TEXT,
-        )
 
-    add_footer(slide, page_number)
 
 
 def add_global_swot_slide(prs, title, letter, items, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    add_title(slide, "Analyse S.W.O.T", title)
-    add_logo_block(slide)
+    # Split longer SWOT findings across slides instead of shrinking or clipping them.
+    chunks, current, used_lines = [], [], 0
+    for item in items:
+        lines = max(1, sum(max(1, math.ceil(len(line) / 88)) for line in str(item).splitlines()))
+        if current and used_lines + lines > 18:
+            chunks.append(current)
+            current, used_lines = [], 0
+        current.append(item)
+        used_lines += lines
+    if current or not chunks:
+        chunks.append(current)
 
-    add_textbox(
-        slide,
-        letter,
-        Inches(0.8),
-        Inches(1.55),
-        Inches(0.8),
-        Inches(0.8),
-        font_size=42,
-        bold=True,
-        color=UIMM_RED,
-        align=PP_ALIGN.CENTER,
-    )
+    for offset, chunk in enumerate(chunks):
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        filename = "anaylyse_swot_w.png" if letter == "W" else f"analyse_swot_{letter.lower()}.png"
+        add_background(slide, filename)
+        add_textbox(slide, title + (" (suite)" if offset else ""), Inches(3.8), Inches(0.6), Inches(8.5), Inches(0.6), 24, True, RGBColor(20, 31, 46))
+        box = add_bullet_list(slide, chunk, Inches(3.8), Inches(1.45), Inches(8.5), Inches(5.4), font_size=14, maximum=len(chunk))
+        for paragraph in box.text_frame.paragraphs:
+            paragraph.font.color.rgb = RGBColor(20, 31, 46)
+        slide._uses_native_widescreen = True
+    return len(chunks)
 
-    add_bullet_list(
-        slide,
-        items,
-        Inches(1.7),
-        Inches(1.45),
-        Inches(7.2),
-        Inches(5.2),
-        font_size=11,
-        maximum=12,
-    )
 
-    add_footer(slide, page_number)
+def make_radar_image(scores, archive_averages):
+    """Draw the same 0–100 comparison as the application's radar."""
+    size = (1200, 790)
+    chart = Image.new("RGBA", size, "white")
+    draw = ImageDraw.Draw(chart, "RGBA")
+    font = ImageFont.load_default()
+    center_x, center_y, radius = 600, 365, 265
+    count = len(scores)
+
+    def point(index, percentage, distance=None):
+        angle = -math.pi / 2 + 2 * math.pi * index / count
+        extent = radius * max(0, min(float(percentage), 100)) / 100 if distance is None else distance
+        return (center_x + extent * math.cos(angle), center_y + extent * math.sin(angle))
+
+    for level in (25, 50, 75, 100):
+        corners = [point(index, level) for index in range(count)]
+        if count >= 3:
+            draw.line(corners + [corners[0]], fill=(203, 213, 225, 255), width=2)
+        draw.text((center_x + 7, center_y - radius * level / 100 - 10), str(level), font=font, fill=(100, 116, 139, 255))
+    for index, score in enumerate(scores):
+        endpoint = point(index, 100)
+        draw.line(((center_x, center_y), endpoint), fill=(203, 213, 225, 255), width=2)
+
+    current = [point(index, score["score_percentage"]) for index, score in enumerate(scores)]
+    archived = [
+        point(index, archive_averages[score["axis_id"]])
+        if score["axis_id"] in archive_averages else None
+        for index, score in enumerate(scores)
+    ]
+    if all(value is not None for value in archived) and count >= 3:
+        overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+        ImageDraw.Draw(overlay).polygon(archived, fill=(37, 99, 235, 14))
+        chart = Image.alpha_composite(chart, overlay)
+        draw = ImageDraw.Draw(chart, "RGBA")
+    if count >= 3:
+        pairs = [(index, (index + 1) % count) for index in range(count)]
+    else:
+        pairs = [(index, index + 1) for index in range(count - 1)]
+    for first, second in pairs:
+        if archived[first] is not None and archived[second] is not None:
+            draw.line((archived[first], archived[second]), fill=(37, 99, 235, 255), width=4)
+    for position in archived:
+        if position is not None:
+            x, y = position
+            draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill=(29, 78, 216, 255))
+    if count >= 3:
+        overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+        ImageDraw.Draw(overlay).polygon(current, fill=(34, 197, 94, 64))
+        chart = Image.alpha_composite(chart, overlay)
+        draw = ImageDraw.Draw(chart, "RGBA")
+    draw.line(current + [current[0]] if count >= 3 else current, fill=(22, 163, 74, 255), width=5, joint="curve")
+    for x, y in current:
+        draw.ellipse((x - 6, y - 6, x + 6, y + 6), fill=(22, 101, 52, 255))
+    output = BytesIO()
+    chart.convert("RGB").save(output, format="PNG")
+    output.seek(0)
+    return output
 
 
 def add_radar_slide(prs, content, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, "VISION RADAR", content["company_name"])
     add_logo_block(slide)
-
-    add_textbox(
-        slide,
-        "Scores par axe",
-        Inches(0.9),
-        Inches(1.45),
-        Inches(3.0),
-        Inches(0.3),
-        font_size=16,
-        bold=True,
-        color=UIMM_BLUE,
-    )
-
     scores = content["radar_scores"]
-
-    if not scores:
-        add_textbox(
-            slide,
-            "Aucun score disponible.",
-            Inches(1.0),
-            Inches(2.2),
-            Inches(7.0),
-            Inches(0.4),
-            font_size=14,
-            color=GREY_TEXT,
-        )
+    if scores:
+        chart = make_radar_image(scores, content.get("archive_average_scores", {}))
+        slide.shapes.add_picture(chart, Inches(0.7), Inches(1.3), width=Inches(8.6), height=Inches(5.55))
+        for index, score in enumerate(scores):
+            angle = -math.pi / 2 + 2 * math.pi * index / len(scores)
+            x = 0.7 + (600 + 340 * math.cos(angle)) / 1200 * 8.6
+            y = 1.3 + (365 + 340 * math.sin(angle)) / 790 * 5.55
+            add_textbox(slide, score["axis_name"], Inches(x - 0.85), Inches(y - 0.13), Inches(1.7), Inches(0.3), 11, True, RGBColor(20, 31, 46), PP_ALIGN.CENTER)
+        add_textbox(slide, "● Entreprise actuelle", Inches(2.1), Inches(6.65), Inches(2.4), Inches(0.3), 11, False, RGBColor(22, 163, 74))
+        if content.get("archive_average_scores"):
+            add_textbox(slide, "● Moyenne archive", Inches(5.2), Inches(6.65), Inches(2.4), Inches(0.3), 11, False, RGBColor(37, 99, 235))
     else:
-        top = 2.0
-        for score in scores[:7]:
-            axis_name = score["axis_name"]
-            percentage = float(score["score_percentage"])
-
-            add_textbox(
-                slide,
-                axis_name,
-                Inches(1.0),
-                Inches(top),
-                Inches(2.2),
-                Inches(0.25),
-                font_size=10,
-                bold=True,
-            )
-
-            bg = slide.shapes.add_shape(
-                1,
-                Inches(3.2),
-                Inches(top + 0.03),
-                Inches(4.5),
-                Inches(0.15),
-            )
-            bg.fill.solid()
-            bg.fill.fore_color.rgb = LIGHT_GREY
-            bg.line.color.rgb = LIGHT_GREY
-
-            width = 4.5 * max(0, min(percentage, 100)) / 100
-            fg = slide.shapes.add_shape(
-                1,
-                Inches(3.2),
-                Inches(top + 0.03),
-                Inches(width),
-                Inches(0.15),
-            )
-            fg.fill.solid()
-            fg.fill.fore_color.rgb = UIMM_RED
-            fg.line.color.rgb = UIMM_RED
-
-            add_textbox(
-                slide,
-                f"{percentage:.1f}%",
-                Inches(7.9),
-                Inches(top - 0.04),
-                Inches(0.8),
-                Inches(0.22),
-                font_size=10,
-                bold=True,
-                color=DARK_TEXT,
-                align=PP_ALIGN.RIGHT,
-            )
-
-            top += 0.52
-
-    add_textbox(
-        slide,
-        "Note : cette slide présente les scores calculés automatiquement dans l’application. Le radar visuel détaillé reste disponible dans l’écran d’analyse.",
-        Inches(1.0),
-        Inches(6.35),
-        Inches(7.7),
-        Inches(0.45),
-        font_size=10,
-        color=GREY_TEXT,
-    )
-
+        add_textbox(slide, "Aucun score disponible.", Inches(1), Inches(2), Inches(8), Inches(0.5), 14)
     add_footer(slide, page_number)
 
 
+def add_report_text_slides(prs, title, text, page_number):
+    lines = [line.strip() for line in str(text or "").splitlines() if line.strip()]
+    if not lines:
+        return 0
+    # Keep each slide legible while retaining the saved report text.
+    chunks = [lines[index:index + 10] for index in range(0, len(lines), 10)]
+    for offset, chunk in enumerate(chunks):
+        slide = add_content_slide(prs)
+        add_title(slide, title + (" (suite)" if offset else ""))
+        add_logo_block(slide)
+        add_bullet_list(slide, chunk, Inches(0.9), Inches(1.55), Inches(8.1), Inches(5.25), font_size=12, maximum=10)
+        add_footer(slide, page_number + offset)
+    return len(chunks)
+
+
 def add_synthesis_slide(prs, content, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, "SYNTHESE & PRECONISATIONS", "Leviers d’action potentiels")
     add_logo_block(slide)
 
@@ -729,7 +651,7 @@ def add_synthesis_slide(prs, content, page_number):
 
 
 def add_complementary_mission_slide(prs, content, page_number):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide = add_content_slide(prs)
     add_title(slide, "PROPOSITION MISSION COMPLEMENTAIRE")
     add_logo_block(slide)
 
@@ -786,61 +708,11 @@ def add_complementary_mission_slide(prs, content, page_number):
 
 def add_thank_you_slide(prs, content, page_number):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
-
-    background = slide.background
-    fill = background.fill
-    fill.solid()
-    fill.fore_color.rgb = UIMM_BLUE
-
-    add_textbox(
-        slide,
-        "Personnes ressources :",
-        Inches(0.8),
-        Inches(1.6),
-        Inches(5.5),
-        Inches(0.35),
-        font_size=18,
-        bold=True,
-        color=WHITE,
-    )
-
-    add_textbox(
-        slide,
-        content["resource_people"],
-        Inches(0.8),
-        Inches(2.05),
-        Inches(6.8),
-        Inches(0.8),
-        font_size=14,
-        color=WHITE,
-    )
-
-    add_textbox(
-        slide,
-        "Merci !!!",
-        Inches(0.8),
-        Inches(4.5),
-        Inches(6.0),
-        Inches(0.8),
-        font_size=40,
-        bold=True,
-        color=WHITE,
-    )
-
-    red_block = slide.shapes.add_shape(
-        1,
-        Inches(0),
-        Inches(6.25),
-        Inches(10),
-        Inches(1.25),
-    )
-    red_block.fill.solid()
-    red_block.fill_fore_color = UIMM_RED
-    red_block.fill.fore_color.rgb = UIMM_RED
-    red_block.line.color.rgb = UIMM_RED
-
-    add_footer(slide, page_number)
-
+    add_background(slide, "last_page.png")
+    people = str(content.get("resource_people") or "").strip()
+    if people:
+        add_textbox(slide, "Personnes ressources : " + people, Inches(3.6), Inches(4.25), Inches(6.2), Inches(1.0), 14, False, RGBColor(20, 31, 46))
+    slide._uses_native_widescreen = True
 
 def generate_report_powerpoint(company, report, db):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -852,14 +724,16 @@ def generate_report_powerpoint(company, report, db):
     )
 
     prs = Presentation()
-    prs.slide_width = Inches(10)
-    prs.slide_height = Inches(7.5)
+    prs.slide_width = SLIDE_WIDTH
+    prs.slide_height = SLIDE_HEIGHT
 
     page_number = 1
 
     add_cover_slide(prs, content)
     page_number += 1
 
+    add_section_slide(prs, "Rappel des objectifs", page_number)
+    page_number += 1
     add_objectives_slide(prs, content, page_number)
     page_number += 1
 
@@ -874,40 +748,19 @@ def generate_report_powerpoint(company, report, db):
 
     page_number += add_company_issues_slide(prs, content, page_number)
 
-    add_section_slide(prs, "Interviews internes & externes", page_number)
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        "INTERVIEWS EXTERNES",
-        content["interviews"]["external"],
-        page_number,
-    )
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        "INTERVIEWS INTERNES",
-        content["interviews"]["internal_words"],
-        page_number,
-    )
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        'INTERVIEWS INTERNES : "Si j’avais une baguette magique..."',
-        content["interviews"]["magic_wand"],
-        page_number,
-    )
-    page_number += 1
-
-    add_interview_slide(
-        prs,
-        "INTERVIEWS INTERNES : signaux captés",
-        content["interviews"]["captured_signals"],
-        page_number,
-    )
-    page_number += 1
+    interview_sections = [
+        ("ÉLÉMENTS EXTERNES DU DIAGNOSTIC", content["interviews"]["external"]),
+        ("ÉLÉMENTS INTERNES DU DIAGNOSTIC", content["interviews"]["internal_words"]),
+        ('RÉPONSES : "Si j’avais une baguette magique..."', content["interviews"]["magic_wand"]),
+        ("SIGNAUX CAPTÉS DANS LE DIAGNOSTIC", content["interviews"]["captured_signals"]),
+    ]
+    if any(items for _, items in interview_sections):
+        add_section_slide(prs, "Éléments internes & externes", page_number)
+        page_number += 1
+        for title, items in interview_sections:
+            if items:
+                add_interview_slide(prs, title, items, page_number)
+                page_number += 1
 
     add_section_slide(prs, "Restitution", page_number)
     page_number += 1
@@ -916,41 +769,40 @@ def generate_report_powerpoint(company, report, db):
         add_axis_swot_slide(prs, axis_swot, page_number)
         page_number += 1
 
-    add_global_swot_slide(
+    add_section_slide(prs, "Analyse SWOT", page_number)
+    page_number += 1
+
+    page_number += add_global_swot_slide(
         prs,
         "Forces",
         "S",
         content["global_swot"]["strengths"],
         page_number,
     )
-    page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Faiblesses",
         "W",
         content["global_swot"]["weaknesses"],
         page_number,
     )
-    page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Opportunités",
         "O",
         content["global_swot"]["opportunities"],
         page_number,
     )
-    page_number += 1
 
-    add_global_swot_slide(
+    page_number += add_global_swot_slide(
         prs,
         "Menaces",
         "T",
         content["global_swot"]["threats"],
         page_number,
     )
-    page_number += 1
 
     add_section_slide(prs, "Vision Radar", page_number)
     page_number += 1
@@ -958,8 +810,12 @@ def generate_report_powerpoint(company, report, db):
     add_radar_slide(prs, content, page_number)
     page_number += 1
 
+
     add_section_slide(prs, "Synthèse & préconisations", page_number)
     page_number += 1
+
+    page_number += add_report_text_slides(prs, "SYNTHÈSE DU DIAGNOSTIC", content["synthesis"]["diagnostic_summary"], page_number)
+    page_number += add_report_text_slides(prs, "PRÉCONISATIONS DÉTAILLÉES", content["synthesis"]["recommendations_text"], page_number)
 
     add_synthesis_slide(prs, content, page_number)
     page_number += 1
@@ -975,6 +831,9 @@ def generate_report_powerpoint(company, report, db):
     )
 
     file_path = os.path.join(OUTPUT_DIR, filename)
+    for slide in prs.slides:
+        if not getattr(slide, "_uses_native_widescreen", False):
+            center_content_on_widescreen(slide)
     prs.save(file_path)
 
     return file_path

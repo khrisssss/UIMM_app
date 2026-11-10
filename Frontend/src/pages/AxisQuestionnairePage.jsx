@@ -111,11 +111,11 @@ function AxisQuestionnairePage() {
           setScoringLevels([]);
         }
       } catch (error) {
-        console.warn("No scoring scale found for this axis.", error);
+        console.warn("Aucun barème disponible pour cet axe.", error);
         setScoringLevels([]);
       }
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load questionnaire."));
+      setMessage(getErrorMessage(error, "Impossible de charger le questionnaire."));
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -234,7 +234,7 @@ function AxisQuestionnairePage() {
         // If there is a comment but no score, stop and explain
         if (!hasScore && hasComment) {
           setMessage(
-            "Please choose a score for every question that has a comment."
+            "Veuillez choisir un score pour chaque question ayant un commentaire."
           );
           setIsSaving(false);
           return;
@@ -250,18 +250,14 @@ function AxisQuestionnairePage() {
 
       await api.post(`/companies/${companyId}/calculate-scores`);
 
-      setMessage("Answers saved and scores updated.");
+      setMessage("Réponses enregistrées et scores mis à jour.");
       await loadQuestionnaireData();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to save answers."));
+      setMessage(getErrorMessage(error, "Impossible de enregistrer les réponses."));
       console.error(error);
     } finally {
       setIsSaving(false);
     }
-  }
-
-  function goBackToDiagnostic() {
-    window.location.href = `/companies/${companyId}/diagnostic`;
   }
 
   function openAnalysis() {
@@ -272,7 +268,7 @@ function AxisQuestionnairePage() {
     return (
       <div className="app-page">
         <main className="questionnaire-page-content">
-          <p>Loading questionnaire...</p>
+          <p>Chargement du questionnaire…</p>
         </main>
       </div>
     );
@@ -287,13 +283,7 @@ function AxisQuestionnairePage() {
 
       <main className="questionnaire-page-content">
         <div className="questionnaire-top-actions">
-          <button className="secondary-button" onClick={goBackToDiagnostic}>
-            Back to diagnostic overview
-          </button>
-
-          <button className="primary-button" onClick={openAnalysis}>
-            View Radar / SWOT
-          </button>
+          <button className="primary-button" onClick={openAnalysis}>Voir le radar / SWOT</button>
         </div>
 
         {message && (
@@ -303,14 +293,13 @@ function AxisQuestionnairePage() {
         )}
         <section className="questionnaire-summary-card">
           <div>
-            <h2>{axis?.name || "Axis"}</h2> 
+            <h2>{axis?.name || "Axe"}</h2> 
 
             <p>
               <strong>{getAnsweredQuestionsCount()}</strong> /{" "}
-              <strong>{questions.length}</strong> questions answered
-            </p>
+              <strong>{questions.length}</strong>questions répondues</p>
 
-            <p>{progressPercentage}% completed</p>
+            <p>{progressPercentage} % complété</p>
           </div>
 
           <div className="questionnaire-progress-area">
@@ -325,19 +314,16 @@ function AxisQuestionnairePage() {
 
         {scoringLevels.length === 0 ? (
           <div className="empty-card">
-            <h3>No scoring scale found</h3>
-            <p>
-              This axis does not have a scoring scale. You can still display
-              questions, but score dropdowns cannot be shown.
-            </p>
+            <h3>Aucun barème disponible</h3>
+            <p>Cet axe ne dispose pas de barème. Les questions peuvent être affichées, mais la sélection d’un score n’est pas disponible.</p>
           </div>
         ) : null}
 
         <section className="questionnaire-list">
           {questions.length === 0 ? (
             <div className="empty-card">
-              <h3>No questions found</h3>
-              <p>No questions are available for this company and axis.</p>
+              <h3>Aucune question trouvée</h3>
+              <p>Aucune question n’est disponible pour cette entreprise et cet axe.</p>
             </div>
           ) : (
             groupedQuestions.map(([categoryName, categoryQuestions]) => (
@@ -355,11 +341,11 @@ function AxisQuestionnairePage() {
                         </span>
 
                         <span className="question-max-score">
-                          Max score: {question.max_score}
+                          Score maximum : {question.max_score}
                         </span>
                       </div>
 
-                      <p className="question-text">{question.question_text}</p>
+                      <p className="question-text" style={{ whiteSpace: "pre-line" }}>{question.question_text}</p>
 
                       <div className="question-answer-grid">
                         <div className="form-group">
@@ -375,7 +361,7 @@ function AxisQuestionnairePage() {
                               )
                             }
                           >
-                            <option value="">Choose a score</option>
+                            <option value="">Choisir un score</option>
 
                             {scoringLevels.map((level) => (
                               <option key={level.id} value={level.code}>
@@ -387,7 +373,7 @@ function AxisQuestionnairePage() {
                         </div>
 
                         <div className="form-group">
-                          <label>Consultant comment</label>
+                          <label>Commentaire</label>
 
                           <textarea
                             rows="2"
@@ -396,7 +382,7 @@ function AxisQuestionnairePage() {
                             onChange={(event) =>
                               updateAnswer(question.id, "comment", event.target.value)
                             }
-                            placeholder="Add comment..."
+                            placeholder="Ajouter un commentaire…"
                           />
                         </div>
                       </div>
@@ -414,7 +400,7 @@ function AxisQuestionnairePage() {
             onClick={saveAllAnswers}
             disabled={isSaving}
           >
-            {isSaving ? "Saving..." : "Save"}
+            {isSaving ? "Enregistrement en cours…" : "Enregistrer"}
           </button>
         </div>
       </main>

@@ -24,7 +24,7 @@ function AdminAxesPage() {
       const response = await api.get("/axes/");
       setAxes(response.data);
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to load axes."));
+      setMessage(getErrorMessage(error, "Impossible de charger les axes."));
       console.error(error);
     }
   }
@@ -69,7 +69,7 @@ function AdminAxesPage() {
     event.preventDefault();
 
     if (!editingAxis.name.trim()) {
-      setMessage("Axis name is required.");
+      setMessage("Le nom de l’axe est obligatoire.");
       return;
     }
 
@@ -81,11 +81,11 @@ function AdminAxesPage() {
         is_active: editingAxis.is_active,
       });
 
-      setMessage("Axis updated.");
+      setMessage("Axe mis à jour.");
       closeEditModal();
       await loadAxes();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update axis."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour l’axe."));
       console.error(error);
     }
   }
@@ -105,8 +105,8 @@ function AdminAxesPage() {
   return (
     <div className="app-page">
       <AppHeader
-        title="Admin — Axes"
-        subtitle="Edit the diagnostic axes used by the UIMM Boost questionnaire."
+        title="Administration — Axes"
+        subtitle="Modifiez les axes de diagnostic utilisés dans le questionnaire UIMM Boost."
       />
 
       <main className="admin-axes-page-content">
@@ -114,39 +114,37 @@ function AdminAxesPage() {
 
         <section className="admin-axes-toolbar">
           <div className="admin-axes-actions">
-            <button className="secondary-button" onClick={goBackDashboard}>
-              Back to dashboard
-            </button>
+            <button className="secondary-button" onClick={goBackDashboard}>Retour au tableau de bord</button>
           </div>
         </section>
 
         <section className="admin-axes-summary-grid">
           <div className="admin-axis-summary-card">
-            <p>Total axes</p>
+            <p>Nombre total d’axes</p>
             <h3>{axes.length}</h3>
           </div>
 
           <div className="admin-axis-summary-card">
-            <p>Active axes</p>
+            <p>Axes actifs</p>
             <h3>{activeAxes.length}</h3>
           </div>
 
           <div className="admin-axis-summary-card">
-            <p>Inactive axes</p>
+            <p>Axes inactifs</p>
             <h3>{inactiveAxes.length}</h3>
           </div>
         </section>
 
         <section className="admin-axes-list-section">
           <div className="admin-axes-list-header">
-            <h2>Axes list</h2>
-            <p>Click “Questions” to manage the questions for each axis.</p>
+            <h2>Liste des axes</h2>
+            <p>Cliquez sur « Questions » pour gérer les questions de chaque axe.</p>
           </div>
 
           {axes.length === 0 ? (
             <div className="empty-card">
-              <h3>No axes yet</h3>
-              <p>No diagnostic axes are available.</p>
+              <h3>Aucun axe pour le moment</h3>
+              <p>Aucun axe de diagnostic n’est disponible.</p>
             </div>
           ) : (
             <div className="admin-axes-list">
@@ -170,13 +168,13 @@ function AdminAxesPage() {
                               : "axis-status-badge inactive"
                           }
                         >
-                          {axis.is_active ? "Active" : "Inactive"}
+                          {axis.is_active ? "Actif" : "Inactif"}
                         </span>
                       </div>
 
                       <p>
                         {axis.description ||
-                          "No description added for this axis."}
+                          "Aucune description renseignée pour cet axe."}
                       </p>
                     </div>
 
@@ -191,9 +189,7 @@ function AdminAxesPage() {
                       <button
                         className="primary-button"
                         onClick={() => openEditModal(axis)}
-                      >
-                        Edit
-                      </button>
+                      >Modifier</button>
                     </div>
                   </article>
                 ))}
@@ -207,8 +203,8 @@ function AdminAxesPage() {
           <div className="company-modal">
             <div className="modal-header">
               <div>
-                <h2>Edit axis</h2>
-                <p>Update axis information.</p>
+                <h2>Modifier l’axe</h2>
+                <p>Modifiez les informations de l’axe.</p>
               </div>
 
               <button className="modal-close-button" onClick={closeEditModal}>
@@ -219,7 +215,7 @@ function AdminAxesPage() {
             <form className="company-create-form" onSubmit={saveEditingAxis}>
               <div className="form-grid-two">
                 <div className="form-group">
-                  <label>Axis name</label>
+                  <label>Nom de l’axe</label>
                   <input
                     type="text"
                     value={editingAxis.name}
@@ -230,7 +226,7 @@ function AdminAxesPage() {
                 </div>
 
                 <div className="form-group">
-                  <label>Order</label>
+                  <label>Ordre</label>
                   <input
                     type="number"
                     min="1"
@@ -261,7 +257,7 @@ function AdminAxesPage() {
                     updateEditingAxis("is_active", event.target.checked)
                   }
                 />
-                <span>Active axis</span>
+                <span>Axe actif</span>
               </label>
               
 
@@ -270,13 +266,9 @@ function AdminAxesPage() {
                   type="button"
                   className="secondary-button"
                   onClick={closeEditModal}
-                >
-                  Cancel
-                </button>
+                >Annuler</button>
 
-                <button type="submit" className="primary-button">
-                  Save changes
-                </button>
+                <button type="submit" className="primary-button">Enregistrer les modifications</button>
               </div>
             </form>
           </div>

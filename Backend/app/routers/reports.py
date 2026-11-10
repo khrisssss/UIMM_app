@@ -8,6 +8,7 @@ from app.models.company import Company
 from app.models.reports import Report
 from app.models.user import User
 from app.schemas.report import ReportRead, ReportUpdate
+from app.services.boost_powerpoint_content_service import build_boost_powerpoint_content
 from app.services.report_context import build_report_context
 from app.services.report_ai_service import generate_report_draft
 from app.dependencies.auth import require_consultant_or_admin
@@ -53,7 +54,10 @@ def create_report_draft(
     if report_context is None:
         raise HTTPException(status_code=404, detail="Company not found")
 
-    generated_report = generate_report_draft(report_context)
+    financial_years = ()
+    generated_report = generate_report_draft(report_context, financial_years)
+    # Restore the name locally after the anonymized AI request returns.
+    generated_report["title"] = f"Rapport de diagnostic — {company.name}"
 
     existing_report = (
         db.query(Report)
@@ -70,6 +74,8 @@ def create_report_draft(
             title=generated_report["title"],
             executive_summary=generated_report["executive_summary"],
             diagnostic_summary=generated_report["diagnostic_summary"],
+            axis_analysis=generated_report["axis_analysis"],
+            presentation_content=generated_report["presentation_content"],
             swot_summary=generated_report["swot_summary"],
             recommendations=generated_report["recommendations"],
             conclusion=generated_report["conclusion"],
@@ -89,6 +95,8 @@ def create_report_draft(
     existing_report.title = generated_report["title"]
     existing_report.executive_summary = generated_report["executive_summary"]
     existing_report.diagnostic_summary = generated_report["diagnostic_summary"]
+    existing_report.axis_analysis = generated_report["axis_analysis"]
+    existing_report.presentation_content = generated_report["presentation_content"]
     existing_report.swot_summary = generated_report["swot_summary"]
     existing_report.recommendations = generated_report["recommendations"]
     existing_report.conclusion = generated_report["conclusion"]
@@ -164,6 +172,25 @@ def update_report(
 
     return report
 
+
+
+@router.get("/{company_id}/reports/{report_id}/restitution")
+def get_report_restitution(
+    company_id: int,
+    report_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_consultant_or_admin),
+):
+    """Return the same axis findings used by the PowerPoint restitution."""
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    report = db.query(Report).filter(
+        Report.id == report_id, Report.company_id == company_id
+    ).first()
+    if report is None:
+        raise HTTPException(status_code=404, detail="Report not found")
+    return build_boost_powerpoint_content(db, company, report)["swot_by_axis"]
 
 # to generate report in powerpoint format
 @router.post("/{company_id}/reports/{report_id}/generate-powerpoint")

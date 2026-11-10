@@ -100,7 +100,7 @@ function CompaniesPage() {
             );
 
             const selectedAxes = axesResponse.data.filter(
-              (axis) => axis.is_selected
+              (axis) => axis.show_in_portfolio
             );
 
             return [company.id, selectedAxes];
@@ -117,7 +117,7 @@ function CompaniesPage() {
 
       setDiagnosticAxesByCompanyId(Object.fromEntries(axesEntries));
     } catch (error) {
-      setMessage("Failed to load companies.");
+      setMessage("Impossible de charger les entreprises.");
       console.error(error);
     }
   }
@@ -134,7 +134,6 @@ function CompaniesPage() {
 
   return () => clearTimeout(timer);
 }, [archiveSuccessMessage]);
-   <strong>Attention</strong>
   function getErrorMessage(error, fallbackMessage) {
     return error?.response?.data?.detail || fallbackMessage;
   }
@@ -147,6 +146,7 @@ function CompaniesPage() {
   }
 
   function getStateLabel(state) {
+    if (state === "unassessed") return "Non évalué";
     if (state === "green") return "Bon";
     if (state === "red") return "Attention";
     return "À suivre";
@@ -156,7 +156,7 @@ function CompaniesPage() {
     event.preventDefault();
 
     if (!newCompany.name.trim()) {
-      setMessage("Company name is required.");
+      setMessage("Le nom de l’entreprise est obligatoire.");
       return;
     }
 
@@ -171,7 +171,7 @@ function CompaniesPage() {
         status: newCompany.status,
       });
 
-      setMessage("Company created.");
+      setMessage("Entreprise créée.");
 
       setNewCompany({
         name: "",
@@ -186,7 +186,7 @@ function CompaniesPage() {
       setShowCreateModal(false);
       loadCompanies();
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to create company."));
+      setMessage(getErrorMessage(error, "Impossible de créer l’entreprise."));
       console.error(error);
     }
   }
@@ -221,6 +221,7 @@ function CompaniesPage() {
   // state-green / state-orange / state-red
   function getGeneralStateClass(company) {
     const state = company.general_state || "orange";
+    if (state === "unassessed") return "state-unassessed";
 
     if (state === "green") {
       return "state-green";
@@ -260,9 +261,9 @@ function CompaniesPage() {
         )
       );
 
-      setMessage("État général updated.");
+      setMessage("État général mis à jour.");
     } catch (error) {
-      setMessage(getErrorMessage(error, "Failed to update état général."));
+      setMessage(getErrorMessage(error, "Impossible de mettre à jour l’état général."));
       console.error(error);
     }
   }
@@ -290,7 +291,7 @@ function CompaniesPage() {
       setEditingDiagnosticCompany(company);
       setEditingDiagnosticAxes(response.data);
     } catch (error) {
-      setMessage("Failed to load diagnostic axes.");
+      setMessage("Impossible de charger les axes de diagnostic.");
       console.error(error);
     }
   }
@@ -302,11 +303,11 @@ function CompaniesPage() {
   }
 
   function getSelectedDiagnosticAxes() {
-    return editingDiagnosticAxes.filter((axis) => axis.is_selected);
+    return editingDiagnosticAxes.filter((axis) => axis.show_in_portfolio);
   }
 
   function getUnselectedDiagnosticAxes() {
-    return editingDiagnosticAxes.filter((axis) => !axis.is_selected);
+    return editingDiagnosticAxes.filter((axis) => !axis.show_in_portfolio);
   }
 
   function addDiagnosticAxis(axisId) {
@@ -319,7 +320,7 @@ function CompaniesPage() {
         Number(axis.axis_id) === Number(axisId)
           ? {
               ...axis,
-              is_selected: true,
+              show_in_portfolio: true,
             }
           : axis
       )
@@ -332,8 +333,7 @@ function CompaniesPage() {
         Number(axis.axis_id) === Number(axisId)
           ? {
               ...axis,
-              is_selected: false,
-              diagnostic_comment: "",
+              show_in_portfolio: false,
             }
           : axis
       )
@@ -372,7 +372,7 @@ function CompaniesPage() {
         await api.patch(
           `/companies/${editingDiagnosticCompany.id}/axes-selection/${axis.axis_id}`,
           {
-            is_selected: axis.is_selected,
+            show_in_portfolio: axis.show_in_portfolio,
             diagnostic_comment: axis.diagnostic_comment || null,
           }
         );
@@ -383,7 +383,7 @@ function CompaniesPage() {
       );
 
       const refreshedSelectedAxes = refreshedAxesResponse.data.filter(
-        (axis) => axis.is_selected
+        (axis) => axis.show_in_portfolio
       );
 
       setDiagnosticAxesByCompanyId((previousData) => ({
@@ -391,13 +391,13 @@ function CompaniesPage() {
         [editingDiagnosticCompany.id]: refreshedSelectedAxes,
       }));
 
-      setMessage("Diagnostic information saved.");
+      setMessage("Informations du diagnostic enregistrées.");
       setEditingDiagnosticCompany(null);
       setEditingDiagnosticAxes([]);
       loadCompanies();
     } catch (error) {
       setMessage(
-        getErrorMessage(error, "Failed to save diagnostic information.")
+        getErrorMessage(error, "Impossible de enregistrer les informations du diagnostic.")
       );
       console.error(error);
     }
@@ -416,14 +416,14 @@ function CompaniesPage() {
           editingMissionCompany.mission_restitution_date || null,
       });
 
-      setMessage("Mission complémentaire information saved.");
+      setMessage("Informations de la mission complémentaire enregistrées.");
       setEditingMissionCompany(null);
       loadCompanies();
     } catch (error) {
       setMessage(
         getErrorMessage(
           error,
-          "Failed to save mission complémentaire information."
+          "Impossible de enregistrer les informations de la mission complémentaire."
         )
       );
       console.error(error);
@@ -664,7 +664,7 @@ function CompaniesPage() {
                         <div className="portfolio-diagnostic-axes">
                           {companyDiagnosticAxes.length === 0 ? (
                             <p className="portfolio-panel-value">
-                              Aucun axe sélectionné
+                              Aucun axe à afficher
                             </p>
                           ) : (
                             companyDiagnosticAxes.map((axis) => (
@@ -993,14 +993,14 @@ function CompaniesPage() {
               </div>
 
               <div className="axis-comments-section">
-                <h3>Axes du diagnostic</h3>
+                <h3>Axes à afficher avec commentaire</h3>
                 <p className="section-help">
-                  Choisissez un axe dans la liste. Un champ commentaire apparaît
-                  seulement pour les axes sélectionnés.
+                  Choisissez les axes à afficher sur cette fiche et ajoutez leurs commentaires.
+                  Ce choix ne modifie pas les axes du questionnaire diagnostic.
                 </p>
 
                 <div className="form-group">
-                  <label>Ajouter un axe au diagnostic</label>
+                  <label>Ajouter un axe à cette fiche</label>
                   <select
                     value=""
                     onChange={(event) => addDiagnosticAxis(event.target.value)}
@@ -1017,7 +1017,7 @@ function CompaniesPage() {
 
                 {getSelectedDiagnosticAxes().length === 0 ? (
                   <p className="section-help">
-                    Aucun axe sélectionné pour le diagnostic.
+                    Aucun axe à afficher sur cette fiche.
                   </p>
                 ) : (
                   getSelectedDiagnosticAxes().map((axis) => (

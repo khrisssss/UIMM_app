@@ -11,7 +11,6 @@ Backend/.venv/
 Backend/venv/
 Backend/env/
 Backend/generated_reports/
-Backend/ml_artifacts/
 
 # Frontend local files
 Frontend/.env
@@ -44,3 +43,5 @@ Thumbs.db
 Backend/app/seed_admin.py
 Backend/app/seed_docker.py
 docker-compose.yml
+
+docs

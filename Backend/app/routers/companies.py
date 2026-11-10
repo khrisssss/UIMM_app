@@ -2,10 +2,11 @@ from fastapi import APIRouter, HTTPException, Depends #api router grouping route
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.company import Company #database table model
+from app.models.financial_year import FinancialYear
 
 from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
-from app.schemas.swot import SWOTContextRead
 from app.services.swot_context import build_swot_context
+from app.services.company_details_service import build_company_details
 
 from app.models.user import User
 from app.dependencies.auth import require_consultant_or_admin
@@ -24,45 +25,6 @@ router = APIRouter(
 )
 
 
-#fake_companies = [
-#    {
-#        "id": 1,
-#        "name": "Company Test",
-#        "address": "123 Main St",
-#        "contact_name": "John Doe",
-#        "email": "test@gmail.com",
-#        "phone": "123456789",
-#        "size": "<10",
-#        "status": "prospect"
-#    }
-#]
-
-
-#@router.get("/", response_model=list[CompanyRead])
-#def get_companies():
-#    return [{ 
-#        "id": 1,
-#        "name": "Company Test",
-#        "address": "123 Main St",
-#        "contact_name": "John Doe",
-#        "email": "test@gmail.com", 
-#        "phone": "123456789",
-#        "size": "<10",
-#        "status": "prospect"
-#    }]
-
-#@router.get("/{company_id}", response_model=CompanyRead)
-#def get_company(company_id: int):
-#    return {
-#        "id": company_id,
-#        "name": "Company Test",
-#        "address": "123 Main St",
-#        "contact_name": "John Doe",
-#        "email": "test@gmail.com",
-#        "phone": "123456789",
-#        "size": "<10",
-#        "status": "prospect"
-#    }
 @router.post("/", response_model=CompanyRead)
 def create_company(company: CompanyCreate, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
     """Create a company record from the supplied company information."""
@@ -106,8 +68,6 @@ def update_company(
 
     update_data = company_data.model_dump(exclude_unset=True)
 
-    print("COMPANY UPDATE DATA:", update_data)
-
     for key, value in update_data.items():
         setattr(db_company, key, value)
 
@@ -144,13 +104,17 @@ def get_company(company_id: int, db: Session = Depends(get_db), current_user: Us
     return company
 
 
-@router.get("/{company_id}/swot-context", response_model=SWOTContextRead)
+@router.get("/{company_id}/swot-context")
 def get_swot_context(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
-    """Preview the diagnostic context assembled for SWOT generation."""
-    return build_swot_context(company_id, db)
+    """Preview the full local SWOT context. This is not the filtered AI payload."""
+    context = build_swot_context(db, company_id)
+    if context is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return context
 
 
-@router.delete("/{company_id}/hard-delete")  #@router.delete("/companies/{company_id}/hard-delete") this is an error because i put prefix on the top 
+# Path is relative to the router prefix "/companies".
+@router.delete("/{company_id}/hard-delete")
 def hard_delete_company(
     company_id: int,
     db: Session = Depends(get_db),
@@ -198,6 +162,7 @@ def hard_delete_company(
         .delete(synchronize_session=False)
     )
 
+    db.query(FinancialYear).filter(FinancialYear.company_id == company_id).delete(synchronize_session=False)
     db.delete(db_company)
     db.commit()
 
@@ -211,3 +176,20 @@ def hard_delete_company(
         "deleted_reports": deleted_reports,
         "deleted_company_axes": deleted_company_axes,
     }
+
+
+@router.get("/{company_id}/all-details")
+def get_all_details_of_a_company(
+    company_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_consultant_or_admin),
+):
+    """Read all company details, including unanswered/inactive questions and all axes.
+    
+    Includes personal information for internal viewing; never sends data to AI.
+    Financial amounts are decimal strings. Selection flags identify diagnostic axes.
+    """
+    details = build_company_details(db, company_id)
+    if details is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return details
