@@ -397,36 +397,6 @@ function AdminAxisQuestionsPage() {
     }
   }
 
-  // async function deleteQuestion(questionId) {
-  //  const confirmed = window.confirm(
-  //    "Voulez-vous désactiver cette question ?"
-  //  );
-
-  //  if (!confirmed) return;
-
-  //  try {
-  //    await api.delete(`/admin/axis-questions/${questionId}`);
-  //    setMessage("Question désactivée.");
-  //    await loadQuestions(selectedAxisId);
-  //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Impossible de désactiver la question."));
-  //    console.error(error);
-  //  }
-  //}
-
-  //async function activateQuestion(questionId) {
-  //  try {
-  //    await api.patch(`/admin/axis-questions/${questionId}`, {
-  //      is_active: true,
-  //    });
-
-  //    setMessage("Question activée.");
-  //    await loadQuestions(selectedAxisId);
-  //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Impossible de activer la question."));
-  //    console.error(error);
-  //  }
-  // }
   async function deactivateQuestion(questionId) {
     const confirmed = window.confirm(
       "Voulez-vous désactiver cette question ?"
@@ -550,90 +520,6 @@ function AdminAxisQuestionsPage() {
       console.error(error);
     }
   }
-
-//  async function deleteCategory(categoryId) {
-//    const confirmed = window.confirm(
-//      "Voulez-vous désactiver cette catégorie ? Toutes ses questions seront également désactivées."
-//    );
-
-//    if (!confirmed) return;
-
-//    try {
-//      await api.delete(`/admin/axis-question-categories/${categoryId}`);
-//      setMessage("Catégorie et questions désactivées.");
-//      await loadCategories(selectedAxisId);
-//      await loadQuestions(selectedAxisId);
-//    } catch (error) {
-//      setMessage(getErrorMessage(error, "Impossible de désactiver la catégorie."));
-//      console.error(error);
-//    }
-//  }
-
-  //async function hardDeleteQuestion(questionId) {
-  //  const confirmed = window.confirm(
-  //    "Voulez-vous supprimer définitivement cette question ? Toutes ses réponses seront également supprimées."
-  //  );
-
-  //  if (!confirmed) return;
-
-  //  try {
-  //    await api.delete(`/admin/axis-questions/${questionId}/hard-delete`);
-
-  //    setMessage("Question supprimée définitivement.");
-  //    await loadQuestions(selectedAxisId);
-  //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Impossible de supprimer définitivement la question."));
-  //    console.error(error);
-  //  }
-  //}
-
-  //async function hardDeleteCategory(categoryId) {
-  //  const confirmed = window.confirm(
-  //    "Voulez-vous supprimer définitivement cette catégorie ? Toutes ses questions et réponses seront également supprimées."
-  //  );
-
-  //  if (!confirmed) return;
-
-  //  try {
-  //    await api.delete(
-  //      `/admin/axis-question-categories/${categoryId}/hard-delete`
-  //    );
-
-  //    setMessage("Catégorie, questions et réponses supprimées définitivement.");
-  //    await loadCategories(selectedAxisId);
-  //    await loadQuestions(selectedAxisId);
-  //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Impossible de supprimer définitivement la catégorie."));
-  //    console.error(error);
-  //  }
-  //}
-
-  //async function activateCategory(categoryId) {
-  //  try {
-  //    await api.patch(`/admin/axis-question-categories/${categoryId}`, {
-  //      is_active: true,
-  //    });
-
-  //    const questionsInCategory = questions.filter(
-  //      (question) => Number(question.category_id) === Number(categoryId)
-  //    );
-
-  //    await Promise.all(
-  //      questionsInCategory.map((question) =>
-  //        api.patch(`/admin/axis-questions/${question.id}`, {
-  //          is_active: true,
-  //        })
-  //      )
-  //    );
-
-  //    setMessage("Catégorie et questions activées.");
-  //    await loadCategories(selectedAxisId);
-  //    await loadQuestions(selectedAxisId);
-  //  } catch (error) {
-  //    setMessage(getErrorMessage(error, "Impossible de activer la catégorie."));
-  //    console.error(error);
-  //  }
-  //}
 
   async function deactivateCategory(categoryId) {
     const confirmed = window.confirm(

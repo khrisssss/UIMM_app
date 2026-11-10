@@ -9,24 +9,8 @@ from app.database import Base, engine, get_db, SessionLocal
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.models.company import Company
-from app.models.financial_year import FinancialYear
-from app.models.axis import Axis
-from app.models.question import Question
-from app.models.scoring_scale import ScoringScale
-from app.models.scoring_level import ScoringLevel
-from app.models.answer import Answer
-from app.models.score import Score
-from app.models.swot import SWOT
-from app.models.reports import Report
-from app.models.user import User
-from app.models.company_profile_question import CompanyProfileQuestion
-from app.models.company_profile_answer import CompanyProfileAnswer
-from app.models.company_axis import CompanyAxis
-from app.models.company_profile_section import CompanyProfileSection
-from app.models.axis_question_category import AxisQuestionCategory
 
-from fastapi.middleware.cors import CORSMiddleware #fpor the CORS issue when running frontend and backend on different ports
+from fastapi.middleware.cors import CORSMiddleware  # allows the frontend origin to call the API
 
 
 
@@ -91,7 +75,6 @@ app.include_router(reports.router)
 app.include_router(scoring.router)
 app.include_router(auth.router)
 app.include_router(users.router)
-# app.include_router(analysis.router)
 app.include_router(company_profile.router)
 app.include_router(company_axes.router)
 app.include_router(admin_axis_questions.router)

@@ -4,7 +4,6 @@ Exact question text is matched within its axis/section. Unknown live questions
 abort the transaction rather than receive an unrelated generated answer.
 """
 import json
-from collections import defaultdict
 from pathlib import Path
 
 from sqlalchemy import text

@@ -6,7 +6,6 @@ from app.database import get_db
 from app.models.user import User
 from app.schemas.auth import LoginRequest, LoginResponse
 from app.services.security import verify_password, create_access_token
-from app.dependencies.auth import get_current_user
 
 
 

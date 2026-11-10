@@ -10,11 +10,11 @@ from app.models.company import Company
 from app.models.axis import Axis
 from app.models.company_axis import CompanyAxis
 from app.models.question import Question
-from app.models.axis_question_category import AxisQuestionCategory  # register Question.category relationship
+from app.models.axis_question_category import AxisQuestionCategory  # noqa: F401 - registers the Question.category relationship
 from app.models.scoring_scale import ScoringScale
 from app.models.scoring_level import ScoringLevel
 from app.models.answer import Answer
-from app.models.score import Score
+from app.models.score import Score  # noqa: F401 - registers the scores table
 from app.models.swot import SWOT
 from app.models.financial_year import FinancialYear
 from app.routers.scores import calculate_company_scores, question_matches_company_size

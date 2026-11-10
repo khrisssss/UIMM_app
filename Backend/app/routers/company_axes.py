@@ -142,7 +142,6 @@ def update_company_axis_selection(
         raise HTTPException(status_code=404, detail="Company axis not found")
 
     update_data = axis_update.model_dump(exclude_unset=True)
-    print("COMPANY AXIS UPDATE DATA:", update_data)
     for key, value in update_data.items():
         setattr(company_axis, key, value)
 

@@ -10,13 +10,11 @@ from app.models.axis import Axis
 from app.models.swot import SWOT
 from app.schemas.swot import SWOTCreate, SWOTRead, SWOTUpdate 
 
-#from app.services.swot_ai_service import generate_swot_draft
 from app.services.swot_context import build_swot_context
 
 from app.models.user import User
 from app.dependencies.auth import require_consultant_or_admin
 
-from app.services.azure_openai_service import generate_json_response
 from app.services.swot_ai_service import generate_swot_with_ai
 from app.services.swot_ai_payload import make_swot_ai_payload
 from app.services.swot_generation_service import normalize_ai_swot
@@ -24,20 +22,6 @@ router = APIRouter(
     prefix="/companies",
     tags=["SWOT"]
 )
-
-#simply to check whether Azure AI responds
-#@router.get("/debug/test-azure-ai")
-#def test_azure_ai(
-#    current_user=Depends(require_consultant_or_admin)
-#):
-#    """Send a small test request to Azure AI to check that the integration responds. This calls the AI service."""
-#    result = generate_json_response(
-#        system_prompt="You are a helpful assistant. Return only valid JSON.",
-#        user_payload={
-#            "task": "Return a JSON object with message: Azure connection works."
-#        },
-#    )
-#    return result
 
 @router.post("/{company_id}/swot", response_model=SWOTRead)
 def create_or_update_swot(

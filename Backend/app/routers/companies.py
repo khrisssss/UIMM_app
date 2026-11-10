@@ -25,45 +25,6 @@ router = APIRouter(
 )
 
 
-#fake_companies = [
-#    {
-#        "id": 1,
-#        "name": "Company Test",
-#        "address": "123 Main St",
-#        "contact_name": "John Doe",
-#        "email": "test@gmail.com",
-#        "phone": "123456789",
-#        "size": "<10",
-#        "status": "prospect"
-#    }
-#]
-
-
-#@router.get("/", response_model=list[CompanyRead])
-#def get_companies():
-#    return [{ 
-#        "id": 1,
-#        "name": "Company Test",
-#        "address": "123 Main St",
-#        "contact_name": "John Doe",
-#        "email": "test@gmail.com", 
-#        "phone": "123456789",
-#        "size": "<10",
-#        "status": "prospect"
-#    }]
-
-#@router.get("/{company_id}", response_model=CompanyRead)
-#def get_company(company_id: int):
-#    return {
-#        "id": company_id,
-#        "name": "Company Test",
-#        "address": "123 Main St",
-#        "contact_name": "John Doe",
-#        "email": "test@gmail.com",
-#        "phone": "123456789",
-#        "size": "<10",
-#        "status": "prospect"
-#    }
 @router.post("/", response_model=CompanyRead)
 def create_company(company: CompanyCreate, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
     """Create a company record from the supplied company information."""
@@ -106,8 +67,6 @@ def update_company(
         raise HTTPException(status_code=404, detail="Company not found")
 
     update_data = company_data.model_dump(exclude_unset=True)
-
-    print("COMPANY UPDATE DATA:", update_data)
 
     for key, value in update_data.items():
         setattr(db_company, key, value)
@@ -154,7 +113,8 @@ def get_swot_context(company_id: int, db: Session = Depends(get_db), current_use
     return context
 
 
-@router.delete("/{company_id}/hard-delete")  #@router.delete("/companies/{company_id}/hard-delete") this is an error because i put prefix on the top 
+# Path is relative to the router prefix "/companies".
+@router.delete("/{company_id}/hard-delete")
 def hard_delete_company(
     company_id: int,
     db: Session = Depends(get_db),
