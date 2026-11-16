@@ -2,7 +2,7 @@
 
 UIMM Boost is a web application that helps the consultants of **UIMM Occitanie** (Service Développement Industriel) run a structured diagnostic of an industrial SME, and turn it into a SWOT analysis and a written report with the help of generative AI.
 
-The consultant interviews the company, records the answers on six axes, and the application calculates a maturity score per axis. From these answers, **Azure OpenAI** drafts a SWOT and a diagnostic report. The consultant reviews and edits the drafts before validating them, and can export a PowerPoint presentation for the restitution meeting.
+The consultant interviews the company, records the answers on six axes, and the application calculates a maturity score per axis. From these answers, **Azure OpenAI** drafts a SWOT and a diagnostic report. The consultant reviews and edits the drafts before validating them.
 
 > Built from scratch by Khris during an internship at UIMM Occitanie (28 June – 19 November 2026), as part of the *Développeur en Intelligence Artificielle* certification (RNCP level 6, Simplon). An earlier version of the tool was built on the Microsoft Power Platform (Power Apps, Dataverse, Power Automate, Copilot Studio); this version replaces it with a full-code stack.
 
@@ -18,8 +18,7 @@ The consultant interviews the company, records the answers on six axes, and the 
 | Diagnostic | Answer the questionnaire on six axes: Stratégie, Performance, Marketing, RH, Digitalisation, RSE |
 | Scores | Calculate a maturity score per axis and compare it with the average of archived diagnostics |
 | AI SWOT | Generate a SWOT draft with Azure OpenAI, then edit and validate it |
-| AI report | Generate a written diagnostic report draft, then edit it |
-| PowerPoint | Export the restitution presentation |
+| AI report | Generate a written diagnostic report draft, then edit it, with the SWOT of each axis (restitution) |
 | Administration | Manage users and roles, axes, questions, categories and profile questions |
 
 Two roles exist: **consultant** (diagnostics, SWOT, reports) and **admin** (everything, plus administration).
@@ -60,7 +59,7 @@ Backend/
     routers/             REST endpoints (companies, answers, scores, swots, reports, admin…)
     models/              SQLAlchemy tables
     schemas/             Pydantic request/response models
-    services/            business logic: scoring, AI payloads, Azure OpenAI, PowerPoint
+    services/            business logic: scoring, AI payloads, Azure OpenAI, restitution
     dependencies/        authentication and role checks
     monitoring.py        JSON logging and Prometheus metrics
     pipeline/            public-data pipeline: 5 sources -> clean dataset -> PostgreSQL

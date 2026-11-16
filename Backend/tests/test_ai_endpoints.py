@@ -42,7 +42,6 @@ FAKE_REPORT = {  # what the fake AI answers when asked for a report
     "executive_summary": "Synthèse courte.",
     "diagnostic_summary": "Analyse globale.",
     "axis_analysis": {"Stratégie": {"strengths": ["Cap clair"], "weaknesses": [], "opportunities": [], "threats": []}},
-    "presentation_content": {"activity": "Fonderie de pièces métalliques."},
     "swot_summary": "Forces\n- Vision",
     "recommendations": "Priorité 1 — Actions à court terme\n- Former les équipes",
     "conclusion": "Conclusion courte.",
@@ -202,6 +201,19 @@ def test_generate_report_draft_restores_the_name_locally(client, configured_db, 
     axis_analysis = json.loads(report["axis_analysis"])  # saved as JSON text in the database
     assert axis_analysis["Stratégie"]["strengths"] == ["Cap clair"]
     assert COMPANY_NAME not in ai_calls[0]  # the AI only saw anonymous data
+
+
+def test_report_restitution_shows_the_swot_of_each_selected_axis(client, configured_db, company, ai_calls):
+    headers = make_user(configured_db, "consultant")
+    report = client.post(f"/companies/{company.id}/generate-report-draft", headers=headers).json()
+
+    response = client.get(f"/companies/{company.id}/reports/{report['id']}/restitution", headers=headers)
+
+    assert response.status_code == 200
+    axes = {axis["axis_name"]: axis for axis in response.json()}
+    assert len(axes) == configured_db.query(Axis).filter_by(is_active=True).count()  # one card per selected axis
+    assert axes["Stratégie"]["score_percentage"] == 60
+    assert axes["Stratégie"]["strengths"] == ["Cap clair"]  # the findings written by the AI for this axis
 
 
 def test_unknown_company_gives_404_and_no_ai_call(client, configured_db, ai_calls):

@@ -10,7 +10,6 @@ Backend/.env.*
 Backend/.venv/
 Backend/venv/
 Backend/env/
-Backend/generated_reports/
 
 # Frontend local files
 Frontend/.env

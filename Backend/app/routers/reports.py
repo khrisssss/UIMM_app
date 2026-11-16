@@ -9,15 +9,13 @@ from app.models.company import Company
 from app.models.reports import Report
 from app.models.user import User
 from app.schemas.report import ReportRead, ReportUpdate
-from app.services.boost_powerpoint_content_service import build_boost_powerpoint_content
+from app.services.report_restitution_service import build_report_swot_by_axis
 from app.services.report_context import build_report_context
 from app.services.report_ai_service import generate_report_draft
 from app.dependencies.auth import require_consultant_or_admin
 from app.monitoring import log_event
 from app.routers.swots import AI_FAILED_MESSAGE
 
-from fastapi.responses import FileResponse
-from app.services.powerpoint_report_service import generate_report_powerpoint
 
 router = APIRouter(
     prefix="/companies",
@@ -82,7 +80,6 @@ def create_report_draft(
             executive_summary=generated_report["executive_summary"],
             diagnostic_summary=generated_report["diagnostic_summary"],
             axis_analysis=generated_report["axis_analysis"],
-            presentation_content=generated_report["presentation_content"],
             swot_summary=generated_report["swot_summary"],
             recommendations=generated_report["recommendations"],
             conclusion=generated_report["conclusion"],
@@ -103,7 +100,6 @@ def create_report_draft(
     existing_report.executive_summary = generated_report["executive_summary"]
     existing_report.diagnostic_summary = generated_report["diagnostic_summary"]
     existing_report.axis_analysis = generated_report["axis_analysis"]
-    existing_report.presentation_content = generated_report["presentation_content"]
     existing_report.swot_summary = generated_report["swot_summary"]
     existing_report.recommendations = generated_report["recommendations"]
     existing_report.conclusion = generated_report["conclusion"]
@@ -188,7 +184,7 @@ def get_report_restitution(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_consultant_or_admin),
 ):
-    """Return the same axis findings used by the PowerPoint restitution."""
+    """Return the SWOT findings per axis shown in the « Restitution » part of the report page."""
     company = db.query(Company).filter(Company.id == company_id).first()
     if company is None:
         raise HTTPException(status_code=404, detail="Company not found")
@@ -197,44 +193,4 @@ def get_report_restitution(
     ).first()
     if report is None:
         raise HTTPException(status_code=404, detail="Report not found")
-    return build_boost_powerpoint_content(db, company, report)["swot_by_axis"]
-
-# to generate report in powerpoint format
-@router.post("/{company_id}/reports/{report_id}/generate-powerpoint")
-def generate_report_powerpoint_file(
-    company_id: int,
-    report_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_consultant_or_admin),
-):
-    """Generate a PowerPoint file from the saved report and company data and return it for download."""
-    company = db.query(Company).filter(Company.id == company_id).first()
-
-    if company is None:
-        raise HTTPException(status_code=404, detail="Company not found")
-
-    report = (
-        db.query(Report)
-        .filter(
-            Report.id == report_id,
-            Report.company_id == company_id,
-        )
-        .first()
-    )
-
-    if report is None:
-        raise HTTPException(status_code=404, detail="Report not found")
-
-    if report.status != "validated":
-        raise HTTPException(
-            status_code=400,
-            detail="The report must be saved and validated before generating a PowerPoint.",
-        )
-
-    file_path = generate_report_powerpoint(company=company, report=report, db=db)
-
-    return FileResponse(
-        path=file_path,
-        filename=file_path.split("/")[-1],
-        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    )
+    return build_report_swot_by_axis(db, company, report)

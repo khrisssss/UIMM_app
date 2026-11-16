@@ -187,50 +187,6 @@ function ReportsPage() {
     }
   }
 
-  async function generatePowerPoint() {
-    if (!selectedReport) {
-      setMessage("Aucun rapport sélectionné.");
-      return;
-    }
-
-    if (selectedReport.status !== "validated") {
-      setMessage("Enregistrez et validez le rapport avant de générer le PowerPoint.");
-      return;
-    }
-
-    try {
-      setMessage("Génération du PowerPoint en cours…");
-
-      const response = await api.post(
-        `/companies/${companyId}/reports/${selectedReport.id}/generate-powerpoint`,
-        {},
-        {
-          responseType: "blob",
-        }
-      );
-
-      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
-
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.setAttribute(
-        "download",
-        `rapport_diagnostic_${company?.name || "company"}.pptx`
-      );
-
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.URL.revokeObjectURL(blobUrl);
-
-      setMessage("PowerPoint généré.");
-    } catch (error) {
-      console.error("PowerPoint error:", error.response?.data || error);
-      setMessage("Impossible de générer le PowerPoint.");
-    }
-  }
-
   function goBack() {
     window.location.href = `/companies/${companyId}`;
   }
@@ -398,14 +354,6 @@ function ReportsPage() {
                   >
                     {isSaving ? "Enregistrement en cours…" : "Enregistrer et valider"}
                   </button>
-                    {selectedReport.status === "validated" && (
-                      <button
-                        className="primary-button"
-                        onClick={generatePowerPoint}
-                        disabled={isSaving}
-                      >Générer le PowerPoint</button>
-                    )}
-                
                 </div>
               </>
             )}

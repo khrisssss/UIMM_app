@@ -16,7 +16,7 @@ from app.models.reports import Report
 from app.services.diagnostic_scope_service import retire_finance
 from app.services.report_context import build_report_context
 from app.services.swot_context import build_swot_context
-from app.services.boost_powerpoint_content_service import get_axis_scores, get_selected_report_axes, get_profile_answers
+from app.services.report_restitution_service import get_axis_scores, get_selected_report_axes
 
 
 @pytest.fixture
@@ -55,7 +55,7 @@ def test_retirement_keeps_historical_data_and_is_repeatable(configured_db, histo
     assert not db.query(CompanyProfileSection).filter_by(name='Finances').one().is_active
 
 
-def test_contexts_and_powerpoint_omit_retired_axis_and_profile(configured_db, historical_company):
+def test_contexts_and_restitution_omit_retired_axis_and_profile(configured_db, historical_company):
     db = configured_db; company = historical_company
     retire_finance(db); db.commit()
     swot = build_swot_context(db, company.id)
@@ -68,7 +68,6 @@ def test_contexts_and_powerpoint_omit_retired_axis_and_profile(configured_db, hi
     assert [q['section'] for q in swot['company_profile']] == ['Informations Générales']
     scores = get_axis_scores(db, company.id)
     assert len(scores) == len(get_selected_report_axes(db, company.id, scores)) == 6
-    assert len(get_profile_answers(db, company.id)) == 1
 
 
 def test_company_selection_radar_and_recalculation_exclude_finance(configured_db, historical_company):

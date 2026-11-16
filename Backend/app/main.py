@@ -46,7 +46,6 @@ with engine.begin() as connection:  # open one transaction: everything below is 
     connection.execute(text("UPDATE companies SET is_synthetic = TRUE WHERE is_synthetic = FALSE AND (name LIKE 'DEMO ML - %' OR name LIKE 'DEMO — %')"))  # mark old demo companies as fictional
     connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))  # add the "show in portfolio" column if missing
     connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS axis_analysis TEXT"))  # add the per-axis analysis column to reports if missing
-    connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS presentation_content TEXT"))  # add the PowerPoint content column if missing
     # Public-data pipeline: SIREN link on companies, and indexes used by its SQL extraction.
     connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS siren VARCHAR(9)"))  # add the SIREN column if missing
     connection.execute(text("CREATE INDEX IF NOT EXISTS ix_companies_siren ON companies (siren)"))  # an index = a sorted list that makes searching by SIREN fast

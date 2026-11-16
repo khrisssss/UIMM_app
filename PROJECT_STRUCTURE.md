@@ -72,7 +72,7 @@ UIMM_app/
 │   │   │   ├── scoring.py              Edit the scoring scales and levels
 │   │   │   ├── scores.py               Calculate and read a company's scores per axis, and the average of archived diagnostics
 │   │   │   ├── swots.py              ★ Generate the SWOT with Azure OpenAI, edit it, validate it
-│   │   │   ├── reports.py            ★ Generate the report with Azure OpenAI, edit it, export the PowerPoint
+│   │   │   ├── reports.py            ★ Generate the report with Azure OpenAI, edit it, show the SWOT per axis
 │   │   │   └── public_data.py          Public data of a company, full list, live search in the official register
 │   │   │
 │   │   ├── services/                   The business logic used by the routers
@@ -85,8 +85,7 @@ UIMM_app/
 │   │   │   ├── report_context.py       Gathers what the report needs (company, scores, SWOT)
 │   │   │   ├── report_ai_payload.py  ★ Prepares the report payload; redact_text() hides company and contact details
 │   │   │   ├── report_ai_service.py    The report prompt and the call to the AI
-│   │   │   ├── powerpoint_report_service.py      Builds the PowerPoint file (python-pptx)
-│   │   │   ├── boost_powerpoint_content_service.py  Decides what goes on each slide
+│   │   │   ├── report_restitution_service.py     The SWOT of each axis, shown in the report's « Restitution »
 │   │   │   ├── company_details_service.py  Read-only export of everything saved about a company
 │   │   │   ├── diagnostic_scope_service.py Retires the Finance axis without deleting old data
 │   │   │   └── siren.py                Checks a SIREN: 9 digits + checksum
@@ -104,7 +103,6 @@ UIMM_app/
 │   │   │   ├── load.py                 Imports the dataset into PostgreSQL (insert or update)
 │   │   │   └── companies_example.csv   Example input file
 │   │   │
-│   │   └── assets/                     Images used on the PowerPoint slides (SWOT backgrounds…)
 │   │
 │   └── tests/                          Automated tests (pytest), run by the CI on every push
 │       ├── conftest.py                 Gives each test a fresh, empty in-memory database
@@ -139,7 +137,7 @@ UIMM_app/
         │   ├── AxisQuestionnairePage.jsx  /companies/:id/diagnostic/:axisId: answer the questions of one axis
         │   ├── ScoresPage.jsx          /companies/:id/scores: scores per axis and radar chart
         │   ├── AnalysisPage.jsx        /companies/:id/analysis: the SWOT (generate with AI, edit, validate)
-        │   ├── ReportsPage.jsx         /companies/:id/reports: the report (generate, edit, PowerPoint)
+        │   ├── ReportsPage.jsx         /companies/:id/reports: the report (generate, edit, validate)
         │   ├── AdminAxesPage.jsx       /admin/axes: edit the axes
         │   ├── AdminAxisQuestionsPage.jsx    /admin/axis-questions: manage the diagnostic questions
         │   ├── AdminProfileQuestionsPage.jsx /admin/profile-questions: manage the profile questions

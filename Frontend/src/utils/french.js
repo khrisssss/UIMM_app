@@ -38,7 +38,6 @@ const errorMessages = {
   "Financial year not found": "Année financière introuvable.",
   "No trained model metrics found. Train the model first.": "Aucun modèle entraîné disponible. Veuillez d’abord entraîner le modèle.",
   "Report not found": "Rapport introuvable.",
-  "The report must be saved and validated before generating a PowerPoint.": "Le rapport doit être enregistré et validé avant de générer le PowerPoint.",
   "Scoring scale not found": "Barème introuvable.",
   "Scoring level not found": "Niveau de score introuvable.",
   "This axis already has a scoring scale.": "Cet axe dispose déjà d’un barème.",
