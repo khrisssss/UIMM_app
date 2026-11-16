@@ -86,7 +86,6 @@ UIMM_app/
 │   │   │   ├── report_ai_payload.py  ★ Prepares the report payload; redact_text() hides company and contact details
 │   │   │   ├── report_ai_service.py    The report prompt and the call to the AI
 │   │   │   ├── report_restitution_service.py     The SWOT of each axis, shown in the report's « Restitution »
-│   │   │   ├── company_details_service.py  Read-only export of everything saved about a company
 │   │   │   ├── diagnostic_scope_service.py Retires the Finance axis without deleting old data
 │   │   │   └── siren.py                Checks a SIREN: 9 digits + checksum
 │   │   │

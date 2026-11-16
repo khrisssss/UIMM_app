@@ -4,8 +4,6 @@ from app.database import get_db
 from app.models.company import Company #database table model
 
 from app.schemas.company import CompanyCreate, CompanyRead, CompanyUpdate
-from app.services.swot_context import build_swot_context
-from app.services.company_details_service import build_company_details
 
 from app.models.user import User
 from app.dependencies.auth import require_consultant_or_admin
@@ -104,15 +102,6 @@ def get_company(company_id: int, db: Session = Depends(get_db), current_user: Us
     return company
 
 
-@router.get("/{company_id}/swot-context")
-def get_swot_context(company_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)):
-    """Preview the full local SWOT context. This is not the filtered AI payload."""
-    context = build_swot_context(db, company_id)
-    if context is None:
-        raise HTTPException(status_code=404, detail="Company not found")
-    return context
-
-
 # Path is relative to the router prefix "/companies".
 @router.delete("/{company_id}/hard-delete")
 def hard_delete_company(
@@ -175,20 +164,3 @@ def hard_delete_company(
         "deleted_reports": deleted_reports,
         "deleted_company_axes": deleted_company_axes,
     }
-
-
-@router.get("/{company_id}/all-details")
-def get_all_details_of_a_company(
-    company_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_consultant_or_admin),
-):
-    """Read all company details, including unanswered/inactive questions and all axes.
-    
-    Includes personal information for internal viewing; never sends data to AI.
-    Selection flags identify diagnostic axes.
-    """
-    details = build_company_details(db, company_id)
-    if details is None:
-        raise HTTPException(status_code=404, detail="Company not found")
-    return details

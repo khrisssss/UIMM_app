@@ -23,21 +23,6 @@ router = APIRouter(
 )
 
 
-@router.get("/{company_id}/report-context")
-def get_report_context(
-    company_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_consultant_or_admin),
-):
-    """Preview the company information, answers, scores, and SWOT used to prepare a report."""
-    report_context = build_report_context(company_id=company_id, db=db)
-
-    if report_context is None:
-        raise HTTPException(status_code=404, detail="Company not found")
-
-    return report_context
-
-
 @router.post("/{company_id}/generate-report-draft", response_model=ReportRead)
 def create_report_draft(
     company_id: int,
