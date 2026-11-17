@@ -74,11 +74,11 @@ def create_or_update_swot(
 
         db.add(new_swot) #Add the new record to the session 
         db.commit()   # Save the new record or the changes to PostgreSQL.
-        db.refresh(new_swot)#Reload that record’s latest values from PostgreSQL nNOT refresh the whole database new_swot 
+        db.refresh(new_swot)  # reload this record's saved values from PostgreSQL
 
         return new_swot
 
-    # if exist it will Replace a field on the existing record
+    # A SWOT already exists: replace its fields
     existing_swot.strengths = swot_data.strengths
     existing_swot.weaknesses = swot_data.weaknesses
     existing_swot.opportunities = swot_data.opportunities
@@ -89,7 +89,7 @@ def create_or_update_swot(
     existing_swot.status = swot_data.status
 
     db.commit() # Save the new record or the changes to PostgreSQL. 
-    db.refresh(existing_swot)  #Reload that record’s latest values from PostgreSQL nNOT refresh the whole database existing_swot
+    db.refresh(existing_swot)  # reload this record's saved values from PostgreSQL
 
     return existing_swot #Send the updated SWOT back to whoever called the route. 
 
