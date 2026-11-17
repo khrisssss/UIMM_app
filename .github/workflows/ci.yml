@@ -15,6 +15,20 @@ jobs:
     name: Backend tests
     runs-on: ubuntu-latest
 
+    services:
+      postgres:  # an empty PostgreSQL, only used to check that app/main.py starts
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: uimm_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     defaults:
       run:
         working-directory: Backend
@@ -39,6 +53,11 @@ jobs:
 
       - name: Test AI service (endpoints with fake Azure OpenAI, anonymisation, monitoring)
         run: python -m pytest tests/test_ai_endpoints.py tests/test_monitoring.py -q --cov=app --cov-append --cov-report=term-missing --cov-report=xml --junitxml=test-results-ai.xml
+
+      - name: Test the API (company list, app startup on PostgreSQL)
+        env:
+          TEST_POSTGRES_URL: postgresql://postgres:postgres@localhost:5432/uimm_test
+        run: python -m pytest tests/test_company_list.py tests/test_app_startup.py -q
 
   frontend-build:
     name: Frontend build

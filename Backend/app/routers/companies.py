@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends #api router grouping routes together #Depends(get_db) → gives the route access to PostgreSQL
+from fastapi import APIRouter, HTTPException, Depends  # APIRouter groups routes; Depends(get_db) gives a route a database session
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.company import Company #database table model
@@ -76,14 +76,14 @@ def update_company(
 
 @router.get("/", response_model=list[CompanyRead])
 def get_companies(
-    include_archived: bool = False,
+    include_archived: bool = True,
     db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
 ):
-    """List company records accessible through this endpoint."""
+    """List companies. Archived ones are included unless include_archived=false."""
     query = db.query(Company)
 
-    if include_archived :
-        query = query.filter(Company.is_archived == False)
+    if not include_archived:  # the companies page filters active/archived itself, so the default returns all
+        query = query.filter(Company.is_archived.is_(False))
 
     companies = query.order_by(Company.created_at.desc()).all()
 
