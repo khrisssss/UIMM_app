@@ -97,10 +97,6 @@ function DiagnosticPage() {
     window.location.href = `/companies/${companyId}/analysis`;
   }
 
-  function openReports() {
-    window.location.href = `/companies/${companyId}/reports`;
-  }
-
   function openCompanyDetails() {
     window.location.href = `/companies/${companyId}`;
   }
@@ -163,8 +159,6 @@ function DiagnosticPage() {
 
           <div className="diagnostic-action-buttons">
             <button className="primary-button" onClick={openAnalysis}>Voir le radar / SWOT</button>
-
-            <button className="secondary-button" onClick={openReports}>Rapport</button>
           </div>
         </div>
 

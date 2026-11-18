@@ -1,8 +1,8 @@
 # UIMM Boost
 
-UIMM Boost is a web application that helps the consultants of **UIMM Occitanie** (Service Développement Industriel) run a structured diagnostic of an industrial SME, and turn it into a SWOT analysis and a written report with the help of generative AI.
+UIMM Boost is a web application that helps the consultants of **UIMM Occitanie** (Service Développement Industriel) run a structured diagnostic of an industrial SME, and turn it into a SWOT analysis with the help of generative AI.
 
-The consultant interviews the company, records the answers on six axes, and the application calculates a maturity score per axis. From these answers, **Azure OpenAI** drafts a SWOT and a diagnostic report. The consultant reviews and edits the drafts before validating them.
+The consultant interviews the company, records the answers on six axes, and the application calculates a maturity score per axis. From these answers, **Azure OpenAI** drafts a SWOT. The consultant reviews and edits the draft before validating it.
 
 > Built from scratch by Khris during an internship at UIMM Occitanie (28 June – 19 November 2026), as part of the *Développeur en Intelligence Artificielle* certification (RNCP level 6, Simplon). An earlier version of the tool was built on the Microsoft Power Platform (Power Apps, Dataverse, Power Automate, Copilot Studio); this version replaces it with a full-code stack.
 
@@ -18,10 +18,9 @@ The consultant interviews the company, records the answers on six axes, and the 
 | Diagnostic | Answer the questionnaire on six axes: Stratégie, Performance, Marketing, RH, Digitalisation, RSE |
 | Scores | Calculate a maturity score per axis and compare it with the average of archived diagnostics |
 | AI SWOT | Generate a SWOT draft with Azure OpenAI, then edit and validate it |
-| AI report | Generate a written diagnostic report draft, then edit it, with the SWOT of each axis (restitution) |
 | Administration | Manage users and roles, axes, questions, categories and profile questions |
 
-Two roles exist: **consultant** (diagnostics, SWOT, reports) and **admin** (everything, plus administration).
+Two roles exist: **consultant** (diagnostics, SWOT) and **admin** (everything, plus administration).
 
 ---
 
@@ -56,7 +55,7 @@ flowchart LR
 Backend/
   app/
     main.py              FastAPI application, middleware, routers
-    routers/             REST endpoints (companies, answers, scores, swots, reports, admin…)
+    routers/             REST endpoints (companies, answers, scores, swots, admin…)
     models/              SQLAlchemy tables
     schemas/             Pydantic request/response models
     services/            business logic: scoring, AI payloads, Azure OpenAI, restitution
@@ -83,7 +82,7 @@ compose.production.yml   production stack (db, backend, frontend)
 - Python 3.12
 - Node.js 22
 - Docker (for PostgreSQL, and optionally for monitoring)
-- An Azure OpenAI resource with a deployed model (only needed for SWOT and report generation)
+- An Azure OpenAI resource with a deployed model (only needed for SWOT generation)
 
 ### 1. Start PostgreSQL
 
@@ -164,8 +163,8 @@ Tests run on an isolated in-memory SQLite database; they never touch your Postgr
 
 ## AI and personal data
 
-- Before any call to Azure OpenAI, the company name, contact name, e-mail, phone number and address are **masked** in the text (`services/report_ai_payload.py`, `redact_text`). The AI receives "Entreprise anonymisée", never the real company.
-- The AI only drafts. A consultant always reviews, edits and validates the SWOT and the report.
+- Before any call to Azure OpenAI, the company name, contact name, e-mail, phone number and address are **masked** in the text (`services/swot_ai_payload.py`, `redact_text`). The AI receives "Entreprise anonymisée", never the real company.
+- The AI only drafts. A consultant always reviews, edits and validates the SWOT.
 - Application logs contain technical data only (route, status, duration, token counts): no names, e-mails, passwords, tokens or prompt content.
 - Secrets (database password, JWT key, Azure key) are read from environment variables and never committed.
 

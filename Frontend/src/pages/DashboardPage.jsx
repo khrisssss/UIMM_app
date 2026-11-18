@@ -22,7 +22,7 @@ function DashboardPage() {
         <section className="hero-card">
           <div>
             <h2>UIMM Boost</h2>
-            <p>Gérez les entreprises, les diagnostics et les rapports depuis un seul espace.</p>
+            <p>Gérez les entreprises, les diagnostics et les analyses SWOT depuis un seul espace.</p>
           </div>
 
           <button

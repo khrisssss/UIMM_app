@@ -222,7 +222,7 @@ function CompanyDetailsPage() {
 
   async function hardDeleteCompany() {
     const confirmed = window.confirm(
-      "Voulez-vous supprimer définitivement cette entreprise ? Ses informations, réponses de profil et de diagnostic, scores, analyses SWOT, rapports et axes sélectionnés seront également supprimés. Cette action est irréversible."
+      "Voulez-vous supprimer définitivement cette entreprise ? Ses informations, réponses de profil et de diagnostic, scores, analyses SWOT et axes sélectionnés seront également supprimés. Cette action est irréversible."
     );
 
     if (!confirmed) return false;
@@ -282,10 +282,6 @@ function CompanyDetailsPage() {
     window.location.href = `/companies/${companyId}/analysis`;
   }
 
-  function openReport() {
-    window.location.href = `/companies/${companyId}/reports`;
-  }
-
   if (isLoading) {
     return (
       <div className="app-page">
@@ -317,8 +313,6 @@ function CompanyDetailsPage() {
             <button className="secondary-button" onClick={openAnalysis}>
               Radar / SWOT
             </button>
-
-            <button className="secondary-button" onClick={openReport}>Rapport</button>
           </div>
         </div>
 

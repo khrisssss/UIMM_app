@@ -379,7 +379,7 @@ function AdminProfileQuestionsPage() {
           <div>
             <p className="eyebrow">Profil de l’entreprise</p>
             <h2>Configuration du questionnaire de profil</h2>
-            <p>Ces questions apparaissent sur la fiche de l’entreprise et apportent un contexte utile pour l’analyse SWOT et le rapport.</p>
+            <p>Ces questions apparaissent sur la fiche de l’entreprise et apportent un contexte utile pour l’analyse SWOT.</p>
           </div>
 
           <div className="profile-summary-stats">

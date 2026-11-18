@@ -11,12 +11,8 @@ from app.models.company_profile_question import CompanyProfileQuestion
 from app.models.company_profile_answer import CompanyProfileAnswer
 from app.models.question import Question
 from app.models.score import Score
-from app.models.swot import SWOT
-from app.models.reports import Report
 from app.services.diagnostic_scope_service import retire_finance
-from app.services.report_context import build_report_context
 from app.services.swot_context import build_swot_context
-from app.services.report_restitution_service import get_axis_scores, get_selected_report_axes
 
 
 @pytest.fixture
@@ -55,19 +51,13 @@ def test_retirement_keeps_historical_data_and_is_repeatable(configured_db, histo
     assert not db.query(CompanyProfileSection).filter_by(name='Finances').one().is_active
 
 
-def test_contexts_and_restitution_omit_retired_axis_and_profile(configured_db, historical_company):
+def test_swot_context_omits_retired_axis_and_profile(configured_db, historical_company):
     db = configured_db; company = historical_company
     retire_finance(db); db.commit()
     swot = build_swot_context(db, company.id)
-    report = build_report_context(company.id, db)
     assert len(swot['selected_axes']) == len(swot['axis_scores']) == 6
-    assert len(report['selected_axes']) == len(report['scores']) == 6
     assert all(q['axis_name'] != 'Finance' for q in swot['diagnostic_answers'])
-    assert all(q['axis'] != 'Finance' for q in report['diagnostic_answers'])
-    assert [q['section'] for q in report['company_profile']] == ['Informations Générales']
     assert [q['section'] for q in swot['company_profile']] == ['Informations Générales']
-    scores = get_axis_scores(db, company.id)
-    assert len(scores) == len(get_selected_report_axes(db, company.id, scores)) == 6
 
 
 def test_company_selection_radar_and_recalculation_exclude_finance(configured_db, historical_company):

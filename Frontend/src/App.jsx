@@ -8,7 +8,6 @@ import CompanyDetailsPage from "./pages/CompanyDetailsPage";
 import DiagnosticPage from "./pages/DiagnosticPage";
 import ScoresPage from "./pages/ScoresPage";
 import AnalysisPage from "./pages/AnalysisPage";
-import ReportsPage from "./pages/ReportsPage";
 import AxisQuestionnairePage from "./pages/AxisQuestionnairePage";
 import AdminProfileQuestionsPage from "./pages/AdminProfileQuestionsPage";
 import AdminAxisQuestionsPage from "./pages/AdminAxisQuestionsPage";
@@ -87,11 +86,6 @@ function App() {
         <Route
           path="/companies/:companyId/analysis"
           element={token ? <AnalysisPage /> : <Navigate to="/login" />}
-        />
-
-        <Route
-          path="/companies/:companyId/reports"
-          element={token ? <ReportsPage /> : <Navigate to="/login" />}
         />
 
         <Route

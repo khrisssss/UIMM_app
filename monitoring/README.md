@@ -7,7 +7,7 @@
 | `up{job="uimm_backend"}` | Prometheus can reach the API | `UimmApiDown`: 0 for 1 min |
 | `uimm_http_requests_total` | Requests by method, route template, status | `UimmHighErrorRate`: > 5 % of 5xx over 5 min |
 | `uimm_http_request_duration_seconds` | API response time | Dashboard only |
-| `uimm_ai_calls_total` | Azure OpenAI calls by feature (`swot`, `report`) and outcome (`success`, `invalid_json`, `error`) | `UimmAiCallsFailing`: ≥ 3 failures in 15 min |
+| `uimm_ai_calls_total` | Azure OpenAI calls by feature (`swot`) and outcome (`success`, `invalid_json`, `error`) | `UimmAiCallsFailing`: ≥ 3 failures in 15 min |
 | `uimm_ai_call_duration_seconds` | Azure OpenAI latency | `UimmAiSlow`: p95 > 30 s for 10 min |
 | `uimm_ai_tokens_total` | Input / output tokens (cost) | Dashboard only |
 | `uimm_ai_draft_reviews_total` | AI SWOT drafts validated as-is vs edited by a consultant (feedback loop) | Dashboard only |

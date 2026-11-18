@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends  # FastAPI builds the API; Depends = "run this first and give me the result"
 from app.monitoring import setup_logging, monitoring_middleware, metrics_endpoint  # our logs and metrics (monitoring.py)
-from app.routers import companies,axes,answers, scores, swots, reports, scoring, auth, users, company_profile, company_axes, admin_axis_questions  # the groups of routes
+from app.routers import companies,axes,answers, scores, swots, scoring, auth, users, company_profile, company_axes, admin_axis_questions  # the groups of routes
 from app.routers import axis_question_categories, public_data  # two more groups of routes
 
 from app.database import Base, engine, get_db, SessionLocal  # the database tools (database.py)
@@ -42,10 +42,10 @@ Base.metadata.create_all(bind=engine)  # create every table that does not exist 
 
 # Add the independent portfolio selection to databases created before this field existed.
 with engine.begin() as connection:  # open one transaction: everything below is saved together
+    connection.execute(text("DROP TABLE IF EXISTS reports"))  # the report feature was removed: delete its table and the stored reports
     connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS is_synthetic BOOLEAN NOT NULL DEFAULT FALSE"))  # add the "fictional company" column if it is missing
     connection.execute(text("UPDATE companies SET is_synthetic = TRUE WHERE is_synthetic = FALSE AND (name LIKE 'DEMO ML - %' OR name LIKE 'DEMO — %')"))  # mark old demo companies as fictional
     connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))  # add the "show in portfolio" column if missing
-    connection.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS axis_analysis TEXT"))  # add the per-axis analysis column to reports if missing
     # Public-data pipeline: SIREN link on companies, and indexes used by its SQL extraction.
     connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS siren VARCHAR(9)"))  # add the SIREN column if missing
     connection.execute(text("CREATE INDEX IF NOT EXISTS ix_companies_siren ON companies (siren)"))  # an index = a sorted list that makes searching by SIREN fast
@@ -74,7 +74,6 @@ app.include_router(axes.router)  # plug in the axis routes
 app.include_router(answers.router)  # plug in the answer routes
 app.include_router(scores.router)  # plug in the score routes
 app.include_router(swots.router)  # plug in the SWOT routes
-app.include_router(reports.router)  # plug in the report routes
 app.include_router(scoring.router)  # plug in the scoring-scale routes
 app.include_router(auth.router)  # plug in the login route
 app.include_router(users.router)  # plug in the user-management routes

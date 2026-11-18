@@ -1,13 +1,36 @@
 """Prepares the information to send to the AI for SWOT generation, (readact_text)hiding company and contact details."""
 
-from app.services.report_ai_payload import redact_text # redact text hides the name of the company before sending it to ai 
+import re
+
+
+def redact_text(value, company):
+    """Hide the company's name, contact name, email, phone and address
+    when they appear in the text (function masks those details inside answers and comments), before sending it to the AI agent."""
+    #example
+    # Original:
+    #“ABC Industrie, managed by Marie Dupont, wants to recruit.”
+    #Sent to AI:
+    #“[masqué], managed by [masqué], wants to recruit.”
+
+
+    label = str(value or "")
+    for field in ("name", "contact_name", "contact_email", "contact_phone", "address"):
+        identifier = str(company.get(field) or "").strip()
+        if identifier:
+            label = re.sub(re.escape(identifier), "[masqué]", label, flags=re.I)
+    label = re.sub(r"\b[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}\b", "[email masqué]", label)
+    label = re.sub(r"(?<!\w)(?:\+\d{1,3}[ .-]?)?(?:\d[ .-]?){9,12}(?!\w)", "[téléphone masqué]", label)
+    return label[:2000]
+    # label = str(value or ""): converts the value into text; missing values become ""
+ # it will loop The for field ... loop looks for the company’s saved name, contact name, email, phone and address inside that text. then it will masque
+
 
 
 def make_swot_ai_payload(context):
     """Prepare diagnostic information for AI SWOT generation,
     masking [masqué] known company names, contact names, emails, phones and addresses
     when they appear in the text."""
-    #example 
+    #example
     #Before: “ABC Métal wants to recruit.”
     #After:  “[masqué] wants to recruit.”
     #Other detected emails and phone numbers are replaced with [email masqué] and [téléphone masqué].
@@ -26,7 +49,7 @@ def make_swot_ai_payload(context):
             "assessment_status": "not_assessed" if public_only else "to_review",
             "note": "Pré-analyse documentaire publique à valider ; aucune réponse interne ni maturité déduite des données manquantes." if public_only else "Constats limités aux éléments fournis.",
         },
-        "selected_axes": [ # Which axes did you select? Includes the general comment written for each axis. #examplke Stratégie — “La stratégie doit être mieux partagée.” 
+        "selected_axes": [ # Which axes did you select? Includes the general comment written for each axis. #examplke Stratégie — “La stratégie doit être mieux partagée.”
             {"axis": item["axis_name"], "comment": redact_text(item.get("diagnostic_comment"), company)}
             for item in context.get("selected_axes", [])
         ],
@@ -62,7 +85,7 @@ def make_swot_ai_payload(context):
              "answer": redact_text(item.get("answer"), company),
              "comment": redact_text(item.get("comment"), company),
              }
-            
+
             for item in context.get("company_profile", [])
         ],
     }

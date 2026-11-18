@@ -1,6 +1,6 @@
 """Tests for the AI endpoints (C9, C10, C12).
 
-They call the real routes (generate a SWOT, validate it, generate a report)
+They call the real SWOT routes (generate a SWOT, list it, validate it)
 with real login tokens. Only Azure OpenAI is replaced by a fake, so the tests
 need no key, cost nothing and always give the same answer.
 """
@@ -22,11 +22,10 @@ from app.models.axis import Axis
 from app.models.company import Company
 from app.models.company_axis import CompanyAxis
 from app.models.question import Question
-from app.models.reports import Report
 from app.models.score import Score
 from app.models.swot import SWOT
 from app.models.user import User
-from app.routers import reports, swots
+from app.routers import swots
 
 COMPANY_NAME = "Fonderie Secrète du Tarn"  # a name that must NEVER be sent to the AI
 
@@ -36,17 +35,6 @@ FAKE_SWOT = {  # what the fake AI answers when asked for a SWOT
     "opportunities": ["Aides régionales à la modernisation"],
     "threats": ["Concurrence internationale"],
 }
-
-FAKE_REPORT = {  # what the fake AI answers when asked for a report
-    "title": "Rapport de diagnostic — Entreprise anonymisée",
-    "executive_summary": "Synthèse courte.",
-    "diagnostic_summary": "Analyse globale.",
-    "axis_analysis": {"Stratégie": {"strengths": ["Cap clair"], "weaknesses": [], "opportunities": [], "threats": []}},
-    "swot_summary": "Forces\n- Vision",
-    "recommendations": "Priorité 1 — Actions à court terme\n- Former les équipes",
-    "conclusion": "Conclusion courte.",
-}
-
 
 @pytest.fixture
 def db():
@@ -75,7 +63,7 @@ def ai_calls(monkeypatch):
     def create(model, input):
         payload = input[1]["content"]  # the data part of the message (the second one)
         sent.append(payload)  # remember it so the test can read it
-        answer = FAKE_REPORT if '"executive_summary"' in input[0]["content"] else FAKE_SWOT
+        answer = FAKE_SWOT
         usage = SimpleNamespace(input_tokens=100, output_tokens=50)  # fake token counts
         return SimpleNamespace(output_text=json.dumps(answer), usage=usage)
 
@@ -87,11 +75,10 @@ def ai_calls(monkeypatch):
 
 @pytest.fixture
 def client(configured_db, monkeypatch):
-    """A small app with only the SWOT and report routes, using the test database."""
+    """A small app with only the SWOT routes, using the test database."""
     monkeypatch.setattr(security, "SECRET_KEY", "test-secret-key-for-ai-endpoints")
     api = FastAPI()
     api.include_router(swots.router)
-    api.include_router(reports.router)
     api.dependency_overrides[get_db] = lambda: configured_db  # use the test database
     return TestClient(api)
 
@@ -127,8 +114,7 @@ def make_user(db, username, role="consultant", is_active=True):
 # ---------- Security: the AI is only reachable after login ----------
 
 def test_ai_routes_refuse_requests_without_a_token(client, company, ai_calls):
-    for url in (f"/companies/{company.id}/generate-swot", f"/companies/{company.id}/generate-report-draft"):
-        assert client.post(url).status_code == 401  # no token: not logged in
+    assert client.post(f"/companies/{company.id}/generate-swot").status_code == 401  # no token: not logged in
     assert ai_calls == []  # the AI was never called
 
 
@@ -186,47 +172,16 @@ def test_generating_twice_replaces_the_draft_instead_of_duplicating(client, conf
     assert configured_db.query(SWOT).filter_by(company_id=company.id).count() == 1
 
 
-# ---------- Report: generate a draft ----------
-
-def test_generate_report_draft_restores_the_name_locally(client, configured_db, company, ai_calls):
-    headers = make_user(configured_db, "consultant")
-
-    response = client.post(f"/companies/{company.id}/generate-report-draft", headers=headers)
-
-    assert response.status_code == 200
-    report = response.json()
-    assert report["title"] == f"Rapport de diagnostic — {COMPANY_NAME}"  # name added back after the AI call
-    assert report["status"] == "draft"
-    assert report["generated_by_ai"] is True
-    axis_analysis = json.loads(report["axis_analysis"])  # saved as JSON text in the database
-    assert axis_analysis["Stratégie"]["strengths"] == ["Cap clair"]
-    assert COMPANY_NAME not in ai_calls[0]  # the AI only saw anonymous data
-
-
-def test_report_restitution_shows_the_swot_of_each_selected_axis(client, configured_db, company, ai_calls):
-    headers = make_user(configured_db, "consultant")
-    report = client.post(f"/companies/{company.id}/generate-report-draft", headers=headers).json()
-
-    response = client.get(f"/companies/{company.id}/reports/{report['id']}/restitution", headers=headers)
-
-    assert response.status_code == 200
-    axes = {axis["axis_name"]: axis for axis in response.json()}
-    assert len(axes) == configured_db.query(Axis).filter_by(is_active=True).count()  # one card per selected axis
-    assert axes["Stratégie"]["score_percentage"] == 60
-    assert axes["Stratégie"]["strengths"] == ["Cap clair"]  # the findings written by the AI for this axis
-
-
 def test_unknown_company_gives_404_and_no_ai_call(client, configured_db, ai_calls):
     headers = make_user(configured_db, "consultant")
     assert client.post("/companies/999/generate-swot", headers=headers).status_code == 404
-    assert client.post("/companies/999/generate-report-draft", headers=headers).status_code == 404
     assert ai_calls == []
 
 
 # ---------- Privacy: personal details are hidden before the AI call ----------
 
 def test_redact_text_hides_name_email_and_phone():
-    from app.services.report_ai_payload import redact_text
+    from app.services.swot_ai_payload import redact_text
     text = "Appeler Marie au 06 12 34 56 78 ou +33 6 12 34 56 78, mail marie@abc.fr, chez ABC Industrie (120 salariés)"
     cleaned = redact_text(text, {"name": "ABC Industrie"})
     assert "ABC Industrie" not in cleaned and "[masqué]" in cleaned
@@ -267,10 +222,8 @@ def test_ai_failure_gives_502_and_saves_nothing(client, configured_db, company, 
     broken_ai(monkeypatch, mode)
     headers = make_user(configured_db, "consultant")
 
-    for url in (f"/companies/{company.id}/generate-swot", f"/companies/{company.id}/generate-report-draft"):
-        response = client.post(url, headers=headers)
-        assert response.status_code == 502  # 502 = an outside service failed
-        assert "IA a échoué" in response.json()["detail"]  # a message the user can read
+    response = client.post(f"/companies/{company.id}/generate-swot", headers=headers)
+    assert response.status_code == 502  # 502 = an outside service failed
+    assert "IA a échoué" in response.json()["detail"]  # a message the user can read
 
     assert configured_db.query(SWOT).count() == 0  # no empty SWOT saved
-    assert configured_db.query(Report).count() == 0  # no empty report saved

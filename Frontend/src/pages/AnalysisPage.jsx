@@ -340,10 +340,6 @@ function AnalysisPage() {
     window.location.href = `/companies/${companyId}/diagnostic`;
   }
 
-  function openReport() {
-    window.location.href = `/companies/${companyId}/reports`;
-  }
-
   if (isLoading) {
     return (
       <div className="app-page">
@@ -368,8 +364,6 @@ function AnalysisPage() {
       <main className="analysis-page-content">
         <div className="analysis-top-actions">
           <button className="secondary-button" onClick={openDiagnosticOverview}>Retour au diagnostic</button>
-
-          <button className="primary-button" onClick={openReport}>Continuer vers le rapport</button>
         </div>
 
         {company?.is_synthetic && (
@@ -565,8 +559,6 @@ function AnalysisPage() {
             >
               {isSaving ? "Enregistrement en cours…" : "Enregistrer le SWOT"}
             </button>
-
-            <button className="secondary-button" onClick={openReport}>Continuer vers le rapport</button>
           </div>
         </section>
       </main>

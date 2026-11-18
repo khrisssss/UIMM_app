@@ -11,7 +11,6 @@ from app.dependencies.auth import require_consultant_or_admin
 from app.models.answer import Answer
 from app.models.score import Score
 from app.models.swot import SWOT
-from app.models.reports import Report
 from app.models.company_axis import CompanyAxis
 from app.models.company_profile_answer import CompanyProfileAnswer
 
@@ -109,7 +108,7 @@ def hard_delete_company(
     db: Session = Depends(get_db),
     current_user=Depends(require_consultant_or_admin),
 ):
-    """Permanently delete the company and its associated answers, scores, SWOT records, reports, profile answers, and axis selections."""
+    """Permanently delete the company and its associated answers, scores, SWOT records, profile answers, and axis selections."""
     db_company = db.query(Company).filter(Company.id == company_id).first()
 
     if not db_company:
@@ -139,12 +138,6 @@ def hard_delete_company(
         .delete(synchronize_session=False)
     )
 
-    deleted_reports = (
-        db.query(Report)
-        .filter(Report.company_id == company_id)
-        .delete(synchronize_session=False)
-    )
-
     deleted_company_axes = (
         db.query(CompanyAxis)
         .filter(CompanyAxis.company_id == company_id)
@@ -161,6 +154,5 @@ def hard_delete_company(
         "deleted_diagnostic_answers": deleted_answers,
         "deleted_scores": deleted_scores,
         "deleted_swots": deleted_swots,
-        "deleted_reports": deleted_reports,
         "deleted_company_axes": deleted_company_axes,
     }

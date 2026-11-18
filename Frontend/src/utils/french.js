@@ -37,7 +37,6 @@ const errorMessages = {
   "Financial year already exists": "Cette année financière existe déjà pour ce type.",
   "Financial year not found": "Année financière introuvable.",
   "No trained model metrics found. Train the model first.": "Aucun modèle entraîné disponible. Veuillez d’abord entraîner le modèle.",
-  "Report not found": "Rapport introuvable.",
   "Scoring scale not found": "Barème introuvable.",
   "Scoring level not found": "Niveau de score introuvable.",
   "This axis already has a scoring scale.": "Cet axe dispose déjà d’un barème.",

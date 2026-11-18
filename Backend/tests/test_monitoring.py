@@ -2,7 +2,6 @@
 
 The Azure OpenAI client is replaced by a fake, so no real API call or key is needed.
 """
-import os
 from types import SimpleNamespace
 
 import pytest
@@ -45,13 +44,13 @@ def test_successful_ai_call_is_counted(monkeypatch):
 
 
 def test_invalid_json_is_counted_and_returns_fallback(monkeypatch):
-    before = sample("uimm_ai_calls_total", {"feature": "report", "outcome": "invalid_json"})
+    before = sample("uimm_ai_calls_total", {"feature": "swot", "outcome": "invalid_json"})
     monkeypatch.setattr(azure_service, "get_azure_client", fake_client("Désolé, je ne peux pas."))
 
-    result = azure_service.generate_json_response("prompt", {}, feature="report")
+    result = azure_service.generate_json_response("prompt", {}, feature="swot")
 
     assert result["raw_output"] == "Désolé, je ne peux pas."
-    assert sample("uimm_ai_calls_total", {"feature": "report", "outcome": "invalid_json"}) == before + 1
+    assert sample("uimm_ai_calls_total", {"feature": "swot", "outcome": "invalid_json"}) == before + 1
 
 
 def test_ai_error_is_counted_and_raised(monkeypatch):
