@@ -182,7 +182,7 @@ See [`monitoring/README.md`](monitoring/README.md) to start the tools and test a
 
 ## CI/CD
 
-The pipeline in `.github/workflows/ci.yml` runs on every push to `main` and `feature/finance-axis-years`, and on every pull request:
+The pipeline in `.github/workflows/ci.yml` runs on every push to `main` and on every pull request:
 
 1. **Backend tests**: install dependencies, check Python syntax, run pytest with coverage (JUnit and coverage reports).
 2. **Frontend build**: `npm ci` and `npm run build`.

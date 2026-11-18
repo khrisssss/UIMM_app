@@ -3,7 +3,6 @@ name: UIMM Boost CI
 on:
   push:
     branches:
-      - feature/finance-axis-years
       - main
   pull_request:
 
@@ -89,7 +88,7 @@ jobs:
   deploy:
     name: Deploy to OVH
     needs: [backend-tests, frontend-build]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/finance-axis-years'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -131,12 +130,12 @@ jobs:
           deploy_sha="$1"
           cd ~/UIMM_app
 
-          test "$(git branch --show-current)" = "feature/finance-axis-years"
+          test "$(git branch --show-current)" = "main"
           git diff --quiet
           git diff --cached --quiet
-          git fetch origin feature/finance-axis-years
+          git fetch origin main
 
-          latest_sha="$(git rev-parse origin/feature/finance-axis-years)"
+          latest_sha="$(git rev-parse origin/main)"
           if [ "$latest_sha" != "$deploy_sha" ]; then
             echo "A newer commit exists; skipping this deployment."
             exit 0
