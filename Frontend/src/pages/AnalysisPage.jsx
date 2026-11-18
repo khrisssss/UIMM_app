@@ -315,6 +315,8 @@ function AnalysisPage() {
         status: "validated",
       };
 
+      // A SWOT already exists (an AI draft or a saved one): PATCH edits it, using its id.
+      // No SWOT yet (written by hand, without the AI): POST creates it.
       const response = swot
         ? await api.patch(`/companies/${companyId}/swot/${swot.id}`, payload)
         : await api.post(`/companies/${companyId}/swot`, {

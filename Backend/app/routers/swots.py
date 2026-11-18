@@ -31,7 +31,14 @@ def create_or_update_swot(
     swot_data: SWOTCreate,
     db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
 ):
-    """Save MANUALLY written SWOT without calling AI. Creates a record or replaces the contents for the same company and axis. Omit axis_id for a company-wide SWOT; send status validated to save it as validated."""
+    """Create a SWOT written by hand, without calling the AI.
+
+    POST is used when the company has no SWOT yet, so there is no SWOT id to put in the URL.
+    The consultant can write a SWOT even if the AI is unavailable.
+    Safety net: if a SWOT already exists for this company and axis, it is replaced, so a double
+    click never creates two SWOTs. Omit axis_id for a company-wide SWOT.
+    To change an existing SWOT, the application uses PATCH /companies/{company_id}/swot/{swot_id}.
+    """
     company = db.query(Company).filter(Company.id == company_id).first()
 
     if company is None:
@@ -209,7 +216,14 @@ def update_swot(
     swot_data: SWOTUpdate,
     db: Session = Depends(get_db), current_user: User = Depends(require_consultant_or_admin)
 ):
-    """Save edits to an existing SWOT. Works for manual and AI-generated records. Send status validated to validate it."""
+    """Edit or validate an existing SWOT (written by hand or drafted by the AI).
+
+    PATCH changes one known SWOT, so its id is in the URL. Only the fields sent are changed;
+    the others stay the same. Send status "validated" to validate it.
+    When an AI draft is validated, this route also records whether the consultant accepted it
+    as is or edited it first (uimm_ai_draft_reviews_total, shown in Grafana).
+    To create a SWOT that does not exist yet, the application uses POST /companies/{company_id}/swot.
+    """
     company = db.query(Company).filter(Company.id == company_id).first()
 
     if company is None:
