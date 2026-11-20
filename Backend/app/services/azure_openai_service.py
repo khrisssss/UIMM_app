@@ -28,12 +28,11 @@ def get_azure_client():
 
 def generate_json_response(system_prompt: str, user_payload: dict, feature: str = "unknown") -> dict:
     model = os.getenv("AZURE_OPENAI_MODEL")
-    if not model:
-        raise ValueError("AZURE_OPENAI_MODEL is missing in .env")
-
-    client = get_azure_client()
     start = time.perf_counter()
-    try:
+    try:  # the settings check is inside the try, so a missing setting is counted as an AI error too
+        if not model:
+            raise ValueError("AZURE_OPENAI_MODEL is missing in .env")
+        client = get_azure_client()
         response = client.responses.create(
             model=model,
             input=[

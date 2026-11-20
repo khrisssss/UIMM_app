@@ -63,6 +63,21 @@ def test_ai_error_is_counted_and_raised(monkeypatch):
     assert sample("uimm_ai_calls_total", {"feature": "swot", "outcome": "error"}) == before + 1
 
 
+@pytest.mark.parametrize("missing_setting", ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_MODEL"])
+def test_missing_azure_setting_is_counted_as_error(monkeypatch, missing_setting):
+    # Incident: when a setting was missing, the SWOT failed but no AI error was counted,
+    # so the UimmAiCallsFailing alert could never fire.
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://example.openai.azure.com/openai/v1/")
+    monkeypatch.setenv("AZURE_OPENAI_API_KEY", "test-key")
+    monkeypatch.delenv(missing_setting)
+    before = sample("uimm_ai_calls_total", {"feature": "swot", "outcome": "error"})
+
+    with pytest.raises(ValueError):
+        azure_service.generate_json_response("prompt", {}, feature="swot")
+
+    assert sample("uimm_ai_calls_total", {"feature": "swot", "outcome": "error"}) == before + 1
+
+
 def build_test_app():
     test_app = FastAPI()
     test_app.middleware("http")(monitoring_middleware)
