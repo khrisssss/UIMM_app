@@ -43,4 +43,4 @@ Backend/app/seed_admin.py
 Backend/app/seed_docker.py
 docker-compose.yml
 
-docsBackend/app/services/azure_test.py
+docs
