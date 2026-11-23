@@ -77,12 +77,12 @@ UIMM_app/
 │   │   │   ├── swot_ai_payload.py    ★ Prepares what is sent to the AI for the SWOT; redact_text() hides company and contact details
 │   │   │   ├── swot_ai_service.py      The SWOT prompt and the call to the AI
 │   │   │   ├── swot_generation_service.py  Checks the AI's SWOT before saving it
-│   │   │   ├── diagnostic_scope_service.py Retires the Finance axis without deleting old data
+│   │   │   ├── diagnostic_scope_service.py Deletes the old seventh axis (and its data) from older databases
 │   │   │
 │   │
 │   └── tests/                          Automated tests (pytest), run by the CI on every push
 │       ├── conftest.py                 Gives each test a fresh, empty in-memory database
-│       ├── test_six_axes.py            The 6 axes, the Finance retirement, scores and radar
+│       ├── test_six_axes.py            The 6 axes, the clean-up of the old seventh axis, scores and radar
 │       ├── test_monitoring.py          Logs and metrics, with a fake Azure OpenAI
 │       └── test_setup_database.py      The first-install script
 │

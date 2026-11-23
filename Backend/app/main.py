@@ -51,10 +51,10 @@ with engine.begin() as connection:  # open one transaction: everything below is 
     connection.execute(text("DROP TABLE IF EXISTS company_public_data"))
     connection.execute(text("ALTER TABLE companies DROP COLUMN IF EXISTS siren"))
 
-# Retire Finance in existing installations without deleting historical records.
-from app.services.diagnostic_scope_service import retire_finance  # the function that switches the Finance axis off
+# Older databases had a seventh axis: delete it and its data, so that only the six axes remain.
+from app.services.diagnostic_scope_service import delete_finance_axis
 with SessionLocal.begin() as scope_db:  # open a session that saves automatically at the end
-    retire_finance(scope_db)  # switch Finance off (old answers are kept)
+    delete_finance_axis(scope_db)
 
 @app.get("/")  # the route GET / (the home address of the API)
 def read_root():

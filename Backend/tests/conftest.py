@@ -35,12 +35,10 @@ def db():
 
 @pytest.fixture
 def configured_db(db):
-    for index, name in enumerate(['Stratégie', 'Performance', 'Marketing', 'RH', 'Finance', 'Digitalisation', 'RSE'], 1):
+    for index, name in enumerate(['Stratégie', 'Performance', 'Marketing', 'RH', 'Digitalisation', 'RSE'], 1):
         axis = Axis(name=name, order_index=index, is_active=True)
         db.add(axis)
         db.flush()
-        if name == 'Finance':
-            continue
         maximum = 3 if name == 'RSE' else 5
         scale = ScoringScale(axis_id=axis.id, name=f'Test {name}', max_score=maximum, is_active=True)
         db.add(scale)

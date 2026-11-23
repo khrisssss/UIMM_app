@@ -53,9 +53,6 @@ def update_axis(
         )
 
     update_data = axis_data.model_dump(exclude_unset=True)
-    from app.services.diagnostic_scope_service import is_finance_name
-    if is_finance_name(axis.name) or is_finance_name(update_data.get("name", "")):
-        raise HTTPException(status_code=400, detail="Finance is no longer a diagnostic axis")
 
     for key, value in update_data.items():
         setattr(axis, key, value)
