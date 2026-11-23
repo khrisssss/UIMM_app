@@ -1,4 +1,4 @@
-"""Tests for the public-data pipeline. No network access: the API and websites are faked,
+"""Tests for the public-data pipeline. No network access: the API is faked,
 and the big-data test builds a small Parquet file with the real SIRENE column names."""
 from datetime import date
 from types import SimpleNamespace
@@ -14,7 +14,7 @@ from app.models.company import Company
 from app.models.company_public_data import CompanyPublicData
 from app.models.score import Score
 from app.pipeline import aggregate as agg
-from app.pipeline import extract_api, extract_bigdata, extract_scraping
+from app.pipeline import extract_api, extract_bigdata
 from app.pipeline.extract_database import extract_database
 from app.pipeline.extract_file import extract_file
 from app.pipeline.load import load
@@ -129,30 +129,7 @@ def test_api_source_continues_after_an_error(monkeypatch):
     assert errors[0]["siren"] == "552081317"
 
 
-# ---------- Source 4: scraping ----------
-
-def test_description_comes_from_meta_then_title():
-    assert extract_scraping.extract_description('<meta name="description" content=" Fabricant de pièces ">') == "Fabricant de pièces"
-    assert extract_scraping.extract_description("<html><title>Atelier Dupont</title></html>") == "Atelier Dupont"
-    assert extract_scraping.extract_description("<html></html>") is None
-
-
-def test_scraping_respects_robots_txt(monkeypatch):
-    monkeypatch.setattr(extract_scraping.config, "SCRAPING_DELAY_SECONDS", 0)
-    calls = []
-
-    def get(url, timeout, **kwargs):
-        calls.append(url)
-        return FakeResponse(status=200, text="User-agent: *\nDisallow: /\n")
-
-    records, errors = extract_scraping.extract_scraping({"552032534": "https://example.com/"},
-                                                        session=SimpleNamespace(get=get, headers={}))
-
-    assert records["552032534"]["status"] == "blocked_by_robots_txt"
-    assert calls == ["https://example.com/robots.txt"]  # the homepage itself was never requested
-
-
-# ---------- Source 5: big data (DuckDB on Parquet) ----------
+# ---------- Source 4: big data (DuckDB on Parquet) ----------
 
 @pytest.fixture
 def sirene_parquet(tmp_path):
@@ -210,7 +187,7 @@ def test_aggregation_cleans_merges_and_rejects():
         "333333334": {"legal_name": "OPPOSED", "legal_form_code": "5499", "diffusion_status": "P"},
     }
 
-    dataset, rejected = agg.aggregate(file_rows, [], api, sirene, {"70.10Z": 1500}, {"552032534": {"website_description": "Food"}})
+    dataset, rejected = agg.aggregate(file_rows, [], api, sirene, {"70.10Z": 1500})
 
     danone = next(row for row in dataset if row["siren"] == "552032534")
     assert danone["legal_name"] == "DANONE"                       # API wins over the monthly stock
@@ -221,7 +198,7 @@ def test_aggregation_cleans_merges_and_rejects():
     assert danone["head_office_address"] == "17 BOULEVARD HAUSSMANN"
     assert danone["website"] == "https://www.danone.com/"
     assert danone["sector_active_companies"] == 1500
-    assert danone["sources"] == "file,api,sirene,scraping"
+    assert danone["sources"] == "file,api,sirene"
 
     trader = next(row for row in dataset if row["siren"] == "111111118")
     assert trader["legal_name"] is None and trader["head_office_address"] is None  # RGPD: a person's name
@@ -264,7 +241,6 @@ def test_full_run_end_to_end(db, tmp_path, sirene_parquet, monkeypatch):
     db.commit()
     monkeypatch.setattr(database, "SessionLocal", sessionmaker(bind=db.get_bind()))
     monkeypatch.setattr(pipeline_run, "extract_api", lambda sirens: ({"552032534": extract_api.parse_api_result(API_RESULT)}, []))
-    monkeypatch.setattr(pipeline_run, "extract_scraping", lambda websites: ({}, []))
     input_file = tmp_path / "companies.csv"
     input_file.write_text("siren,name,website\n552032534,Danone,danone.com\n123456789,Bad,\n", encoding="utf-8")
 

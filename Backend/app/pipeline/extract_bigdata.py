@@ -1,4 +1,4 @@
-"""Source 5 - big data: the national SIRENE stock of legal units (INSEE, Parquet, ~29 million rows).
+"""Source 4 - big data: the national SIRENE stock of legal units (INSEE, Parquet, ~29 million rows).
 
 The file is too large to load in memory with pandas. DuckDB queries the Parquet file directly:
 it only reads the columns a query needs (columnar format) and skips row groups that cannot match

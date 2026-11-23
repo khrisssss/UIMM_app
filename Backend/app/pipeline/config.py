@@ -12,16 +12,12 @@ LOG_DIR = DATA_DIR / "logs"
 API_URL = os.getenv("COMPANY_API_URL", "https://recherche-entreprises.api.gouv.fr/search")
 API_DELAY_SECONDS = float(os.getenv("COMPANY_API_DELAY", "0.2"))  # 5 requests/second at most
 
-# Source 5 - big data: INSEE SIRENE stock of legal units (Parquet, ~29 million rows, ~680 MB, monthly)
+# Source 4 - big data: INSEE SIRENE stock of legal units (Parquet, ~29 million rows, ~680 MB, monthly)
 SIRENE_PARQUET_URL = os.getenv(
     "SIRENE_PARQUET_URL",
     "https://www.data.gouv.fr/api/1/datasets/r/350182c9-148a-46e0-8389-76c2ec1374a3",
 )
 SIRENE_LOCAL_FILE = RAW_DIR / "StockUniteLegale.parquet"
-
-# Source 4 - scraping: company websites, read politely
-SCRAPING_DELAY_SECONDS = float(os.getenv("SCRAPING_DELAY", "1.0"))
-MAX_PAGE_BYTES = 2_000_000
 
 HTTP_TIMEOUT_SECONDS = 15
 USER_AGENT = "UIMM-Boost-data-pipeline/1.0 (UIMM Occitanie internal tool)"

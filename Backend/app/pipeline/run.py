@@ -2,7 +2,7 @@
 
     python -m app.pipeline.run --input companies.csv
 
-Steps: 1 file -> 2 database -> 3 API -> 4 big data -> 5 scraping -> aggregate -> save files -> load into PostgreSQL.
+Steps: 1 file -> 2 database -> 3 API -> 4 big data -> aggregate -> save files -> load into PostgreSQL.
 The input file is required; if another source fails, the run continues with the remaining
 sources and the failure is logged and listed in the run summary.
 Exit code: 0 success, 1 the run could not complete (nothing is loaded in that case).
@@ -20,7 +20,6 @@ from app.pipeline.extract_api import extract_api
 from app.pipeline.extract_bigdata import count_active_by_naf, download_sirene, extract_bigdata
 from app.pipeline.extract_database import extract_database
 from app.pipeline.extract_file import extract_file
-from app.pipeline.extract_scraping import extract_scraping
 from app.pipeline.load import load
 
 logger = logging.getLogger("pipeline")
@@ -40,7 +39,7 @@ def setup_logging(log_dir: Path) -> Path:
     return log_file
 
 
-def run(input_file: Path, sirene_file: Path | None = None, skip_bigdata=False, skip_scraping=False,
+def run(input_file: Path, sirene_file: Path | None = None, skip_bigdata=False,
         load_into_database=True, output_dir: Path = config.OUTPUT_DIR) -> dict:
     started = time.perf_counter()
     source_errors = []
@@ -90,24 +89,8 @@ def run(input_file: Path, sirene_file: Path | None = None, skip_bigdata=False, s
             logger.error("Big data source failed: %s", error)
             source_errors.append({"source": "sirene", "reason": str(error)})
 
-    # 5. Scraping: company websites listed in the file
-    scraping_records = {}
-    websites = {}
-    for row in file_rows:
-        try:
-            siren = normalize_siren(row["siren"])
-        except ValueError:
-            continue
-        if siren and row["website"] and siren not in websites:
-            websites[siren] = row["website"] if row["website"].startswith("http") else "https://" + row["website"]
-    if skip_scraping:
-        logger.info("Scraping source skipped (--skip-scraping)")
-    elif websites:
-        scraping_records, scraping_errors = extract_scraping(websites)
-        source_errors += scraping_errors
-
     # Aggregate, clean and save
-    dataset, rejected = aggregate(file_rows, database_rows, api_records, sirene_records, sector_counts, scraping_records)
+    dataset, rejected = aggregate(file_rows, database_rows, api_records, sirene_records, sector_counts)
     summary = {
         "started_at": datetime.now().isoformat(timespec="seconds"),
         "input_file": str(input_file),
@@ -115,7 +98,6 @@ def run(input_file: Path, sirene_file: Path | None = None, skip_bigdata=False, s
         "companies_in_database": len(database_rows),
         "found_in_api": len(api_records),
         "found_in_sirene": len(sirene_records),
-        "websites_scraped": sum(1 for record in scraping_records.values() if record.get("website_description")),
         "dataset_rows": len(dataset),
         "rejected_rows": len(rejected),
         "source_errors": source_errors,
@@ -137,14 +119,13 @@ def main(argv=None) -> int:
     parser.add_argument("--input", required=True, type=Path, help="CSV with a 'siren' column (optional: name, website)")
     parser.add_argument("--sirene-file", type=Path, help="Local StockUniteLegale.parquet (otherwise downloaded once)")
     parser.add_argument("--skip-bigdata", action="store_true", help="Do not use the SIRENE stock file")
-    parser.add_argument("--skip-scraping", action="store_true", help="Do not read company websites")
     parser.add_argument("--no-load", action="store_true", help="Write the CSV files only, do not import into PostgreSQL")
     args = parser.parse_args(argv)
 
     log_file = setup_logging(config.LOG_DIR)
     logger.info("Pipeline started; log file: %s", log_file)
     try:
-        summary = run(args.input, args.sirene_file, args.skip_bigdata, args.skip_scraping, not args.no_load)
+        summary = run(args.input, args.sirene_file, args.skip_bigdata, not args.no_load)
     except Exception as error:
         logger.exception("Pipeline stopped: %s", error)
         return 1

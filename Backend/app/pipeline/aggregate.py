@@ -1,4 +1,4 @@
-"""Aggregation: merge the five sources into one clean dataset, one row per SIREN.
+"""Aggregation: merge the four sources into one clean dataset, one row per SIREN.
 
 Rules, in order:
 1. Corrupted entries are removed, with a reason: invalid SIREN (format or checksum),
@@ -27,7 +27,7 @@ logger = logging.getLogger("pipeline.aggregate")
 DATASET_COLUMNS = [
     "siren", "company_id", "name_in_file", "legal_name", "legal_form_code", "naf_code", "naf_section",
     "headcount_code", "headcount_label", "company_category", "creation_date", "is_active",
-    "head_office_address", "postal_code", "city", "website", "website_description",
+    "head_office_address", "postal_code", "city", "website",
     "sector_active_companies", "scored_axes", "avg_score_percentage", "sources",
 ]
 
@@ -103,7 +103,7 @@ def first_value(*values):
     return next((value for value in values if value not in (None, "")), None)
 
 
-def aggregate(file_rows, database_rows, api_records, sirene_records, sector_counts, scraping_records):
+def aggregate(file_rows, database_rows, api_records, sirene_records, sector_counts):
     """Return (dataset, rejected). Each rejected entry says which source and why."""
     rejected = []
     wanted = {}  # siren -> {"file": row, "db": row}
@@ -142,7 +142,6 @@ def aggregate(file_rows, database_rows, api_records, sirene_records, sector_coun
             continue
 
         file_row, db_row = origin["file"] or {}, origin["db"] or {}
-        scraped = scraping_records.get(siren) or {}
         legal_form = clean_text(first_value(api.get("legal_form_code"), sirene.get("legal_form_code")))
         naf = normalize_naf(first_value(api.get("naf_code"), sirene.get("naf_code")))
         headcount = normalize_headcount(first_value(api.get("headcount_code"), sirene.get("headcount_code")))
@@ -150,7 +149,7 @@ def aggregate(file_rows, database_rows, api_records, sirene_records, sector_coun
         hide_identity = is_sole_trader(legal_form) or sirene.get("diffusion_status") == "P"
 
         sources = [name for name, present in (("file", file_row), ("database", db_row), ("api", api),
-                                               ("sirene", sirene), ("scraping", scraped.get("website_description")))
+                                               ("sirene", sirene))
                    if present]
         dataset.append({
             "siren": siren,
@@ -169,7 +168,6 @@ def aggregate(file_rows, database_rows, api_records, sirene_records, sector_coun
             "postal_code": clean_text(api.get("postal_code")),
             "city": clean_text(api.get("city")),
             "website": normalize_website(file_row.get("website")),
-            "website_description": (clean_text(scraped.get("website_description")) or "")[:500] or None,
             "sector_active_companies": sector_counts.get(naf) if naf else None,
             "scored_axes": db_row.get("scored_axes"),
             "avg_score_percentage": db_row.get("avg_score_percentage"),

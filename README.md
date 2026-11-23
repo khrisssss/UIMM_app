@@ -35,7 +35,7 @@ flowchart LR
     P[Prometheus] -- scrapes /metrics --> B
     G[Grafana] --> P
     GH[GitHub Actions] -- tests, build, SSH deploy --> VPS[OVH VPS<br/>Docker Compose]
-    PL[Data pipeline<br/>file, SQL, REST API,<br/>scraping, SIRENE big data] -- import --> DB
+    PL[Data pipeline<br/>file, SQL, REST API,<br/>SIRENE big data] -- import --> DB
 ```
 
 | Layer | Technology |
@@ -45,7 +45,7 @@ flowchart LR
 | Database | PostgreSQL 16 |
 | AI | Azure OpenAI (Responses API) |
 | Authentication | JWT (python-jose), Argon2 password hashing (pwdlib) |
-| Data pipeline | requests, BeautifulSoup, DuckDB (Parquet) |
+| Data pipeline | requests, DuckDB (Parquet) |
 | Monitoring | JSON logs, Prometheus, Grafana |
 | CI/CD | GitHub Actions, Docker, Docker Compose, OVH VPS |
 
@@ -61,7 +61,7 @@ Backend/
     services/            business logic: scoring, AI payloads, Azure OpenAI, restitution
     dependencies/        authentication and role checks
     monitoring.py        JSON logging and Prometheus metrics
-    pipeline/            public-data pipeline: 5 sources -> clean dataset -> PostgreSQL
+    pipeline/            public-data pipeline: 4 sources -> clean dataset -> PostgreSQL
     setup_database.py    one-time setup: axes, scoring scales, first admin
   tests/                 pytest test suite
 Frontend/
@@ -138,7 +138,7 @@ Open http://localhost:5173 and log in with the admin account. From the dashboard
 
 ## Public-data pipeline
 
-`Backend/app/pipeline/` collects official data about the companies from five sources — a CSV file, the UIMM Boost database (SQL), the government *API Recherche d'entreprises*, the companies' homepages (scraping) and the INSEE SIRENE stock (29 million rows, queried with DuckDB) — cleans and merges it, and imports it into the `company_public_data` table.
+`Backend/app/pipeline/` collects official data about the companies from four sources — a CSV file, the UIMM Boost database (SQL), the government *API Recherche d'entreprises* and the INSEE SIRENE stock (29 million rows, queried with DuckDB) — cleans and merges it, and imports it into the `company_public_data` table.
 
 ```bash
 cd Backend

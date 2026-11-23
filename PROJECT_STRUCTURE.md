@@ -83,16 +83,15 @@ UIMM_app/
 │   │   │   ├── diagnostic_scope_service.py Retires the Finance axis without deleting old data
 │   │   │   └── siren.py                Checks a SIREN: 9 digits + checksum
 │   │   │
-│   │   ├── pipeline/                 ★ The public-data pipeline (E1): 5 sources -> clean dataset -> PostgreSQL
+│   │   ├── pipeline/                 ★ The public-data pipeline (E1): 4 sources -> clean dataset -> PostgreSQL
 │   │   │   ├── README.md               Full documentation: sources, cleaning rules, SQL, Merise models, RGPD
 │   │   │   ├── run.py                ★ Launch point: python -m app.pipeline.run --input companies.csv
 │   │   │   ├── config.py               All settings: URLs, delays, folders, headcount labels
 │   │   │   ├── extract_file.py         Source 1: reads the CSV of companies
 │   │   │   ├── extract_database.py     Source 2: SQL query on the app's PostgreSQL
 │   │   │   ├── extract_api.py          Source 3: government API "Recherche d'entreprises" (+ live search)
-│   │   │   ├── extract_scraping.py     Source 4: description of each company's homepage
-│   │   │   ├── extract_bigdata.py      Source 5: the 30-million-row SIRENE file, queried with DuckDB
-│   │   │   ├── aggregate.py          ★ Cleans, merges and normalises the 5 sources into one dataset
+│   │   │   ├── extract_bigdata.py      Source 4: the 30-million-row SIRENE file, queried with DuckDB
+│   │   │   ├── aggregate.py          ★ Cleans, merges and normalises the 4 sources into one dataset
 │   │   │   ├── load.py                 Imports the dataset into PostgreSQL (insert or update)
 │   │   │   └── companies_example.csv   Example input file
 │   │   │

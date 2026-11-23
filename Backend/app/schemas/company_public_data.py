@@ -21,7 +21,6 @@ class CompanyPublicDataRead(BaseModel):
     postal_code: Optional[str] = None
     city: Optional[str] = None
     website: Optional[str] = None
-    website_description: Optional[str] = None
     sector_active_companies: Optional[int] = None
     sources: str
     collected_at: datetime

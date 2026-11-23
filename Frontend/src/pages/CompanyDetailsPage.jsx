@@ -364,7 +364,6 @@ function CompanyDetailsPage() {
                     {publicData.sector_active_companies != null && (
                       <><dt>Secteur</dt><dd>{publicData.sector_active_companies.toLocaleString("fr-FR")} entreprises actives en France avec ce code NAF</dd></>
                     )}
-                    {publicData.website_description && (<><dt>Site web</dt><dd>{publicData.website_description}</dd></>)}
                   </dl>
                   <p className="public-data-source">
                     Sources : {publicData.sources} · collecté le {new Date(publicData.collected_at).toLocaleDateString("fr-FR")}

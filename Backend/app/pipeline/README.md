@@ -1,6 +1,6 @@
 # Public-data pipeline
 
-Consultants often know a company only by its name. This pipeline enriches the companies followed in UIMM Boost with **official public data** — legal name, activity code (NAF), headcount bracket, category, creation date, head office, activity status, website description, and the size of its sector in France — and stores it in PostgreSQL, where the application shows it on the company page.
+Consultants often know a company only by its name. This pipeline enriches the companies followed in UIMM Boost with **official public data** — legal name, activity code (NAF), headcount bracket, category, creation date, head office, activity status, and the size of its sector in France — and stores it in PostgreSQL, where the application shows it on the company page.
 
 The link between a company and its public data is the **SIREN**, the 9-digit French company identifier, typed by the consultant in the company form.
 
@@ -9,8 +9,7 @@ flowchart LR
     F[1 File<br/>companies.csv] --> A
     D[(2 Database<br/>UIMM Boost PostgreSQL)] -- SQL --> A
     API[3 REST API<br/>Recherche d'entreprises] --> A
-    S[4 Scraping<br/>company homepages] --> A
-    BD[5 Big data<br/>SIRENE stock, 29 M rows<br/>Parquet + DuckDB] --> A
+    BD[4 Big data<br/>SIRENE stock, 29 M rows<br/>Parquet + DuckDB] --> A
     A[Aggregate<br/>clean, merge, normalise] --> CSV[company_public_dataset.csv<br/>rejected_rows.csv<br/>run_summary.json]
     A --> L[Load<br/>upsert] --> T[(company_public_data)]
     T --> R[REST API<br/>/companies/id/public-data<br/>/public-data] --> UI[Company page]
@@ -23,8 +22,7 @@ flowchart LR
 | 1 | Data file | `companies.csv` prepared by the consultants (`siren`, `name`, `website`) | Which companies to enrich, their website | `extract_file.py` |
 | 2 | Database | UIMM Boost PostgreSQL, hand-written SQL | Companies already followed, with their average diagnostic score | `extract_database.py` |
 | 3 | REST API | [API Recherche d'entreprises](https://recherche-entreprises.api.gouv.fr) (data.gouv.fr, free, no key) | Daily-updated company record and head office address | `extract_api.py` |
-| 4 | Scraping | The company's public homepage | A short description (meta description or title) | `extract_scraping.py` |
-| 5 | Big data | [INSEE SIRENE stock of legal units](https://www.data.gouv.fr/fr/datasets/5b7ffc618b4c4169d30727e0/) — Parquet, about 29 million rows and 700 MB, updated monthly | Official record of each SIREN, and the number of active companies sharing its NAF code | `extract_bigdata.py` |
+| 4 | Big data | [INSEE SIRENE stock of legal units](https://www.data.gouv.fr/fr/datasets/5b7ffc618b4c4169d30727e0/) — Parquet, about 29 million rows and 700 MB, updated monthly | Official record of each SIREN, and the number of active companies sharing its NAF code | `extract_bigdata.py` |
 
 ## Dependencies
 
@@ -32,12 +30,11 @@ Python 3.12 and the backend requirements (`pip install -r requirements.txt`), ma
 
 | Package | Used for |
 |---|---|
-| `requests` | API calls, scraping, file download (with retries) |
-| `beautifulsoup4` | Reading the HTML of homepages |
+| `requests` | API calls and file download (with retries) |
 | `duckdb` | Querying the 700 MB Parquet file without loading it in memory |
 | `SQLAlchemy`, `psycopg2-binary` | SQL extraction and import into PostgreSQL |
 
-The database connection comes from `DATABASE_URL` in `Backend/.env`. Optional settings (environment variables): `PIPELINE_DATA_DIR`, `SIRENE_PARQUET_URL`, `COMPANY_API_DELAY`, `SCRAPING_DELAY` (see `config.py`).
+The database connection comes from `DATABASE_URL` in `Backend/.env`. Optional settings (environment variables): `PIPELINE_DATA_DIR`, `SIRENE_PARQUET_URL`, `COMPANY_API_DELAY` (see `config.py`).
 
 ## Run it
 
@@ -47,8 +44,8 @@ From the `Backend` folder, with the virtual environment active:
 # Full run: the SIRENE file is downloaded once (about 700 MB) into pipeline_data/raw/
 python -m app.pipeline.run --input app/pipeline/companies_example.csv
 
-# Quick run without the big file, or without scraping, or without touching the database
-python -m app.pipeline.run --input companies.csv --skip-bigdata --skip-scraping --no-load
+# Quick run without the big file, or without touching the database
+python -m app.pipeline.run --input companies.csv --skip-bigdata --no-load
 
 # Reuse a SIRENE file you already downloaded
 python -m app.pipeline.run --input companies.csv --sirene-file ~/Downloads/StockUniteLegale.parquet
@@ -74,12 +71,11 @@ The exit code is 0 when the run completes and 1 when it stops (in that case noth
 3. **Database** — run the SQL below. If the database is unreachable, the error is logged and the run continues.
 4. **REST API** — one GET per SIREN, with an identified User-Agent, a 15-second timeout, 3 retries with backoff on 429/5xx, and a 0.2 s pause (5 requests/second, under the API limit). Only the exact SIREN match is kept. The list of officers (`dirigeants`) is personal data and is never read.
 5. **Big data** — the SIRENE file is downloaded once (to a `.part` file renamed only when complete), then DuckDB checks its columns and runs two queries: the official record of each wanted SIREN, and `COUNT(*) … GROUP BY` of active companies per NAF code over the 29 million rows.
-6. **Scraping** — for each website: read `robots.txt` first and skip the site if it forbids access; then one GET of the homepage only, HTML only, 2 MB maximum, 1 s between sites; keep the meta description, else the title.
-7. **Aggregation** — clean and merge (rules below).
-8. **Save** — write the three output files.
-9. **Load** — upsert into `company_public_data` in a single transaction.
+6. **Aggregation** — clean and merge (rules below).
+7. **Save** — write the three output files.
+8. **Load** — upsert into `company_public_data` in a single transaction.
 
-**Errors.** A failing SIREN, website or source never stops the others: it is logged, listed in `run_summary.json` (`source_errors`), and the run continues with the data available. Only a missing input file or an unexpected error stops the run.
+**Errors.** A failing SIREN or source never stops the others: it is logged, listed in `run_summary.json` (`source_errors`), and the run continues with the data available. Only a missing input file or an unexpected error stops the run.
 
 ## Cleaning and normalisation rules (`aggregate.py`)
 
@@ -104,7 +100,7 @@ The exit code is 0 when the run completes and 1 when it stops (in that case noth
 | Headcount | 2-character INSEE code (`0` becomes `00`) plus its label, e.g. `21` = "50 à 99 salariés" |
 | Dates | ISO dates (accepts `YYYY-MM-DD`, `YYYYMMDD`, `DD/MM/YYYY`) |
 | Status | Boolean `is_active` (INSEE `A` = active) |
-| Text | Trimmed, repeated spaces removed; website description cut at 500 characters |
+| Text | Trimmed, repeated spaces removed |
 | Website | `https://host/path`, host in lowercase |
 
 ## SQL extraction (`extract_database.py`)
@@ -197,7 +193,6 @@ flowchart LR
 | | postal_code | varchar(5) | NULL |
 | | creation_date | date | NULL |
 | | is_active | boolean | NULL |
-| | website_description | text | NULL |
 | | sector_active_companies | integer | NULL |
 | | sources | varchar | NOT NULL |
 | | collected_at | timestamptz | NOT NULL, default now() |
@@ -215,7 +210,7 @@ The association ÊTRE DÉCRITE PAR is implemented by the shared SIREN value rath
 | Personal data avoided | Officers (`dirigeants`) from the API are never read; contact name, e-mail and phone are not extracted by the SQL |
 | Sole traders | Their company name and address are a person's name and home address: removed (legal form starting with 1) |
 | Opposition to publication | Companies with INSEE status `P` (partial diffusion): name and address removed |
-| Minimisation | Only the fields listed above are kept; homepages give one short description |
+| Minimisation | Only the fields listed above are kept |
 | Retention | Refreshed by each run (upsert); a record can be deleted when the company is no longer followed. The retention period is to be confirmed with UIMM's data protection contact. |
 | Security | Data served only to authenticated consultants and admins (JWT); secrets in `.env`, never in Git |
 | Sources and licence | data.gouv.fr and INSEE open data (Licence Ouverte 2.0) |
@@ -226,4 +221,4 @@ The association ÊTRE DÉCRITE PAR is implemented by the shared SIREN value rath
 python -m pytest tests/test_pipeline.py -q
 ```
 
-The tests run offline: the API and websites are replaced by fakes, and the big-data tests build small Parquet files with the real SIRENE column names. They cover every source, the cleaning rules, the RGPD masking, the upsert, the API route, and a full end-to-end run.
+The tests run offline: the API is replaced by a fake, and the big-data tests build small Parquet files with the real SIRENE column names. They cover every source, the cleaning rules, the RGPD masking, the upsert, the API route, and a full end-to-end run.

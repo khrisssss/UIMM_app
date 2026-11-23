@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Text
+from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String
 from sqlalchemy.sql import func
 
 from app.database import Base
@@ -30,9 +30,8 @@ class CompanyPublicData(Base):
     city = Column(String, nullable=True)
 
     website = Column(String, nullable=True)
-    website_description = Column(Text, nullable=True)
 
     sector_active_companies = Column(Integer, nullable=True)  # active companies with the same NAF code in France
 
-    sources = Column(String, nullable=False)              # e.g. "file,api,sirene,scraping"
+    sources = Column(String, nullable=False)              # e.g. "file,api,sirene"
     collected_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

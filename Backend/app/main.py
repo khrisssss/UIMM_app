@@ -50,6 +50,9 @@ with engine.begin() as connection:  # open one transaction: everything below is 
     connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS siren VARCHAR(9)"))  # add the SIREN column if missing
     connection.execute(text("CREATE INDEX IF NOT EXISTS ix_companies_siren ON companies (siren)"))  # an index = a sorted list that makes searching by SIREN fast
     connection.execute(text("CREATE INDEX IF NOT EXISTS ix_scores_company_id ON scores (company_id)"))  # makes finding the scores of a company fast
+    # The scraping source was removed: delete the website descriptions it collected, and its name in the sources.
+    connection.execute(text("ALTER TABLE IF EXISTS company_public_data DROP COLUMN IF EXISTS website_description"))
+    connection.execute(text("UPDATE company_public_data SET sources = REPLACE(REPLACE(sources, ',scraping', ''), 'scraping,', '') WHERE sources LIKE '%scraping%'"))
 
 # Retire Finance in existing installations without deleting historical records.
 from app.services.diagnostic_scope_service import retire_finance  # the function that switches the Finance axis off

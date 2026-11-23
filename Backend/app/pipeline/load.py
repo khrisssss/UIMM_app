@@ -13,7 +13,7 @@ logger = logging.getLogger("pipeline.load")
 TABLE_FIELDS = [
     "legal_name", "legal_form_code", "naf_code", "naf_section", "headcount_code", "headcount_label",
     "company_category", "creation_date", "is_active", "head_office_address", "postal_code", "city",
-    "website", "website_description", "sector_active_companies", "sources",
+    "website", "sector_active_companies", "sources",
 ]
 
 
