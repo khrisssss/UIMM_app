@@ -73,15 +73,15 @@ def test_db(db: Session = Depends(get_db)):  # FastAPI gives us a database sessi
         "result": result.scalar()}  # the number 1 sent back by PostgreSQL
 
 app.include_router(companies.router)  # plug in the company routes
-app.include_router(axes.router)  # plug in the axis routes
-app.include_router(answers.router)  # plug in the answer routes
-app.include_router(scores.router)  # plug in the score routes
-app.include_router(swots.router)  # plug in the SWOT routes
-app.include_router(scoring.router)  # plug in the scoring-scale routes
-app.include_router(auth.router)  # plug in the login route
-app.include_router(users.router)  # plug in the user-management routes
-app.include_router(company_profile.router)  # plug in the company-profile routes
-app.include_router(company_axes.router)  # plug in the "axes chosen for a company" routes
-app.include_router(admin_axis_questions.router)  # plug in the question-management routes
-app.include_router(axis_question_categories.router)  # plug in the question-category routes
-app.include_router(public_data.router)  # plug in the public-data routes (pipeline and search)
+app.include_router(axes.router)  
+app.include_router(answers.router) 
+app.include_router(scores.router)  
+app.include_router(swots.router)  
+app.include_router(scoring.router)  
+app.include_router(auth.router)  
+app.include_router(users.router)  
+app.include_router(company_profile.router)  
+app.include_router(company_axes.router)  
+app.include_router(admin_axis_questions.router)  
+app.include_router(axis_question_categories.router)  
+app.include_router(public_data.router) 
