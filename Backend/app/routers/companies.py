@@ -26,7 +26,6 @@ def create_company(company: CompanyCreate, db: Session = Depends(get_db), curren
     """Create a company record from the supplied company information."""
     new_company = Company(
         name=company.name,
-        siren=company.siren,
         status=company.status,
 
         contact_name=company.contact_name,

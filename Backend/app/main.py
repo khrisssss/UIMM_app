@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends  # FastAPI builds the API; Depends = "run this first and give me the result"
 from app.monitoring import setup_logging, monitoring_middleware, metrics_endpoint  # our logs and metrics (monitoring.py)
 from app.routers import companies,axes,answers, scores, swots, scoring, auth, users, company_profile, company_axes, admin_axis_questions  # the groups of routes
-from app.routers import axis_question_categories, public_data  # two more groups of routes
+from app.routers import axis_question_categories  # one more group of routes
 
 from app.database import Base, engine, get_db, SessionLocal  # the database tools (database.py)
 
@@ -46,13 +46,10 @@ with engine.begin() as connection:  # open one transaction: everything below is 
     connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS is_synthetic BOOLEAN NOT NULL DEFAULT FALSE"))  # add the "fictional company" column if it is missing
     connection.execute(text("UPDATE companies SET is_synthetic = TRUE WHERE is_synthetic = FALSE AND (name LIKE 'DEMO ML - %' OR name LIKE 'DEMO — %')"))  # mark old demo companies as fictional
     connection.execute(text("ALTER TABLE company_axes ADD COLUMN IF NOT EXISTS show_in_portfolio BOOLEAN NOT NULL DEFAULT FALSE"))  # add the "show in portfolio" column if missing
-    # Public-data pipeline: SIREN link on companies, and indexes used by its SQL extraction.
-    connection.execute(text("ALTER TABLE companies ADD COLUMN IF NOT EXISTS siren VARCHAR(9)"))  # add the SIREN column if missing
-    connection.execute(text("CREATE INDEX IF NOT EXISTS ix_companies_siren ON companies (siren)"))  # an index = a sorted list that makes searching by SIREN fast
     connection.execute(text("CREATE INDEX IF NOT EXISTS ix_scores_company_id ON scores (company_id)"))  # makes finding the scores of a company fast
-    # The scraping source was removed: delete the website descriptions it collected, and its name in the sources.
-    connection.execute(text("ALTER TABLE IF EXISTS company_public_data DROP COLUMN IF EXISTS website_description"))
-    connection.execute(text("UPDATE company_public_data SET sources = REPLACE(REPLACE(sources, ',scraping', ''), 'scraping,', '') WHERE sources LIKE '%scraping%'"))
+    # The public-data pipeline and the SIREN were removed: delete their table, the stored public data and the SIREN column.
+    connection.execute(text("DROP TABLE IF EXISTS company_public_data"))
+    connection.execute(text("ALTER TABLE companies DROP COLUMN IF EXISTS siren"))
 
 # Retire Finance in existing installations without deleting historical records.
 from app.services.diagnostic_scope_service import retire_finance  # the function that switches the Finance axis off
@@ -84,4 +81,4 @@ app.include_router(company_profile.router)
 app.include_router(company_axes.router)
 app.include_router(admin_axis_questions.router)
 app.include_router(axis_question_categories.router)
-app.include_router(public_data.router)
+

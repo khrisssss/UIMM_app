@@ -1,13 +1,10 @@
-from pydantic import BaseModel, field_validator, ConfigDict
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime, date
-
-from app.services.siren import normalize_siren
 
 
 class CompanyBase(BaseModel):
     name: str
-    siren: Optional[str] = None
     status: Optional[str] = "Prospect"
 
     contact_name: Optional[str] = None
@@ -34,11 +31,6 @@ class CompanyBase(BaseModel):
     mission_restitution_date: Optional[date] = None
     general_state: Optional[str] = "orange"
 
-    @field_validator("siren", mode="before")
-    @classmethod
-    def check_siren(cls, value):
-        return normalize_siren(value)
-
 
 class CompanyCreate(CompanyBase):
     pass
@@ -46,7 +38,6 @@ class CompanyCreate(CompanyBase):
 
 class CompanyUpdate(BaseModel):
     name: Optional[str] = None
-    siren: Optional[str] = None
     status: Optional[str] = None
 
     contact_name: Optional[str] = None
@@ -75,11 +66,6 @@ class CompanyUpdate(BaseModel):
     mission_restitution_date: Optional[date] = None
 
     general_state: Optional[str] = None
-
-    @field_validator("siren", mode="before")
-    @classmethod
-    def check_siren(cls, value):
-        return normalize_siren(value)
 
 
 class CompanyRead(CompanyBase):
