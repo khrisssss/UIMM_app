@@ -15,7 +15,6 @@ class Answer(Base):
     score_code = Column(String, nullable=True)
     score_value = Column(Integer, nullable=True)
 
-    answer_text = Column(Text, nullable=True)
     comment = Column(Text, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -90,7 +90,6 @@ function AxisQuestionnairePage() {
         answersMap[answer.question_id] = {
           score_code: answer.score_code || "",
           comment: answer.comment || "",
-          answer_text: answer.answer_text || "",
         };
       });
 
@@ -132,7 +131,6 @@ function AxisQuestionnairePage() {
       [questionId]: {
         score_code: previousAnswers[questionId]?.score_code || "",
         comment: previousAnswers[questionId]?.comment || "",
-        answer_text: previousAnswers[questionId]?.answer_text || "",
         [field]: value,
       },
     }));
@@ -143,7 +141,6 @@ function AxisQuestionnairePage() {
       answersByQuestionId[questionId] || {
         score_code: "",
         comment: "",
-        answer_text: "",
       }
     );
   }
@@ -243,7 +240,6 @@ function AxisQuestionnairePage() {
       await api.post(`/companies/${companyId}/answers`, {
         question_id: question.id,
         score_code: answer.score_code,
-        answer_text: null,
         comment: answer.comment || null,
       });
     }

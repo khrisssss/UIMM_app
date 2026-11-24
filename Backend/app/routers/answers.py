@@ -87,7 +87,6 @@ def create_or_update_answer(
             question_id=answer_data.question_id,
             score_code=answer_data.score_code,
             score_value=scoring_level.score_value,
-            answer_text=answer_data.answer_text,
             comment=answer_data.comment
         )
 
@@ -99,7 +98,6 @@ def create_or_update_answer(
 
     existing_answer.score_code = answer_data.score_code
     existing_answer.score_value = scoring_level.score_value
-    existing_answer.answer_text = answer_data.answer_text
     existing_answer.comment = answer_data.comment
 
     db.commit()

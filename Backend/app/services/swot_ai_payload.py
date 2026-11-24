@@ -36,7 +36,7 @@ def make_swot_ai_payload(context):
     #Other detected emails and phone numbers are replaced with [email masqué] and [téléphone masqué].
     company = context.get("company") or {}
     has_diagnostic_evidence = any(
-        item.get("score_value") is not None or item.get("answer_text") or item.get("comment")
+        item.get("score_value") is not None or item.get("comment")
         for item in context.get("diagnostic_answers", [])
     )
     public_only = not has_diagnostic_evidence and any(
@@ -62,11 +62,10 @@ def make_swot_ai_payload(context):
             for item in context.get("axis_scores", [])
             if (item.get("answered_questions") or 0) > 0
         ],
-        "answer_scores": [ #What did you answer for each question? example “La stratégie est-elle écrite ?” → “Oui, mais elle n’est pas actualisée.” Score: 3 out of 5. Comment: “Dernière mise à jour en 2023.”
+        "answer_scores": [ #What did you answer for each question? example “La stratégie est-elle écrite ?” Score: 3 out of 5. Comment: “Dernière mise à jour en 2023.”
             {
                 "axis": item["axis_name"],
                 "question": redact_text(item.get("question_text"), company),
-                "answer": redact_text(item.get("answer_text"), company),
                 "comment": redact_text(item.get("comment"), company),
                 "score_value": item["score_value"],
                 "max_score": item["max_score"],
